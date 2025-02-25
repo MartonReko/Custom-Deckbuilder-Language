@@ -7,11 +7,13 @@ program
     |   stageDefinition
     |   nodeDefinition
     |   charSetup
+    |   enemyDefinition
     |   effectDefinition
     |   cardDefinition)+
     ;
 
 varName: ID;
+numberValue: MINUS? (INT | DOUBLE);
 gameSetup: GAME LCURLY gameProperties RCURLY;
 gameProperties
     :   (PLAYERSELECT CLN varName EOS
@@ -27,9 +29,9 @@ stageProperties
     |   mustContainDef
     |   endsWithDef)+
     ;
-lengthDef : LENGTH CLN INT EOS;
-minWidthDef:MINWIDTH CLN INT EOS;
-maxWidthDef:MAXWIDTH CLN INT EOS;
+lengthDef : LENGTH CLN numberValue EOS;
+minWidthDef:MINWIDTH CLN numberValue EOS;
+maxWidthDef:MAXWIDTH CLN numberValue EOS;
 fillWithDef:FILLWITH CLN list EOS;
 mustContainDef:MUSTCONTAIN CLN list EOS;
 endsWithDef:ENDSWITH CLN varName EOS;
@@ -40,18 +42,25 @@ nodeProperties
     ;
 charSetup: CHARACTER varName LCURLY charProperties RCURLY;
 charProperties
-    :   (HEALTH CLN INT EOS
+    :   (HEALTH CLN numberValue EOS
     |   EFFECTEVERYTURN CLN list EOS)+
     ;
+enemyDefinition
+    :   ENEMY varName LCURLY enemyProperties RCURLY
+    ;
+enemyProperties
+    :   (HEALTH CLN numberValue EOS
+    |   ACTIONS CLN list EOS)+
+    ;
 effectDefinition
-    :   (passiveEffect
-    |   activeEffect)+
+    :   EFFECT varName LCURLY(passiveEffect
+    |   activeEffect)+ RCURLY
     ;
 passiveEffect
-    :   (OUTGOING|INCOMING) DAMAGE IS expression;
+    :   (OUTGOING|INCOMING) DAMAGE IS expression EOS;
 activeEffect
-    :   ((DEAL) expression DAMAGE (INSTANTLY | FOR INT TURNS TO) (ENEMIES | TARGET | PLAYER)
-    |   APPLY list FOR INT TURNS TO (ENEMIES | TARGET | PLAYER))+
+    :   ((DEAL) expression DAMAGE (INSTANTLY | ENDOFTURN) EOS
+    |   APPLY list FOR numberValue TURNS TO (ENEMIES | TARGET | PLAYER) EOS)+
     ;
 expression
     :   primary
@@ -65,17 +74,20 @@ parenthesizedExpression
     :   LPAREN expression RPAREN
     ;
 literalExpression
-    :   doubleLiteral
+    :   numberValue
     |   varRef
+    | DAMAGE
     ;
 
 varRef: ID;
 rarityName: ID;
-doubleLiteral: MINUS? DOUBLE;
 cardDefinition
-    :   (RARITY CLN rarityName
-    |   VALIDTARGETS CLN list
-    |   APPLY list  FOR INT TURNS)+
+    :   CARD varName LCURLY cardProperties RCURLY
+    ;
+cardProperties
+    :   (RARITY CLN rarityName EOS
+    |   VALIDTARGETS CLN list EOS
+    |   APPLY CLN list EOS)+
     ;
 list
     :   LBRACKET
@@ -87,8 +99,16 @@ listItem
     :   varRef
     |   INT X varRef
     |   INT X varRef WITHCHANCE INT PERCENT
+    //  Enemy attacks target with varRef
+    |   (INT X)? varRef (PLAYER)
+    |   targetItem
     ;
 
+targetItem
+    :   ENEMIES
+    |   ENEMY
+    |   PLAYER
+    ;
 //Lexer
 
 // map
@@ -106,6 +126,7 @@ EFFECTS: 'effects';
 APPLY: 'Apply';
 DAMAGE: 'damage';
 INSTANTLY: 'instantly';
+ENDOFTURN: 'end of turn';
 FOR: 'for';
 TURNS: 'turns';
 TO: 'to';
@@ -138,6 +159,7 @@ STAGE: 'Stage';
 REWARDS: 'Rewards';
 NAME: 'Name';
 PLAYERSELECT: 'Player';
+ENEMY: 'Enemy';
 
 X: 'x';
 MUL: '*';
