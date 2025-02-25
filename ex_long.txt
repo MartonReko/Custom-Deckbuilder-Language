@@ -120,6 +120,6 @@ Card heal{
 
 Card poison{
     Rarity: rarity_common;
-    ValidTargets: [enemies];
+    ValidTargets: [player];
     Apply: [2x effect_poison];
 }
