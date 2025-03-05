@@ -94,33 +94,33 @@ Effect curse{
     Incoming damage is damage * 1.2;
 }
 
-Effect strike_effect{
-    Deal 7 damage instantly;
+Effect strike_effect(int amount){
+    Deal amount damage instantly;
 }
 
 // TODO
 Effect effect_heal(int amount){
-    Deal amount damage instantly;
+    Deal (-1 * amount) damage instantly;
 }
 
-Effect effect_poison{
-    Deal 5 damage end of turn;
+Effect effect_poison(int amount){
+    Deal amount damage end of turn;
 }
 
 Card strike{
     Rarity: rarity_common;
     ValidTargets: [enemy];
-    Apply: [strike_effect];
+    Apply: [strike_effect(7)];
 }
 
 Card heal{
     Rarity: rarity_rare;
     ValidTargets: [player];
-    Apply: [effect_heal];
+    Apply: [effect_heal(12)];
 }
 
 Card poison{
     Rarity: rarity_common;
     ValidTargets: [player];
-    Apply: [2x effect_poison];
+    Apply: [2x effect_poison(2)];
 }

@@ -14,10 +14,13 @@ configBlock:
 		| cardDefinition
 	;
 
+boolean: TRUE | FALSE;
 varName: ID;
-numberValue: MINUS? (INT | DOUBLE);
-varRef: ID;
+//numberValue: MINUS? (INT | DOUBLE);
+number: INT | DOUBLE;
+varRef: ID | ID params;
 rarityName: ID;
+typeName: INTTYPE | DOUBLETYPE | STRINGTYPE | BOOLEANTYPE; 
 
 expression:
 	primary								# primaryExpression
@@ -27,7 +30,7 @@ addSubOp: PLUS | MINUS;
 mulDivOp: MUL | DIV;
 primary: parenthesizedExpression | literalExpression;
 parenthesizedExpression: LPAREN expression RPAREN;
-literalExpression: numberValue | varRef | DAMAGE;
+literalExpression: INT | DOUBLE | STRING | boolean | varRef | DAMAGE;
 
 list: LBRACKET (listItem ((OR | COMMA) listItem)*)? RBRACKET;
 listItem:
@@ -38,6 +41,12 @@ listItem:
 	| (INT X)? varRef (PLAYER)
 	| targetItem;
 targetItem: ENEMIES | ENEMYLC | PLAYER;
+
+paramsDef
+	: LPAREN typeName varName (COMMA typeName varName)? RPAREN
+	;
+params
+	: LPAREN (varRef | literalExpression)? RPAREN;
 
 gameSetup: GAME LCURLY gameProperties RCURLY;
 gameProperties: (
@@ -55,9 +64,9 @@ stageProperties: (
 		| mustContainDef
 		| endsWithDef
 	)+;
-lengthDef: LENGTH CLN numberValue EOS;
-minWidthDef: MINWIDTH CLN numberValue EOS;
-maxWidthDef: MAXWIDTH CLN numberValue EOS;
+lengthDef: LENGTH CLN INT EOS;
+minWidthDef: MINWIDTH CLN INT EOS;
+maxWidthDef: MAXWIDTH CLN INT EOS;
 fillWithDef: FILLWITH CLN list EOS;
 mustContainDef: MUSTCONTAIN CLN list EOS;
 endsWithDef: ENDSWITH CLN varName EOS;
@@ -67,22 +76,22 @@ nodeProperties: (NODEENEMIES CLN list EOS | REWARDS CLN list EOS)+;
 
 charSetup: CHARACTER varName LCURLY charProperties RCURLY;
 charProperties: (
-		HEALTH CLN numberValue EOS
+		HEALTH CLN number EOS
 		| EFFECTEVERYTURN CLN list EOS
 	)+;
 
 enemyDefinition: ENEMY varName LCURLY enemyProperties RCURLY;
 enemyProperties: (
-		HEALTH CLN numberValue EOS
+		HEALTH CLN number EOS
 		| ACTIONS CLN list EOS
 	)+;
 
-effectDefinition: EFFECT varName LCURLY effectType+ RCURLY;
+effectDefinition: EFFECT varName paramsDef? LCURLY effectType+ RCURLY;
 effectType: passiveEffect | activeEffect;
 passiveEffect: (OUTGOING | INCOMING) DAMAGE IS expression EOS;
 activeEffect: (
 		(DEAL) expression DAMAGE effectActivationOpt EOS
-		| APPLY list FOR numberValue TURNS TO effectTarget EOS
+		| APPLY list FOR number TURNS TO effectTarget EOS
 	)+;
 effectActivationOpt: INSTANTLY | ENDOFTURN;
 effectTarget: ENEMIES | TARGET | PLAYER;
@@ -156,9 +165,17 @@ RPAREN: ')';
 COMMA: ',';
 PERCENT: '%';
 
+INTTYPE: 'int';
+DOUBLETYPE: 'double';
+STRINGTYPE: 'string';
+BOOLEANTYPE: 'bool';
+
+TRUE: [Tt] [Rr] [Uu] [Ee];
+FALSE: [Ff] [Aa] [Ll] [Ss] [Ee];
+
 STRING: '"' (~[\r\n"])* '"';
-INT: [0-9]+;
-DOUBLE: [0-9]+ (.[0-9]+)?;
+INT: MINUS? [0-9]+;
+DOUBLE: MINUS? [0-9]+ (.[0-9]+)?;
 ID: [a-zA-Z][a-zA-Z0-9_]*;
 WS: (' ' | '\t' | '\n' | '\r') -> skip;
 EOS: ';';

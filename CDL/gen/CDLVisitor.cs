@@ -44,17 +44,23 @@ public interface ICDLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitConfigBlock([NotNull] CDLParser.ConfigBlockContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="CDLParser.boolean"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitBoolean([NotNull] CDLParser.BooleanContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="CDLParser.varName"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitVarName([NotNull] CDLParser.VarNameContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CDLParser.numberValue"/>.
+	/// Visit a parse tree produced by <see cref="CDLParser.number"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitNumberValue([NotNull] CDLParser.NumberValueContext context);
+	Result VisitNumber([NotNull] CDLParser.NumberContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="CDLParser.varRef"/>.
 	/// </summary>
@@ -67,6 +73,12 @@ public interface ICDLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitRarityName([NotNull] CDLParser.RarityNameContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CDLParser.typeName"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitTypeName([NotNull] CDLParser.TypeNameContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>primaryExpression</c>
 	/// labeled alternative in <see cref="CDLParser.expression"/>.
@@ -136,6 +148,18 @@ public interface ICDLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitTargetItem([NotNull] CDLParser.TargetItemContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CDLParser.paramsDef"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitParamsDef([NotNull] CDLParser.ParamsDefContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CDLParser.params"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitParams([NotNull] CDLParser.ParamsContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="CDLParser.gameSetup"/>.
 	/// </summary>
