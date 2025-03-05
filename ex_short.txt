@@ -1,3 +1,4 @@
+//OUTDATED
 Game{
     Name: xyz;
     Stages: [a,b,c];

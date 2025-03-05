@@ -98,8 +98,9 @@ Effect strike_effect{
     Deal 7 damage instantly;
 }
 
-Effect effect_heal{
-    Deal -5 damage instantly;
+// TODO
+Effect effect_heal(int amount){
+    Deal amount damage instantly;
 }
 
 Effect effect_poison{

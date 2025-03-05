@@ -42,9 +42,7 @@ literalExpression
     ;
 
 list
-    :   LBRACKET
-    (listItem ((OR | COMMA) listItem)*)?
-    RBRACKET
+    :   LBRACKET (listItem ((OR | COMMA) listItem)*)? RBRACKET
     ;
 listItem
     :   varRef
@@ -104,16 +102,27 @@ enemyProperties
     ;
 
 effectDefinition
-    :   EFFECT varName LCURLY(passiveEffect
-    |   activeEffect)+ RCURLY
+    :   EFFECT varName LCURLY effectType+ RCURLY
+    ;
+effectType
+    : passiveEffect
+    | activeEffect
     ;
 passiveEffect
     :   (OUTGOING|INCOMING) DAMAGE IS expression EOS;
 activeEffect
-    :   ((DEAL) expression DAMAGE (INSTANTLY | ENDOFTURN) EOS
-    |   APPLY list FOR numberValue TURNS TO (ENEMIES | TARGET | PLAYER) EOS)+
+    :   ((DEAL) expression DAMAGE effectActivationOpt EOS
+    |   APPLY list FOR numberValue TURNS TO effectTarget EOS)+
     ;
-
+effectActivationOpt
+    :   INSTANTLY
+    |   ENDOFTURN
+    ;
+effectTarget
+    :   ENEMIES
+    |   TARGET
+    |   PLAYER
+    ;
 cardDefinition
     :   CARD varName LCURLY cardProperties RCURLY
     ;
