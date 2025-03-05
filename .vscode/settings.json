@@ -1,6 +1,7 @@
 {
     "dotnet.defaultSolution": "CDL.sln",
     "antlr4.generation": {
+        "language": "CSharp",
         "outputDir": "./gen",
         "mode": "external",
         "listeners": false,
