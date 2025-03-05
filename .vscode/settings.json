@@ -1,0 +1,9 @@
+{
+    "dotnet.defaultSolution": "CDL.sln",
+    "antlr4.generation": {
+        "outputDir": "./gen",
+        "mode": "external",
+        "listeners": false,
+        "visitors": true,
+    }
+}

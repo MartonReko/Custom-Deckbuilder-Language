@@ -1,4 +1,4 @@
-grammar test;
+grammar CDL;
 
 //Parser
 
