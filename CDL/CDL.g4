@@ -2,7 +2,7 @@ grammar CDL;
 
 //Parser
 
-program: configBlock+;
+program: (configBlock | variableDeclaration)+;
 
 configBlock: 
 		gameSetup
@@ -18,9 +18,10 @@ boolean: TRUE | FALSE;
 varName: ID;
 //numberValue: MINUS? (INT | DOUBLE);
 number: INT | DOUBLE;
-varRef: ID | ID params;
+varRef: varName | varName params;
 rarityName: ID;
 typeName: INTTYPE | DOUBLETYPE | STRINGTYPE | BOOLEANTYPE; 
+variableDeclaration: typeName varName EQUALS literalExpression EOS;
 
 expression:
 	primary								# primaryExpression
@@ -30,7 +31,7 @@ addSubOp: PLUS | MINUS;
 mulDivOp: MUL | DIV;
 primary: parenthesizedExpression | literalExpression;
 parenthesizedExpression: LPAREN expression RPAREN;
-literalExpression: INT | DOUBLE | STRING | boolean | varRef | DAMAGE;
+literalExpression: INT | DOUBLE | STRING | boolean | varName | DAMAGE;
 
 list: LBRACKET (listItem ((OR | COMMA) listItem)*)? RBRACKET;
 listItem:
@@ -164,6 +165,7 @@ LPAREN: '(';
 RPAREN: ')';
 COMMA: ',';
 PERCENT: '%';
+EQUALS: '=';
 
 INTTYPE: 'int';
 DOUBLETYPE: 'double';

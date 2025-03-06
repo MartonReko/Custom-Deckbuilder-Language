@@ -80,6 +80,12 @@ public interface ICDLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitTypeName([NotNull] CDLParser.TypeNameContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="CDLParser.variableDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitVariableDeclaration([NotNull] CDLParser.VariableDeclarationContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>primaryExpression</c>
 	/// labeled alternative in <see cref="CDLParser.expression"/>.
 	/// </summary>

@@ -18,8 +18,9 @@ class Program
 
         var ast = ReadAST("examples/ex_long.cdl");
         CDLVisitor visitor = new(loggerFactory);
-        Console.WriteLine(visitor.Visit(ast));
+        visitor.Visit(ast);
     }
+
     public static IParseTree ReadAST(string fileName)
     {
         var code = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, fileName));

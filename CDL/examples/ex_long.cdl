@@ -124,3 +124,8 @@ Card poison{
     ValidTargets: [player];
     Apply: [2x effect_poison(2)];
 }
+
+int testInt = 5;
+string testString = "asd";
+double testDouble = 1.2;
+bool testBoolean = false;
