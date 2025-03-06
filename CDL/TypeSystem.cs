@@ -17,6 +17,9 @@ public class TypeSystem
     public CDLType DOUBLE { get; private set; }
     public CDLType ERROR { get; private set; }
 
+    public CDLType EFFECT { get; private set; }
+    public CDLType CARD { get; private set; }
+
     private void InitializeConstants()
     {
         this.ERROR = new CDLType("ErrorType");
@@ -24,6 +27,9 @@ public class TypeSystem
         this.DOUBLE = new CDLType("double");
         this.INT = new CDLType("int");
         this.BOOLEAN = new CDLType("bool");
+
+        this.EFFECT = new CDLType("Effect");
+        this.CARD = new CDLType("Card");
 
         this.ERROR.Parents.Add(this.STRING);
         this.ERROR.Parents.Add(this.DOUBLE);
@@ -37,6 +43,8 @@ public class TypeSystem
         types[this.STRING.Name] = this.STRING;
         types[this.BOOLEAN.Name] = this.BOOLEAN;
         types[this.DOUBLE.Name] = this.DOUBLE;
+        types[this.EFFECT.Name] = this.EFFECT;
+        types[this.CARD.Name] = this.CARD;
     }
 
     public CDLType this[string name]
@@ -48,7 +56,8 @@ public class TypeSystem
             return null;
         }
     }
-    public CDLType CreateType(string name){
+    public CDLType CreateType(string name)
+    {
         if (this.types.ContainsKey(name))
             return null;
 
