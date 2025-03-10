@@ -17,7 +17,7 @@ public class Symbol
     {
         if (Properties == null)
         {
-            return $"{Name} : {Type.Name}"; ;
+            return $"{Name} : {Type.Name}"; 
         }
         else
         {

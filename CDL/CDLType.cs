@@ -4,7 +4,6 @@ public class CDLType(string name)
 {
     public string Name { get; private set; } = name;
     public HashSet<CDLType> Parents { get; private set; } = new HashSet<CDLType>();
-    public List<CDLType> PropTypes {get; private set; } = new List<CDLType>();
 
     public bool InheritsFrom(CDLType t)
     {
