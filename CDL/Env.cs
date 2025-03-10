@@ -30,8 +30,9 @@ public class Env{
         if(PrevEnv != null)
             bld.Append(this.PrevEnv.ToString());
         //bld.AppendLine("-----------------");
-        foreach(var symbol in this.table.Values)
+        foreach(var symbol in this.table.Values){
             bld.AppendLine(symbol.ToString());
+        }
         return bld.ToString();
     }
 }

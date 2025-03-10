@@ -1,3 +1,5 @@
+using System.Reflection.Metadata;
+using System.Runtime.CompilerServices;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
@@ -56,7 +58,6 @@ public class CDLVisitor(ILoggerFactory loggerFactory) : CDLBaseVisitor<object>
 
     public override object Visit(IParseTree tree)
     {
-        _logger.LogDebug("Visitor start");
         return base.Visit(tree);
     }
     public override object VisitProgram([NotNull] CDLParser.ProgramContext context)
@@ -64,24 +65,35 @@ public class CDLVisitor(ILoggerFactory loggerFactory) : CDLBaseVisitor<object>
         env = new Env();
         ts = new TypeSystem();
         int gameSetupCount = 0;
+        int charSetupCount = 0;
         foreach (var child in context.children)
         {
             if (child.GetChild(0) is CDLParser.GameSetupContext)
             {
                 gameSetupCount++;
             }
+            if (child.GetChild(0) is CDLParser.CharSetupContext)
+                charSetupCount++;
+
             if (child is CDLParser.VariableDeclarationContext context1)
             {
                 //TODO gets visited twice
-                VisitVariableDeclaration(context1);
+                //VisitVariableDeclaration(context1);
+
+                Visit(context1);
             }
         }
         if (gameSetupCount == 0)
             _logger.LogError("Missing game setup");
         else if (gameSetupCount > 1)
             _logger.LogError("Multiple game setups found");
+        if (charSetupCount == 0)
+            _logger.LogError("Missing char setup");
+        else if (charSetupCount > 1)
+            _logger.LogError("Multiple char setups found");
 
-        return base.VisitProgram(context);
+        var result = base.VisitProgram(context);
+        return result;
     }
     public override object VisitConfigBlock([NotNull] CDLParser.ConfigBlockContext context)
     {
@@ -124,14 +136,40 @@ public class CDLVisitor(ILoggerFactory loggerFactory) : CDLBaseVisitor<object>
         _logger.LogInformation("Var declaration visited, enviroment:\n{env}", this.env.ToString());
         return base.VisitVariableDeclaration(context);
     }
+    public override List<CDLType> VisitParamsDef([NotNull] CDLParser.ParamsDefContext context)
+    {
+        string propsString = "";
+        List<CDLType> typesInProps = new List<CDLType>();
+        //return base.VisitParamsDef(context);
+        foreach(var item in context.typeName()){
+            if(item != null){
+                propsString += item.GetText();
+                typesInProps.Add(ts[item.GetText()]);
+            }
+        }
+        //return "(" + propsString + ")";
+        return typesInProps;
+    }
     public override object VisitEffectDefinition([NotNull] CDLParser.EffectDefinitionContext context)
     {
         var type = ts[context.GetChild(0).GetText()];
-        var symbol = new Symbol(context.varName().GetText(), type);
+        string symbolText = context.varName().GetText();
+        List<CDLType> props = new List<CDLType>();
+        if(context.paramsDef() != null){
+            props = VisitParamsDef(context.paramsDef());
+        }
+        //System.Console.WriteLine(props);
+        var symbol = new Symbol(symbolText, type,props);
         AddVariableToScope(context.varName(), symbol);
 
         var effectName = context.GetChild(1).GetText();
-        _logger.LogCritical("\t{a}", effectName);
+
+        Effect newEffect = new(effectName);
+
+        // TODO
+        // visit effect config and return values OR .getChild()
+
+        //var effectName = context.GetChild(1).GetText();
         _logger.LogInformation("Effect definition visited, enviroment:\n{env}", this.env.ToString());
         return base.VisitEffectDefinition(context);
     }

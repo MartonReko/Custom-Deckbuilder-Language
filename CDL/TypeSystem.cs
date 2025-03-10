@@ -51,8 +51,8 @@ public class TypeSystem
     {
         get
         {
-            if (this.types.ContainsKey(name))
-                return types[name];
+            if (this.types.TryGetValue(name, out CDLType? value))
+                return value;
             return null;
         }
     }
