@@ -19,9 +19,10 @@ class Program
         //var ast = ReadAST("examples/ex_long.cdl");
         var ast = ReadAST("examples/ex_long_errors.cdl");
         EnvManager envM = new EnvManager(loggerFactory);
-        VisGlobalVars visitor1 = new(loggerFactory, envM);
-        Env firstPassEnv = (Env)visitor1.Visit(ast);
-        //VisBlocks visitorBlocks = new(loggerFactory, firstPassEnv);
+        VisGlobalVars visitorVars = new(loggerFactory, envM);
+        visitorVars.Visit(ast);
+        VisBlocks visitorBlocks = new(loggerFactory, envM);
+        visitorBlocks.Visit(ast);
     }
 
     public static IParseTree ReadAST(string fileName)

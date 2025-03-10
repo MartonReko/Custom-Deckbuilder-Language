@@ -6,8 +6,8 @@ namespace CDL;
 public class EnvManager(ILoggerFactory loggerFactory){
 
     private readonly ILogger<VisGlobalVars> _logger = loggerFactory.CreateLogger<VisGlobalVars>();
-    public Env env {get;set;}
-    public TypeSystem ts {get;set;}
+    public Env Env {get;set;}
+    public TypeSystem Ts {get;set;}
     public static string GetPos(ParserRuleContext context)
     {
         return $"line #{context.Start.Line}, column #{context.Start.Column}";
@@ -16,7 +16,7 @@ public class EnvManager(ILoggerFactory loggerFactory){
     {
         try
         {
-            env[symbol.Name] = symbol;
+            Env[symbol.Name] = symbol;
         }
         catch
         {
@@ -25,7 +25,7 @@ public class EnvManager(ILoggerFactory loggerFactory){
     }
     public Symbol getVariableFromScope(ParserRuleContext context, string varName)
     {
-        var symbol = env[varName];
+        var symbol = Env[varName];
         if (symbol != null) return symbol;
         _logger.LogError("Error at {pos}: name {varName} does not exist", GetPos(context), varName);
         return null;
@@ -37,16 +37,16 @@ public class EnvManager(ILoggerFactory loggerFactory){
             Symbol symbol = null;
             var varName = context.varName();
             symbol = getVariableFromScope(varName, varName.GetText());
-            return symbol?.Type ?? ts.ERROR;
+            return symbol?.Type ?? Ts.ERROR;
         }
         if (context.INT() != null)
-            return ts.INT;
+            return Ts.INT;
         if (context.boolean() != null)
-            return ts.BOOLEAN;
+            return Ts.BOOLEAN;
         if (context.STRING() != null)
-            return ts.STRING;
+            return Ts.STRING;
         if (context.DOUBLE() != null)
-            return ts.DOUBLE;
+            return Ts.DOUBLE;
 
         return null;
     }

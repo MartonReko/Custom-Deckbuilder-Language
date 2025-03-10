@@ -5,113 +5,86 @@ namespace CDL;
 
 public class VisBlocks(ILoggerFactory loggerFactory, EnvManager em) : CDLBaseVisitor<object>
 {
+    bool gameVisited = false;
+    bool charVisited = false;
+    Dictionary<string, int> defNumbers = [];
+
     private readonly ILogger<VisBlocks> _logger = loggerFactory.CreateLogger<VisBlocks>();
 
     public override object VisitProgram([NotNull] CDLParser.ProgramContext context)
     {
+        defNumbers.Add("Stage",0);
+        defNumbers.Add("Node",0);
+        defNumbers.Add("Enemy",0);
+        defNumbers.Add("Effect",0);
+        defNumbers.Add("Card",0);
         var result = base.VisitProgram(context);
+
+        if (!gameVisited)
+            _logger.LogError("Game definition missing");
+        if (!charVisited)
+            _logger.LogError("Character definition missing");
+        if(defNumbers.Any(x => x.Value == 0))
+            _logger.LogError("Minimum definitions not satisfied");
+        
+        foreach(var item in defNumbers){
+            _logger.LogInformation("Number of {name} definitions is {value}",item.Key,item.Value);
+        }
+
         return result;
     }
-    public override object VisitConfigBlock([NotNull] CDLParser.ConfigBlockContext context)
+    public override object VisitGameSetup([NotNull] CDLParser.GameSetupContext context)
     {
-        _logger.LogInformation("Config block \"{name}\" visited, Env:\n{env}", context.GetChild(0).GetType(), em.env.ToString());
-        return base.VisitConfigBlock(context);
-    }
-    public override object VisitVariableDeclaration([NotNull] CDLParser.VariableDeclarationContext context)
-    {
-        var varName = context.varName().GetText();
-
-        var type = em.ts[context.typeName().GetText()];
-        if (type == null)
+        if (!gameVisited)
         {
-            _logger.LogError("Unknown type \"{type}\" at {pos}", context.typeName().GetText(), EnvManager.GetPos(context));
+            gameVisited = true;
         }
         else
         {
-            if (context.literalExpression() == null)
-            {
-                _logger.LogError("Undefined variable, this should not happen");
-            }
-            else
-            {
-                var expressionType = em.GetType(context.literalExpression());
-                if (!expressionType.InheritsFrom(type))
-                {
-                    _logger.LogError("Error at {pos}, type {type} of expression is not compatible with the type {typeName} of the variable", EnvManager.GetPos(context.literalExpression()), expressionType.Name, type.Name);
-                }
-                else
-                {
-                    var symbol = new Symbol(context.varName().GetText(), type);
-                    em.AddVariableToScope(context.varName(), symbol);
-                }
-            }
+            _logger.LogError("Multiple game definitions");
         }
-
-        _logger.LogInformation("Var declaration visited, enviroment:\n{env}", em.env.ToString());
-        return base.VisitVariableDeclaration(context);
+        return base.VisitGameSetup(context);
     }
-    public override List<CDLType> VisitParamsDef([NotNull] CDLParser.ParamsDefContext context)
+    public override object VisitCharSetup([NotNull] CDLParser.CharSetupContext context)
     {
-        string propsString = "";
-        List<CDLType> typesInProps = new List<CDLType>();
-        foreach (var item in context.typeName())
+        if (!charVisited)
         {
-            if (item != null)
-            {
-                propsString += item.GetText();
-                typesInProps.Add(em.ts[item.GetText()]);
-            }
+            charVisited = true;
         }
-        return typesInProps;
-    }
-    public override object VisitEffectDefinition([NotNull] CDLParser.EffectDefinitionContext context)
-    {
-        var type = em.ts[context.GetChild(0).GetText()];
-        string symbolText = context.varName().GetText();
-        List<CDLType> props = new List<CDLType>();
-        if (context.paramsDef() != null)
+        else
         {
-            props = VisitParamsDef(context.paramsDef());
+            _logger.LogError("Multiple character definitions");
         }
-        var symbol = new Symbol(symbolText, type, props);
-        em.AddVariableToScope(context.varName(), symbol);
-
-        _logger.LogInformation("Effect definition visited, enviroment:\n{env}", em.env.ToString());
-        return base.VisitEffectDefinition(context);
-    }
-    public override object VisitCardDefinition([NotNull] CDLParser.CardDefinitionContext context)
-    {
-        var type = em.ts[context.GetChild(0).GetText()];
-        var symbol = new Symbol(context.varName().GetText(), type);
-        em.AddVariableToScope(context.varName(), symbol);
-        return base.VisitCardDefinition(context);
+        return base.VisitCharSetup(context);
     }
     public override object VisitStageDefinition([NotNull] CDLParser.StageDefinitionContext context)
     {
-        var type = em.ts[context.GetChild(0).GetText()];
-        var symbol = new Symbol(context.varName().GetText(), type);
-        em.AddVariableToScope(context.varName(), symbol);
+        defNumbers.TryGetValue(context.GetChild(0).GetText(), out var currentCount);
+        defNumbers[context.GetChild(0).GetText()] = currentCount + 1;
         return base.VisitStageDefinition(context);
     }
     public override object VisitNodeDefinition([NotNull] CDLParser.NodeDefinitionContext context)
     {
-        var type = em.ts[context.GetChild(0).GetText()];
-        var symbol = new Symbol(context.varName().GetText(), type);
-        em.AddVariableToScope(context.varName(), symbol);
+        defNumbers.TryGetValue(context.GetChild(0).GetText(), out var currentCount);
+        defNumbers[context.GetChild(0).GetText()] = currentCount + 1;
         return base.VisitNodeDefinition(context);
-    }
-    public override object VisitCharSetup([NotNull] CDLParser.CharSetupContext context)
-    {
-        var type = em.ts[context.GetChild(0).GetText()];
-        var symbol = new Symbol(context.varName().GetText(), type);
-        em.AddVariableToScope(context.varName(), symbol);
-        return base.VisitCharSetup(context);
     }
     public override object VisitEnemyDefinition([NotNull] CDLParser.EnemyDefinitionContext context)
     {
-        var type = em.ts[context.GetChild(0).GetText()];
-        var symbol = new Symbol(context.varName().GetText(), type);
-        em.AddVariableToScope(context.varName(), symbol);
+        defNumbers.TryGetValue(context.GetChild(0).GetText(), out var currentCount);
+        defNumbers[context.GetChild(0).GetText()] = currentCount + 1;
         return base.VisitEnemyDefinition(context);
+    }
+    public override object VisitEffectDefinition([NotNull] CDLParser.EffectDefinitionContext context)
+    {
+        defNumbers.TryGetValue(context.GetChild(0).GetText(), out var currentCount);
+        defNumbers[context.GetChild(0).GetText()] = currentCount + 1;
+        return base.VisitEffectDefinition(context);
+    }
+    public override object VisitCardDefinition([NotNull] CDLParser.CardDefinitionContext context)
+    {
+        defNumbers.TryGetValue(context.GetChild(0).GetText(), out var currentCount);
+        defNumbers[context.GetChild(0).GetText()] = currentCount + 1;
+        return base.VisitCardDefinition(context);
     }
 }
