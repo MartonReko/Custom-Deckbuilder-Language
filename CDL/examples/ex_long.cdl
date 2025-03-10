@@ -103,7 +103,7 @@ Effect effect_heal(int amount){
     Deal (-1 * amount) damage instantly;
 }
 
-Effect effect_poison(int amount){
+Effect effect_poison(int var1, int var2){
     Deal amount damage end of turn;
 }
 
@@ -129,3 +129,4 @@ int testInt = 5;
 string testString = "asd";
 double testDouble = 1.2;
 bool testBoolean = false;
+//bool testBoolean2 = "false";
