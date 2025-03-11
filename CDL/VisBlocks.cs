@@ -1,3 +1,4 @@
+using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Microsoft.Extensions.Logging;
 
@@ -12,6 +13,24 @@ public class VisBlocks(ILoggerFactory loggerFactory, EnvManager em) : CDLBaseVis
     List<Symbol> currentList = new();
 
     private readonly ILogger<VisBlocks> _logger = loggerFactory.CreateLogger<VisBlocks>();
+    private bool CheckExist(ParserRuleContext[] context, int count){
+        if(context.Length == 0){
+            _logger.LogError("Missing {x}",context.GetType());
+            return false;
+        }
+        if(context.Length != count){
+            _logger.LogError("Missing or multiple {x}",context[0].GetChild(0).GetText());
+            return false;
+        }
+        return true;
+    }
+    private bool CheckExist(Antlr4.Runtime.Tree.ITerminalNode[] context, int count){
+        if(context.Length != count){
+            _logger.LogError("Missing or multiple {x}",context[0].GetText());
+            return false;
+        }
+        return true;
+    }
 
     public override object VisitProgram([NotNull] CDLParser.ProgramContext context)
     {
@@ -36,6 +55,14 @@ public class VisBlocks(ILoggerFactory loggerFactory, EnvManager em) : CDLBaseVis
 
         return result;
     }
+    public override object VisitStageProperties([NotNull] CDLParser.StagePropertiesContext context)
+    {
+        System.Console.WriteLine(context.lengthDef().GetType() + "\n\n");
+/*         if(context.lengthDef().Length != 1)
+            _logger.LogError("Missing or multiple Stage Length"); */
+        CheckExist(context.lengthDef(), 1);
+        return base.VisitStageProperties(context);
+    }
     public override object VisitGameSetup([NotNull] CDLParser.GameSetupContext context)
     {
         if (!gameVisited)
@@ -50,7 +77,7 @@ public class VisBlocks(ILoggerFactory loggerFactory, EnvManager em) : CDLBaseVis
     }
     public override object VisitGameProperties([NotNull] CDLParser.GamePropertiesContext context)
     {
-        if (context.gamePropName().Length != 1)
+/*         if (context.gamePropName().Length != 1)
         {
             _logger.LogError("Missing or multiple Game Name");
         }
@@ -61,7 +88,10 @@ public class VisBlocks(ILoggerFactory loggerFactory, EnvManager em) : CDLBaseVis
         if (context.gamePropPlayerselect().Length != 1)
         {
             _logger.LogError("Missing or multiple Game Player");
-        }
+        } */
+        CheckExist(context.gamePropName(),1);
+        CheckExist(context.STAGES(),1);
+        CheckExist(context.gamePropPlayerselect(),1);
 
         // TODO listákat hogyan? Ez is tagváltozó?
 

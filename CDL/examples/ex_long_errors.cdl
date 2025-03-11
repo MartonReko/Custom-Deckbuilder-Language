@@ -13,7 +13,8 @@ Character The_Player{
 }
 
 Stage stage_beginner{
-    Length: 5;
+    //Length: 5;
+    //Length: 5;
     Max-width: 3;
     Min-width: 1;
     FillWith: [node_easy];
