@@ -73,6 +73,9 @@ public class VisGlobalVars(ILoggerFactory loggerFactory, EnvManager em) : CDLBas
         List<CDLType> props = new List<CDLType>();
         if (context.paramsDef() != null)
         {
+            // TODO 
+            // Kétszer lesz bejárva
+            // Nem lehetne ezt az egészet átteni?
             props = VisitParamsDef(context.paramsDef());
         }
         var symbol = new Symbol(symbolText, type, props);
@@ -87,6 +90,13 @@ public class VisGlobalVars(ILoggerFactory loggerFactory, EnvManager em) : CDLBas
         var symbol = new Symbol(context.varName().GetText(), type);
         em.AddVariableToScope(context.varName(), symbol);
         return base.VisitCardDefinition(context);
+    }
+    public override object VisitRarityName([NotNull] CDLParser.RarityNameContext context)
+    {
+        var type = em.Ts["string"];
+        var symbol = new Symbol(context.GetText(), type);
+        em.AddVariableToScope(context, symbol);
+        return base.VisitRarityName(context);
     }
     public override object VisitStageDefinition([NotNull] CDLParser.StageDefinitionContext context)
     {

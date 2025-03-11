@@ -2,23 +2,15 @@ Game{
     Name: My_Wonderful_Game;
     Stages: [
     stage_beginner,
-    stage_advanced
+    stage_advanced,
+    testInt
     ];
     Player: ThePlayer;
 }
-Game{
-    Name: My_Wonderful_Game;
-    Stages: [
-    stage_beginner,
-    stage_advanced
-    ];
-    Player: ThePlayer;
+Character The_Player{
+    Health: 100;
+    EffectEveryTurn: [miniscule_healing];
 }
-
-//Character The_Player{
-//    Health: 100;
-//    EffectEveryTurn: [miniscule_healing];
-//}
 
 Stage stage_beginner{
     Length: 5;
