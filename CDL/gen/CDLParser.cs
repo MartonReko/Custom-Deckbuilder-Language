@@ -54,22 +54,23 @@ public partial class CDLParser : Parser {
 		RULE_mulDivOp = 11, RULE_primary = 12, RULE_parenthesizedExpression = 13, 
 		RULE_literalExpression = 14, RULE_list = 15, RULE_listItem = 16, RULE_targetItem = 17, 
 		RULE_paramsDef = 18, RULE_params = 19, RULE_gameSetup = 20, RULE_gameProperties = 21, 
-		RULE_stageDefinition = 22, RULE_stageProperties = 23, RULE_lengthDef = 24, 
-		RULE_minWidthDef = 25, RULE_maxWidthDef = 26, RULE_fillWithDef = 27, RULE_mustContainDef = 28, 
-		RULE_endsWithDef = 29, RULE_nodeDefinition = 30, RULE_nodeProperties = 31, 
-		RULE_charSetup = 32, RULE_charProperties = 33, RULE_enemyDefinition = 34, 
-		RULE_enemyProperties = 35, RULE_effectDefinition = 36, RULE_effectType = 37, 
-		RULE_passiveEffect = 38, RULE_activeEffect = 39, RULE_effectActivationOpt = 40, 
-		RULE_effectTarget = 41, RULE_cardDefinition = 42, RULE_cardProperties = 43;
+		RULE_gamePropPlayerselect = 22, RULE_gamePropName = 23, RULE_stageDefinition = 24, 
+		RULE_stageProperties = 25, RULE_lengthDef = 26, RULE_minWidthDef = 27, 
+		RULE_maxWidthDef = 28, RULE_fillWithDef = 29, RULE_mustContainDef = 30, 
+		RULE_endsWithDef = 31, RULE_nodeDefinition = 32, RULE_nodeProperties = 33, 
+		RULE_charSetup = 34, RULE_charProperties = 35, RULE_enemyDefinition = 36, 
+		RULE_enemyProperties = 37, RULE_effectDefinition = 38, RULE_effectType = 39, 
+		RULE_passiveEffect = 40, RULE_activeEffect = 41, RULE_effectActivationOpt = 42, 
+		RULE_effectTarget = 43, RULE_cardDefinition = 44, RULE_cardProperties = 45;
 	public static readonly string[] ruleNames = {
 		"program", "configBlock", "boolean", "varName", "number", "varRef", "rarityName", 
 		"typeName", "variableDeclaration", "expression", "addSubOp", "mulDivOp", 
 		"primary", "parenthesizedExpression", "literalExpression", "list", "listItem", 
-		"targetItem", "paramsDef", "params", "gameSetup", "gameProperties", "stageDefinition", 
-		"stageProperties", "lengthDef", "minWidthDef", "maxWidthDef", "fillWithDef", 
-		"mustContainDef", "endsWithDef", "nodeDefinition", "nodeProperties", "charSetup", 
-		"charProperties", "enemyDefinition", "enemyProperties", "effectDefinition", 
-		"effectType", "passiveEffect", "activeEffect", "effectActivationOpt", 
+		"targetItem", "paramsDef", "params", "gameSetup", "gameProperties", "gamePropPlayerselect", 
+		"gamePropName", "stageDefinition", "stageProperties", "lengthDef", "minWidthDef", 
+		"maxWidthDef", "fillWithDef", "mustContainDef", "endsWithDef", "nodeDefinition", 
+		"nodeProperties", "charSetup", "charProperties", "enemyDefinition", "enemyProperties", 
+		"effectDefinition", "effectType", "passiveEffect", "activeEffect", "effectActivationOpt", 
 		"effectTarget", "cardDefinition", "cardProperties"
 	};
 
@@ -164,12 +165,12 @@ public partial class CDLParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 90;
+			State = 94;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			do {
 				{
-				State = 90;
+				State = 94;
 				ErrorHandler.Sync(this);
 				switch (TokenStream.LA(1)) {
 				case CHARACTER:
@@ -180,7 +181,7 @@ public partial class CDLParser : Parser {
 				case STAGE:
 				case ENEMY:
 					{
-					State = 88;
+					State = 92;
 					configBlock();
 					}
 					break;
@@ -189,7 +190,7 @@ public partial class CDLParser : Parser {
 				case STRINGTYPE:
 				case BOOLEANTYPE:
 					{
-					State = 89;
+					State = 93;
 					variableDeclaration();
 					}
 					break;
@@ -197,7 +198,7 @@ public partial class CDLParser : Parser {
 					throw new NoViableAltException(this);
 				}
 				}
-				State = 92;
+				State = 96;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			} while ( ((((_la - 1)) & ~0x3f) == 0 && ((1L << (_la - 1)) & -1152916762686128063L) != 0) );
@@ -254,55 +255,55 @@ public partial class CDLParser : Parser {
 		ConfigBlockContext _localctx = new ConfigBlockContext(Context, State);
 		EnterRule(_localctx, 2, RULE_configBlock);
 		try {
-			State = 101;
+			State = 105;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
 			case GAME:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 94;
+				State = 98;
 				gameSetup();
 				}
 				break;
 			case STAGE:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 95;
+				State = 99;
 				stageDefinition();
 				}
 				break;
 			case NODE:
 				EnterOuterAlt(_localctx, 3);
 				{
-				State = 96;
+				State = 100;
 				nodeDefinition();
 				}
 				break;
 			case CHARACTER:
 				EnterOuterAlt(_localctx, 4);
 				{
-				State = 97;
+				State = 101;
 				charSetup();
 				}
 				break;
 			case ENEMY:
 				EnterOuterAlt(_localctx, 5);
 				{
-				State = 98;
+				State = 102;
 				enemyDefinition();
 				}
 				break;
 			case EFFECT:
 				EnterOuterAlt(_localctx, 6);
 				{
-				State = 99;
+				State = 103;
 				effectDefinition();
 				}
 				break;
 			case CARD:
 				EnterOuterAlt(_localctx, 7);
 				{
-				State = 100;
+				State = 104;
 				cardDefinition();
 				}
 				break;
@@ -345,7 +346,7 @@ public partial class CDLParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 103;
+			State = 107;
 			_la = TokenStream.LA(1);
 			if ( !(_la==TRUE || _la==FALSE) ) {
 			ErrorHandler.RecoverInline(this);
@@ -389,7 +390,7 @@ public partial class CDLParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 105;
+			State = 109;
 			Match(ID);
 			}
 		}
@@ -428,7 +429,7 @@ public partial class CDLParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 107;
+			State = 111;
 			_la = TokenStream.LA(1);
 			if ( !(_la==INT || _la==DOUBLE) ) {
 			ErrorHandler.RecoverInline(this);
@@ -475,22 +476,22 @@ public partial class CDLParser : Parser {
 		VarRefContext _localctx = new VarRefContext(Context, State);
 		EnterRule(_localctx, 10, RULE_varRef);
 		try {
-			State = 113;
+			State = 117;
 			ErrorHandler.Sync(this);
 			switch ( Interpreter.AdaptivePredict(TokenStream,3,Context) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 109;
+				State = 113;
 				varName();
 				}
 				break;
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 110;
+				State = 114;
 				varName();
-				State = 111;
+				State = 115;
 				@params();
 				}
 				break;
@@ -529,7 +530,7 @@ public partial class CDLParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 115;
+			State = 119;
 			Match(ID);
 			}
 		}
@@ -570,7 +571,7 @@ public partial class CDLParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 117;
+			State = 121;
 			_la = TokenStream.LA(1);
 			if ( !(((((_la - 61)) & ~0x3f) == 0 && ((1L << (_la - 61)) & 15L) != 0)) ) {
 			ErrorHandler.RecoverInline(this);
@@ -624,15 +625,15 @@ public partial class CDLParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 119;
-			typeName();
-			State = 120;
-			varName();
-			State = 121;
-			Match(EQUALS);
-			State = 122;
-			literalExpression();
 			State = 123;
+			typeName();
+			State = 124;
+			varName();
+			State = 125;
+			Match(EQUALS);
+			State = 126;
+			literalExpression();
+			State = 127;
 			Match(EOS);
 			}
 		}
@@ -729,11 +730,11 @@ public partial class CDLParser : Parser {
 			Context = _localctx;
 			_prevctx = _localctx;
 
-			State = 126;
+			State = 130;
 			primary();
 			}
 			Context.Stop = TokenStream.LT(-1);
-			State = 138;
+			State = 142;
 			ErrorHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(TokenStream,5,Context);
 			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.INVALID_ALT_NUMBER ) {
@@ -742,18 +743,18 @@ public partial class CDLParser : Parser {
 						TriggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					State = 136;
+					State = 140;
 					ErrorHandler.Sync(this);
 					switch ( Interpreter.AdaptivePredict(TokenStream,4,Context) ) {
 					case 1:
 						{
 						_localctx = new AddSubExpressionContext(new ExpressionContext(_parentctx, _parentState));
 						PushNewRecursionContext(_localctx, _startState, RULE_expression);
-						State = 128;
+						State = 132;
 						if (!(Precpred(Context, 2))) throw new FailedPredicateException(this, "Precpred(Context, 2)");
-						State = 129;
+						State = 133;
 						addSubOp();
-						State = 130;
+						State = 134;
 						expression(3);
 						}
 						break;
@@ -761,18 +762,18 @@ public partial class CDLParser : Parser {
 						{
 						_localctx = new MulDivExpressionContext(new ExpressionContext(_parentctx, _parentState));
 						PushNewRecursionContext(_localctx, _startState, RULE_expression);
-						State = 132;
+						State = 136;
 						if (!(Precpred(Context, 1))) throw new FailedPredicateException(this, "Precpred(Context, 1)");
-						State = 133;
+						State = 137;
 						mulDivOp();
-						State = 134;
+						State = 138;
 						expression(2);
 						}
 						break;
 					}
 					} 
 				}
-				State = 140;
+				State = 144;
 				ErrorHandler.Sync(this);
 				_alt = Interpreter.AdaptivePredict(TokenStream,5,Context);
 			}
@@ -813,7 +814,7 @@ public partial class CDLParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 141;
+			State = 145;
 			_la = TokenStream.LA(1);
 			if ( !(_la==PLUS || _la==MINUS) ) {
 			ErrorHandler.RecoverInline(this);
@@ -859,7 +860,7 @@ public partial class CDLParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 143;
+			State = 147;
 			_la = TokenStream.LA(1);
 			if ( !(_la==MUL || _la==DIV) ) {
 			ErrorHandler.RecoverInline(this);
@@ -906,13 +907,13 @@ public partial class CDLParser : Parser {
 		PrimaryContext _localctx = new PrimaryContext(Context, State);
 		EnterRule(_localctx, 24, RULE_primary);
 		try {
-			State = 147;
+			State = 151;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
 			case LPAREN:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 145;
+				State = 149;
 				parenthesizedExpression();
 				}
 				break;
@@ -925,7 +926,7 @@ public partial class CDLParser : Parser {
 			case ID:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 146;
+				State = 150;
 				literalExpression();
 				}
 				break;
@@ -970,11 +971,11 @@ public partial class CDLParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 149;
+			State = 153;
 			Match(LPAREN);
-			State = 150;
+			State = 154;
 			expression(0);
-			State = 151;
+			State = 155;
 			Match(RPAREN);
 			}
 		}
@@ -1018,27 +1019,27 @@ public partial class CDLParser : Parser {
 		LiteralExpressionContext _localctx = new LiteralExpressionContext(Context, State);
 		EnterRule(_localctx, 28, RULE_literalExpression);
 		try {
-			State = 159;
+			State = 163;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
 			case INT:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 153;
+				State = 157;
 				Match(INT);
 				}
 				break;
 			case DOUBLE:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 154;
+				State = 158;
 				Match(DOUBLE);
 				}
 				break;
 			case STRING:
 				EnterOuterAlt(_localctx, 3);
 				{
-				State = 155;
+				State = 159;
 				Match(STRING);
 				}
 				break;
@@ -1046,21 +1047,21 @@ public partial class CDLParser : Parser {
 			case FALSE:
 				EnterOuterAlt(_localctx, 4);
 				{
-				State = 156;
+				State = 160;
 				boolean();
 				}
 				break;
 			case ID:
 				EnterOuterAlt(_localctx, 5);
 				{
-				State = 157;
+				State = 161;
 				varName();
 				}
 				break;
 			case DAMAGE:
 				EnterOuterAlt(_localctx, 6);
 				{
-				State = 158;
+				State = 162;
 				Match(DAMAGE);
 				}
 				break;
@@ -1117,22 +1118,22 @@ public partial class CDLParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 161;
+			State = 165;
 			Match(LBRACKET);
-			State = 170;
+			State = 174;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			if (((((_la - 16)) & ~0x3f) == 0 && ((1L << (_la - 16)) & 22517998405287939L) != 0)) {
 				{
-				State = 162;
+				State = 166;
 				listItem();
-				State = 167;
+				State = 171;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 				while (_la==OR || _la==COMMA) {
 					{
 					{
-					State = 163;
+					State = 167;
 					_la = TokenStream.LA(1);
 					if ( !(_la==OR || _la==COMMA) ) {
 					ErrorHandler.RecoverInline(this);
@@ -1141,18 +1142,18 @@ public partial class CDLParser : Parser {
 						ErrorHandler.ReportMatch(this);
 					    Consume();
 					}
-					State = 164;
+					State = 168;
 					listItem();
 					}
 					}
-					State = 169;
+					State = 173;
 					ErrorHandler.Sync(this);
 					_la = TokenStream.LA(1);
 				}
 				}
 			}
 
-			State = 172;
+			State = 176;
 			Match(RBRACKET);
 			}
 		}
@@ -1201,63 +1202,63 @@ public partial class CDLParser : Parser {
 		EnterRule(_localctx, 32, RULE_listItem);
 		int _la;
 		try {
-			State = 193;
+			State = 197;
 			ErrorHandler.Sync(this);
 			switch ( Interpreter.AdaptivePredict(TokenStream,11,Context) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 174;
+				State = 178;
 				varRef();
 				}
 				break;
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 175;
+				State = 179;
 				Match(INT);
-				State = 176;
+				State = 180;
 				Match(X);
-				State = 177;
+				State = 181;
 				varRef();
 				}
 				break;
 			case 3:
 				EnterOuterAlt(_localctx, 3);
 				{
-				State = 178;
-				Match(INT);
-				State = 179;
-				Match(X);
-				State = 180;
-				varRef();
-				State = 181;
-				Match(WITHCHANCE);
 				State = 182;
 				Match(INT);
 				State = 183;
+				Match(X);
+				State = 184;
+				varRef();
+				State = 185;
+				Match(WITHCHANCE);
+				State = 186;
+				Match(INT);
+				State = 187;
 				Match(PERCENT);
 				}
 				break;
 			case 4:
 				EnterOuterAlt(_localctx, 4);
 				{
-				State = 187;
+				State = 191;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 				if (_la==INT) {
 					{
-					State = 185;
+					State = 189;
 					Match(INT);
-					State = 186;
+					State = 190;
 					Match(X);
 					}
 				}
 
-				State = 189;
+				State = 193;
 				varRef();
 				{
-				State = 190;
+				State = 194;
 				Match(PLAYER);
 				}
 				}
@@ -1265,7 +1266,7 @@ public partial class CDLParser : Parser {
 			case 5:
 				EnterOuterAlt(_localctx, 5);
 				{
-				State = 192;
+				State = 196;
 				targetItem();
 				}
 				break;
@@ -1307,7 +1308,7 @@ public partial class CDLParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 195;
+			State = 199;
 			_la = TokenStream.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 17592186241024L) != 0)) ) {
 			ErrorHandler.RecoverInline(this);
@@ -1366,27 +1367,27 @@ public partial class CDLParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 197;
+			State = 201;
 			Match(LPAREN);
-			State = 198;
+			State = 202;
 			typeName();
-			State = 199;
+			State = 203;
 			varName();
-			State = 204;
+			State = 208;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			if (_la==COMMA) {
 				{
-				State = 200;
+				State = 204;
 				Match(COMMA);
-				State = 201;
+				State = 205;
 				typeName();
-				State = 202;
+				State = 206;
 				varName();
 				}
 			}
 
-			State = 206;
+			State = 210;
 			Match(RPAREN);
 			}
 		}
@@ -1430,25 +1431,25 @@ public partial class CDLParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 208;
+			State = 212;
 			Match(LPAREN);
-			State = 211;
+			State = 215;
 			ErrorHandler.Sync(this);
 			switch ( Interpreter.AdaptivePredict(TokenStream,13,Context) ) {
 			case 1:
 				{
-				State = 209;
+				State = 213;
 				varRef();
 				}
 				break;
 			case 2:
 				{
-				State = 210;
+				State = 214;
 				literalExpression();
 				}
 				break;
 			}
-			State = 213;
+			State = 217;
 			Match(RPAREN);
 			}
 		}
@@ -1490,13 +1491,13 @@ public partial class CDLParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 215;
+			State = 219;
 			Match(GAME);
-			State = 216;
+			State = 220;
 			Match(LCURLY);
-			State = 217;
+			State = 221;
 			gameProperties();
-			State = 218;
+			State = 222;
 			Match(RCURLY);
 			}
 		}
@@ -1512,27 +1513,19 @@ public partial class CDLParser : Parser {
 	}
 
 	public partial class GamePropertiesContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] PLAYERSELECT() { return GetTokens(CDLParser.PLAYERSELECT); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PLAYERSELECT(int i) {
-			return GetToken(CDLParser.PLAYERSELECT, i);
+		[System.Diagnostics.DebuggerNonUserCode] public GamePropPlayerselectContext[] gamePropPlayerselect() {
+			return GetRuleContexts<GamePropPlayerselectContext>();
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] CLN() { return GetTokens(CDLParser.CLN); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLN(int i) {
-			return GetToken(CDLParser.CLN, i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public VarNameContext[] varName() {
-			return GetRuleContexts<VarNameContext>();
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public VarNameContext varName(int i) {
-			return GetRuleContext<VarNameContext>(i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] EOS() { return GetTokens(CDLParser.EOS); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode EOS(int i) {
-			return GetToken(CDLParser.EOS, i);
+		[System.Diagnostics.DebuggerNonUserCode] public GamePropPlayerselectContext gamePropPlayerselect(int i) {
+			return GetRuleContext<GamePropPlayerselectContext>(i);
 		}
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] STAGES() { return GetTokens(CDLParser.STAGES); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode STAGES(int i) {
 			return GetToken(CDLParser.STAGES, i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] CLN() { return GetTokens(CDLParser.CLN); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLN(int i) {
+			return GetToken(CDLParser.CLN, i);
 		}
 		[System.Diagnostics.DebuggerNonUserCode] public ListContext[] list() {
 			return GetRuleContexts<ListContext>();
@@ -1540,9 +1533,15 @@ public partial class CDLParser : Parser {
 		[System.Diagnostics.DebuggerNonUserCode] public ListContext list(int i) {
 			return GetRuleContext<ListContext>(i);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] NAME() { return GetTokens(CDLParser.NAME); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NAME(int i) {
-			return GetToken(CDLParser.NAME, i);
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] EOS() { return GetTokens(CDLParser.EOS); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode EOS(int i) {
+			return GetToken(CDLParser.EOS, i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public GamePropNameContext[] gamePropName() {
+			return GetRuleContexts<GamePropNameContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public GamePropNameContext gamePropName(int i) {
+			return GetRuleContext<GamePropNameContext>(i);
 		}
 		public GamePropertiesContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -1565,24 +1564,18 @@ public partial class CDLParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 235;
+			State = 231;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			do {
 				{
-				State = 235;
+				State = 231;
 				ErrorHandler.Sync(this);
 				switch (TokenStream.LA(1)) {
 				case PLAYERSELECT:
 					{
-					State = 220;
-					Match(PLAYERSELECT);
-					State = 221;
-					Match(CLN);
-					State = 222;
-					varName();
-					State = 223;
-					Match(EOS);
+					State = 224;
+					gamePropPlayerselect();
 					}
 					break;
 				case STAGES:
@@ -1600,23 +1593,113 @@ public partial class CDLParser : Parser {
 				case NAME:
 					{
 					State = 230;
-					Match(NAME);
-					State = 231;
-					Match(CLN);
-					State = 232;
-					varName();
-					State = 233;
-					Match(EOS);
+					gamePropName();
 					}
 					break;
 				default:
 					throw new NoViableAltException(this);
 				}
 				}
-				State = 237;
+				State = 233;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & 6598143508480L) != 0) );
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class GamePropPlayerselectContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PLAYERSELECT() { return GetToken(CDLParser.PLAYERSELECT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLN() { return GetToken(CDLParser.CLN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public VarNameContext varName() {
+			return GetRuleContext<VarNameContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode EOS() { return GetToken(CDLParser.EOS, 0); }
+		public GamePropPlayerselectContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_gamePropPlayerselect; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ICDLVisitor<TResult> typedVisitor = visitor as ICDLVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitGamePropPlayerselect(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public GamePropPlayerselectContext gamePropPlayerselect() {
+		GamePropPlayerselectContext _localctx = new GamePropPlayerselectContext(Context, State);
+		EnterRule(_localctx, 44, RULE_gamePropPlayerselect);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 235;
+			Match(PLAYERSELECT);
+			State = 236;
+			Match(CLN);
+			State = 237;
+			varName();
+			State = 238;
+			Match(EOS);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class GamePropNameContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NAME() { return GetToken(CDLParser.NAME, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLN() { return GetToken(CDLParser.CLN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public VarNameContext varName() {
+			return GetRuleContext<VarNameContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode EOS() { return GetToken(CDLParser.EOS, 0); }
+		public GamePropNameContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_gamePropName; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ICDLVisitor<TResult> typedVisitor = visitor as ICDLVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitGamePropName(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public GamePropNameContext gamePropName() {
+		GamePropNameContext _localctx = new GamePropNameContext(Context, State);
+		EnterRule(_localctx, 46, RULE_gamePropName);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 240;
+			Match(NAME);
+			State = 241;
+			Match(CLN);
+			State = 242;
+			varName();
+			State = 243;
+			Match(EOS);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1656,19 +1739,19 @@ public partial class CDLParser : Parser {
 	[RuleVersion(0)]
 	public StageDefinitionContext stageDefinition() {
 		StageDefinitionContext _localctx = new StageDefinitionContext(Context, State);
-		EnterRule(_localctx, 44, RULE_stageDefinition);
+		EnterRule(_localctx, 48, RULE_stageDefinition);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 239;
+			State = 245;
 			Match(STAGE);
-			State = 240;
+			State = 246;
 			varName();
-			State = 241;
+			State = 247;
 			Match(LCURLY);
-			State = 242;
+			State = 248;
 			stageProperties();
-			State = 243;
+			State = 249;
 			Match(RCURLY);
 			}
 		}
@@ -1736,52 +1819,52 @@ public partial class CDLParser : Parser {
 	[RuleVersion(0)]
 	public StagePropertiesContext stageProperties() {
 		StagePropertiesContext _localctx = new StagePropertiesContext(Context, State);
-		EnterRule(_localctx, 46, RULE_stageProperties);
+		EnterRule(_localctx, 50, RULE_stageProperties);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 251;
+			State = 257;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			do {
 				{
-				State = 251;
+				State = 257;
 				ErrorHandler.Sync(this);
 				switch (TokenStream.LA(1)) {
 				case LENGTH:
 					{
-					State = 245;
+					State = 251;
 					lengthDef();
 					}
 					break;
 				case MAXWIDTH:
 					{
-					State = 246;
+					State = 252;
 					maxWidthDef();
 					}
 					break;
 				case MINWIDTH:
 					{
-					State = 247;
+					State = 253;
 					minWidthDef();
 					}
 					break;
 				case FILLWITH:
 					{
-					State = 248;
+					State = 254;
 					fillWithDef();
 					}
 					break;
 				case MUSTCONTAIN:
 					{
-					State = 249;
+					State = 255;
 					mustContainDef();
 					}
 					break;
 				case ENDSWITH:
 					{
-					State = 250;
+					State = 256;
 					endsWithDef();
 					}
 					break;
@@ -1789,7 +1872,7 @@ public partial class CDLParser : Parser {
 					throw new NoViableAltException(this);
 				}
 				}
-				State = 253;
+				State = 259;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & 135291469824L) != 0) );
@@ -1827,17 +1910,17 @@ public partial class CDLParser : Parser {
 	[RuleVersion(0)]
 	public LengthDefContext lengthDef() {
 		LengthDefContext _localctx = new LengthDefContext(Context, State);
-		EnterRule(_localctx, 48, RULE_lengthDef);
+		EnterRule(_localctx, 52, RULE_lengthDef);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 255;
+			State = 261;
 			Match(LENGTH);
-			State = 256;
+			State = 262;
 			Match(CLN);
-			State = 257;
+			State = 263;
 			Match(INT);
-			State = 258;
+			State = 264;
 			Match(EOS);
 			}
 		}
@@ -1873,17 +1956,17 @@ public partial class CDLParser : Parser {
 	[RuleVersion(0)]
 	public MinWidthDefContext minWidthDef() {
 		MinWidthDefContext _localctx = new MinWidthDefContext(Context, State);
-		EnterRule(_localctx, 50, RULE_minWidthDef);
+		EnterRule(_localctx, 54, RULE_minWidthDef);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 260;
+			State = 266;
 			Match(MINWIDTH);
-			State = 261;
+			State = 267;
 			Match(CLN);
-			State = 262;
+			State = 268;
 			Match(INT);
-			State = 263;
+			State = 269;
 			Match(EOS);
 			}
 		}
@@ -1919,17 +2002,17 @@ public partial class CDLParser : Parser {
 	[RuleVersion(0)]
 	public MaxWidthDefContext maxWidthDef() {
 		MaxWidthDefContext _localctx = new MaxWidthDefContext(Context, State);
-		EnterRule(_localctx, 52, RULE_maxWidthDef);
+		EnterRule(_localctx, 56, RULE_maxWidthDef);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 265;
+			State = 271;
 			Match(MAXWIDTH);
-			State = 266;
+			State = 272;
 			Match(CLN);
-			State = 267;
+			State = 273;
 			Match(INT);
-			State = 268;
+			State = 274;
 			Match(EOS);
 			}
 		}
@@ -1967,17 +2050,17 @@ public partial class CDLParser : Parser {
 	[RuleVersion(0)]
 	public FillWithDefContext fillWithDef() {
 		FillWithDefContext _localctx = new FillWithDefContext(Context, State);
-		EnterRule(_localctx, 54, RULE_fillWithDef);
+		EnterRule(_localctx, 58, RULE_fillWithDef);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 270;
+			State = 276;
 			Match(FILLWITH);
-			State = 271;
+			State = 277;
 			Match(CLN);
-			State = 272;
+			State = 278;
 			list();
-			State = 273;
+			State = 279;
 			Match(EOS);
 			}
 		}
@@ -2015,17 +2098,17 @@ public partial class CDLParser : Parser {
 	[RuleVersion(0)]
 	public MustContainDefContext mustContainDef() {
 		MustContainDefContext _localctx = new MustContainDefContext(Context, State);
-		EnterRule(_localctx, 56, RULE_mustContainDef);
+		EnterRule(_localctx, 60, RULE_mustContainDef);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 275;
+			State = 281;
 			Match(MUSTCONTAIN);
-			State = 276;
+			State = 282;
 			Match(CLN);
-			State = 277;
+			State = 283;
 			list();
-			State = 278;
+			State = 284;
 			Match(EOS);
 			}
 		}
@@ -2063,17 +2146,17 @@ public partial class CDLParser : Parser {
 	[RuleVersion(0)]
 	public EndsWithDefContext endsWithDef() {
 		EndsWithDefContext _localctx = new EndsWithDefContext(Context, State);
-		EnterRule(_localctx, 58, RULE_endsWithDef);
+		EnterRule(_localctx, 62, RULE_endsWithDef);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 280;
+			State = 286;
 			Match(ENDSWITH);
-			State = 281;
+			State = 287;
 			Match(CLN);
-			State = 282;
+			State = 288;
 			varName();
-			State = 283;
+			State = 289;
 			Match(EOS);
 			}
 		}
@@ -2114,19 +2197,19 @@ public partial class CDLParser : Parser {
 	[RuleVersion(0)]
 	public NodeDefinitionContext nodeDefinition() {
 		NodeDefinitionContext _localctx = new NodeDefinitionContext(Context, State);
-		EnterRule(_localctx, 60, RULE_nodeDefinition);
+		EnterRule(_localctx, 64, RULE_nodeDefinition);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 285;
+			State = 291;
 			Match(NODE);
-			State = 286;
+			State = 292;
 			varName();
-			State = 287;
+			State = 293;
 			Match(LCURLY);
-			State = 288;
+			State = 294;
 			nodeProperties();
-			State = 289;
+			State = 295;
 			Match(RCURLY);
 			}
 		}
@@ -2180,40 +2263,40 @@ public partial class CDLParser : Parser {
 	[RuleVersion(0)]
 	public NodePropertiesContext nodeProperties() {
 		NodePropertiesContext _localctx = new NodePropertiesContext(Context, State);
-		EnterRule(_localctx, 62, RULE_nodeProperties);
+		EnterRule(_localctx, 66, RULE_nodeProperties);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 301;
+			State = 307;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			do {
 				{
-				State = 301;
+				State = 307;
 				ErrorHandler.Sync(this);
 				switch (TokenStream.LA(1)) {
 				case NODEENEMIES:
 					{
-					State = 291;
+					State = 297;
 					Match(NODEENEMIES);
-					State = 292;
+					State = 298;
 					Match(CLN);
-					State = 293;
+					State = 299;
 					list();
-					State = 294;
+					State = 300;
 					Match(EOS);
 					}
 					break;
 				case REWARDS:
 					{
-					State = 296;
+					State = 302;
 					Match(REWARDS);
-					State = 297;
+					State = 303;
 					Match(CLN);
-					State = 298;
+					State = 304;
 					list();
-					State = 299;
+					State = 305;
 					Match(EOS);
 					}
 					break;
@@ -2221,7 +2304,7 @@ public partial class CDLParser : Parser {
 					throw new NoViableAltException(this);
 				}
 				}
-				State = 303;
+				State = 309;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			} while ( _la==NODEENEMIES || _la==REWARDS );
@@ -2264,19 +2347,19 @@ public partial class CDLParser : Parser {
 	[RuleVersion(0)]
 	public CharSetupContext charSetup() {
 		CharSetupContext _localctx = new CharSetupContext(Context, State);
-		EnterRule(_localctx, 64, RULE_charSetup);
+		EnterRule(_localctx, 68, RULE_charSetup);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 305;
+			State = 311;
 			Match(CHARACTER);
-			State = 306;
+			State = 312;
 			varName();
-			State = 307;
+			State = 313;
 			Match(LCURLY);
-			State = 308;
+			State = 314;
 			charProperties();
-			State = 309;
+			State = 315;
 			Match(RCURLY);
 			}
 		}
@@ -2336,40 +2419,40 @@ public partial class CDLParser : Parser {
 	[RuleVersion(0)]
 	public CharPropertiesContext charProperties() {
 		CharPropertiesContext _localctx = new CharPropertiesContext(Context, State);
-		EnterRule(_localctx, 66, RULE_charProperties);
+		EnterRule(_localctx, 70, RULE_charProperties);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 321;
+			State = 327;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			do {
 				{
-				State = 321;
+				State = 327;
 				ErrorHandler.Sync(this);
 				switch (TokenStream.LA(1)) {
 				case HEALTH:
 					{
-					State = 311;
+					State = 317;
 					Match(HEALTH);
-					State = 312;
+					State = 318;
 					Match(CLN);
-					State = 313;
+					State = 319;
 					number();
-					State = 314;
+					State = 320;
 					Match(EOS);
 					}
 					break;
 				case EFFECTEVERYTURN:
 					{
-					State = 316;
+					State = 322;
 					Match(EFFECTEVERYTURN);
-					State = 317;
+					State = 323;
 					Match(CLN);
-					State = 318;
+					State = 324;
 					list();
-					State = 319;
+					State = 325;
 					Match(EOS);
 					}
 					break;
@@ -2377,7 +2460,7 @@ public partial class CDLParser : Parser {
 					throw new NoViableAltException(this);
 				}
 				}
-				State = 323;
+				State = 329;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			} while ( _la==HEALTH || _la==EFFECTEVERYTURN );
@@ -2420,19 +2503,19 @@ public partial class CDLParser : Parser {
 	[RuleVersion(0)]
 	public EnemyDefinitionContext enemyDefinition() {
 		EnemyDefinitionContext _localctx = new EnemyDefinitionContext(Context, State);
-		EnterRule(_localctx, 68, RULE_enemyDefinition);
+		EnterRule(_localctx, 72, RULE_enemyDefinition);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 325;
+			State = 331;
 			Match(ENEMY);
-			State = 326;
+			State = 332;
 			varName();
-			State = 327;
+			State = 333;
 			Match(LCURLY);
-			State = 328;
+			State = 334;
 			enemyProperties();
-			State = 329;
+			State = 335;
 			Match(RCURLY);
 			}
 		}
@@ -2492,40 +2575,40 @@ public partial class CDLParser : Parser {
 	[RuleVersion(0)]
 	public EnemyPropertiesContext enemyProperties() {
 		EnemyPropertiesContext _localctx = new EnemyPropertiesContext(Context, State);
-		EnterRule(_localctx, 70, RULE_enemyProperties);
+		EnterRule(_localctx, 74, RULE_enemyProperties);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 341;
+			State = 347;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			do {
 				{
-				State = 341;
+				State = 347;
 				ErrorHandler.Sync(this);
 				switch (TokenStream.LA(1)) {
 				case HEALTH:
 					{
-					State = 331;
+					State = 337;
 					Match(HEALTH);
-					State = 332;
+					State = 338;
 					Match(CLN);
-					State = 333;
+					State = 339;
 					number();
-					State = 334;
+					State = 340;
 					Match(EOS);
 					}
 					break;
 				case ACTIONS:
 					{
-					State = 336;
+					State = 342;
 					Match(ACTIONS);
-					State = 337;
+					State = 343;
 					Match(CLN);
-					State = 338;
+					State = 344;
 					list();
-					State = 339;
+					State = 345;
 					Match(EOS);
 					}
 					break;
@@ -2533,7 +2616,7 @@ public partial class CDLParser : Parser {
 					throw new NoViableAltException(this);
 				}
 				}
-				State = 343;
+				State = 349;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			} while ( _la==HEALTH || _la==ACTIONS );
@@ -2582,42 +2665,42 @@ public partial class CDLParser : Parser {
 	[RuleVersion(0)]
 	public EffectDefinitionContext effectDefinition() {
 		EffectDefinitionContext _localctx = new EffectDefinitionContext(Context, State);
-		EnterRule(_localctx, 72, RULE_effectDefinition);
+		EnterRule(_localctx, 76, RULE_effectDefinition);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 345;
+			State = 351;
 			Match(EFFECT);
-			State = 346;
+			State = 352;
 			varName();
-			State = 348;
+			State = 354;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			if (_la==LPAREN) {
 				{
-				State = 347;
+				State = 353;
 				paramsDef();
 				}
 			}
 
-			State = 350;
+			State = 356;
 			Match(LCURLY);
-			State = 352;
+			State = 358;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			do {
 				{
 				{
-				State = 351;
+				State = 357;
 				effectType();
 				}
 				}
-				State = 354;
+				State = 360;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & 9175552L) != 0) );
-			State = 356;
+			State = 362;
 			Match(RCURLY);
 			}
 		}
@@ -2655,16 +2738,16 @@ public partial class CDLParser : Parser {
 	[RuleVersion(0)]
 	public EffectTypeContext effectType() {
 		EffectTypeContext _localctx = new EffectTypeContext(Context, State);
-		EnterRule(_localctx, 74, RULE_effectType);
+		EnterRule(_localctx, 78, RULE_effectType);
 		try {
-			State = 360;
+			State = 366;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
 			case OUTGOING:
 			case INCOMING:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 358;
+				State = 364;
 				passiveEffect();
 				}
 				break;
@@ -2672,7 +2755,7 @@ public partial class CDLParser : Parser {
 			case DEAL:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 359;
+				State = 365;
 				activeEffect();
 				}
 				break;
@@ -2716,12 +2799,12 @@ public partial class CDLParser : Parser {
 	[RuleVersion(0)]
 	public PassiveEffectContext passiveEffect() {
 		PassiveEffectContext _localctx = new PassiveEffectContext(Context, State);
-		EnterRule(_localctx, 76, RULE_passiveEffect);
+		EnterRule(_localctx, 80, RULE_passiveEffect);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 362;
+			State = 368;
 			_la = TokenStream.LA(1);
 			if ( !(_la==OUTGOING || _la==INCOMING) ) {
 			ErrorHandler.RecoverInline(this);
@@ -2730,13 +2813,13 @@ public partial class CDLParser : Parser {
 				ErrorHandler.ReportMatch(this);
 			    Consume();
 			}
-			State = 363;
+			State = 369;
 			Match(DAMAGE);
-			State = 364;
+			State = 370;
 			Match(IS);
-			State = 365;
+			State = 371;
 			expression(0);
-			State = 366;
+			State = 372;
 			Match(EOS);
 			}
 		}
@@ -2826,54 +2909,54 @@ public partial class CDLParser : Parser {
 	[RuleVersion(0)]
 	public ActiveEffectContext activeEffect() {
 		ActiveEffectContext _localctx = new ActiveEffectContext(Context, State);
-		EnterRule(_localctx, 78, RULE_activeEffect);
+		EnterRule(_localctx, 82, RULE_activeEffect);
 		try {
 			int _alt;
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 383;
+			State = 389;
 			ErrorHandler.Sync(this);
 			_alt = 1;
 			do {
 				switch (_alt) {
 				case 1:
 					{
-					State = 383;
+					State = 389;
 					ErrorHandler.Sync(this);
 					switch (TokenStream.LA(1)) {
 					case DEAL:
 						{
 						{
-						State = 368;
+						State = 374;
 						Match(DEAL);
 						}
-						State = 369;
+						State = 375;
 						expression(0);
-						State = 370;
+						State = 376;
 						Match(DAMAGE);
-						State = 371;
+						State = 377;
 						effectActivationOpt();
-						State = 372;
+						State = 378;
 						Match(EOS);
 						}
 						break;
 					case APPLY:
 						{
-						State = 374;
-						Match(APPLY);
-						State = 375;
-						list();
-						State = 376;
-						Match(FOR);
-						State = 377;
-						number();
-						State = 378;
-						Match(TURNS);
-						State = 379;
-						Match(TO);
 						State = 380;
-						effectTarget();
+						Match(APPLY);
 						State = 381;
+						list();
+						State = 382;
+						Match(FOR);
+						State = 383;
+						number();
+						State = 384;
+						Match(TURNS);
+						State = 385;
+						Match(TO);
+						State = 386;
+						effectTarget();
+						State = 387;
 						Match(EOS);
 						}
 						break;
@@ -2885,7 +2968,7 @@ public partial class CDLParser : Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				State = 385;
+				State = 391;
 				ErrorHandler.Sync(this);
 				_alt = Interpreter.AdaptivePredict(TokenStream,28,Context);
 			} while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.INVALID_ALT_NUMBER );
@@ -2921,12 +3004,12 @@ public partial class CDLParser : Parser {
 	[RuleVersion(0)]
 	public EffectActivationOptContext effectActivationOpt() {
 		EffectActivationOptContext _localctx = new EffectActivationOptContext(Context, State);
-		EnterRule(_localctx, 80, RULE_effectActivationOpt);
+		EnterRule(_localctx, 84, RULE_effectActivationOpt);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 387;
+			State = 393;
 			_la = TokenStream.LA(1);
 			if ( !(_la==INSTANTLY || _la==ENDOFTURN) ) {
 			ErrorHandler.RecoverInline(this);
@@ -2968,12 +3051,12 @@ public partial class CDLParser : Parser {
 	[RuleVersion(0)]
 	public EffectTargetContext effectTarget() {
 		EffectTargetContext _localctx = new EffectTargetContext(Context, State);
-		EnterRule(_localctx, 82, RULE_effectTarget);
+		EnterRule(_localctx, 86, RULE_effectTarget);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 389;
+			State = 395;
 			_la = TokenStream.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 4390912L) != 0)) ) {
 			ErrorHandler.RecoverInline(this);
@@ -3021,19 +3104,19 @@ public partial class CDLParser : Parser {
 	[RuleVersion(0)]
 	public CardDefinitionContext cardDefinition() {
 		CardDefinitionContext _localctx = new CardDefinitionContext(Context, State);
-		EnterRule(_localctx, 84, RULE_cardDefinition);
+		EnterRule(_localctx, 88, RULE_cardDefinition);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 391;
+			State = 397;
 			Match(CARD);
-			State = 392;
+			State = 398;
 			varName();
-			State = 393;
+			State = 399;
 			Match(LCURLY);
-			State = 394;
+			State = 400;
 			cardProperties();
-			State = 395;
+			State = 401;
 			Match(RCURLY);
 			}
 		}
@@ -3097,52 +3180,52 @@ public partial class CDLParser : Parser {
 	[RuleVersion(0)]
 	public CardPropertiesContext cardProperties() {
 		CardPropertiesContext _localctx = new CardPropertiesContext(Context, State);
-		EnterRule(_localctx, 86, RULE_cardProperties);
+		EnterRule(_localctx, 90, RULE_cardProperties);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 412;
+			State = 418;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			do {
 				{
-				State = 412;
+				State = 418;
 				ErrorHandler.Sync(this);
 				switch (TokenStream.LA(1)) {
 				case RARITY:
 					{
-					State = 397;
+					State = 403;
 					Match(RARITY);
-					State = 398;
+					State = 404;
 					Match(CLN);
-					State = 399;
+					State = 405;
 					rarityName();
-					State = 400;
+					State = 406;
 					Match(EOS);
 					}
 					break;
 				case VALIDTARGETS:
 					{
-					State = 402;
+					State = 408;
 					Match(VALIDTARGETS);
-					State = 403;
+					State = 409;
 					Match(CLN);
-					State = 404;
+					State = 410;
 					list();
-					State = 405;
+					State = 411;
 					Match(EOS);
 					}
 					break;
 				case APPLY:
 					{
-					State = 407;
+					State = 413;
 					Match(APPLY);
-					State = 408;
+					State = 414;
 					Match(CLN);
-					State = 409;
+					State = 415;
 					list();
-					State = 410;
+					State = 416;
 					Match(EOS);
 					}
 					break;
@@ -3150,7 +3233,7 @@ public partial class CDLParser : Parser {
 					throw new NoViableAltException(this);
 				}
 				}
-				State = 414;
+				State = 420;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & 100663808L) != 0) );
@@ -3182,139 +3265,141 @@ public partial class CDLParser : Parser {
 	}
 
 	private static int[] _serializedATN = {
-		4,1,73,417,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,7,
+		4,1,73,423,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,7,
 		7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,2,14,7,14,
 		2,15,7,15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,2,20,7,20,2,21,7,21,
 		2,22,7,22,2,23,7,23,2,24,7,24,2,25,7,25,2,26,7,26,2,27,7,27,2,28,7,28,
 		2,29,7,29,2,30,7,30,2,31,7,31,2,32,7,32,2,33,7,33,2,34,7,34,2,35,7,35,
 		2,36,7,36,2,37,7,37,2,38,7,38,2,39,7,39,2,40,7,40,2,41,7,41,2,42,7,42,
-		2,43,7,43,1,0,1,0,4,0,91,8,0,11,0,12,0,92,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-		3,1,102,8,1,1,2,1,2,1,3,1,3,1,4,1,4,1,5,1,5,1,5,1,5,3,5,114,8,5,1,6,1,
-		6,1,7,1,7,1,8,1,8,1,8,1,8,1,8,1,8,1,9,1,9,1,9,1,9,1,9,1,9,1,9,1,9,1,9,
-		1,9,1,9,5,9,137,8,9,10,9,12,9,140,9,9,1,10,1,10,1,11,1,11,1,12,1,12,3,
-		12,148,8,12,1,13,1,13,1,13,1,13,1,14,1,14,1,14,1,14,1,14,1,14,3,14,160,
-		8,14,1,15,1,15,1,15,1,15,5,15,166,8,15,10,15,12,15,169,9,15,3,15,171,8,
-		15,1,15,1,15,1,16,1,16,1,16,1,16,1,16,1,16,1,16,1,16,1,16,1,16,1,16,1,
-		16,1,16,3,16,188,8,16,1,16,1,16,1,16,1,16,3,16,194,8,16,1,17,1,17,1,18,
-		1,18,1,18,1,18,1,18,1,18,1,18,3,18,205,8,18,1,18,1,18,1,19,1,19,1,19,3,
-		19,212,8,19,1,19,1,19,1,20,1,20,1,20,1,20,1,20,1,21,1,21,1,21,1,21,1,21,
-		1,21,1,21,1,21,1,21,1,21,1,21,1,21,1,21,1,21,1,21,4,21,236,8,21,11,21,
-		12,21,237,1,22,1,22,1,22,1,22,1,22,1,22,1,23,1,23,1,23,1,23,1,23,1,23,
-		4,23,252,8,23,11,23,12,23,253,1,24,1,24,1,24,1,24,1,24,1,25,1,25,1,25,
-		1,25,1,25,1,26,1,26,1,26,1,26,1,26,1,27,1,27,1,27,1,27,1,27,1,28,1,28,
-		1,28,1,28,1,28,1,29,1,29,1,29,1,29,1,29,1,30,1,30,1,30,1,30,1,30,1,30,
-		1,31,1,31,1,31,1,31,1,31,1,31,1,31,1,31,1,31,1,31,4,31,302,8,31,11,31,
-		12,31,303,1,32,1,32,1,32,1,32,1,32,1,32,1,33,1,33,1,33,1,33,1,33,1,33,
-		1,33,1,33,1,33,1,33,4,33,322,8,33,11,33,12,33,323,1,34,1,34,1,34,1,34,
-		1,34,1,34,1,35,1,35,1,35,1,35,1,35,1,35,1,35,1,35,1,35,1,35,4,35,342,8,
-		35,11,35,12,35,343,1,36,1,36,1,36,3,36,349,8,36,1,36,1,36,4,36,353,8,36,
-		11,36,12,36,354,1,36,1,36,1,37,1,37,3,37,361,8,37,1,38,1,38,1,38,1,38,
-		1,38,1,38,1,39,1,39,1,39,1,39,1,39,1,39,1,39,1,39,1,39,1,39,1,39,1,39,
-		1,39,1,39,1,39,4,39,384,8,39,11,39,12,39,385,1,40,1,40,1,41,1,41,1,42,
-		1,42,1,42,1,42,1,42,1,42,1,43,1,43,1,43,1,43,1,43,1,43,1,43,1,43,1,43,
-		1,43,1,43,1,43,1,43,1,43,1,43,4,43,413,8,43,11,43,12,43,414,1,43,0,1,18,
-		44,0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,
-		48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,78,80,82,84,86,0,10,1,0,65,
-		66,1,0,68,69,1,0,61,64,1,0,48,49,1,0,46,47,2,0,5,5,58,58,2,0,16,17,44,
-		44,1,0,18,19,1,0,11,12,2,0,16,17,22,22,422,0,90,1,0,0,0,2,101,1,0,0,0,
-		4,103,1,0,0,0,6,105,1,0,0,0,8,107,1,0,0,0,10,113,1,0,0,0,12,115,1,0,0,
-		0,14,117,1,0,0,0,16,119,1,0,0,0,18,125,1,0,0,0,20,141,1,0,0,0,22,143,1,
-		0,0,0,24,147,1,0,0,0,26,149,1,0,0,0,28,159,1,0,0,0,30,161,1,0,0,0,32,193,
-		1,0,0,0,34,195,1,0,0,0,36,197,1,0,0,0,38,208,1,0,0,0,40,215,1,0,0,0,42,
-		235,1,0,0,0,44,239,1,0,0,0,46,251,1,0,0,0,48,255,1,0,0,0,50,260,1,0,0,
-		0,52,265,1,0,0,0,54,270,1,0,0,0,56,275,1,0,0,0,58,280,1,0,0,0,60,285,1,
-		0,0,0,62,301,1,0,0,0,64,305,1,0,0,0,66,321,1,0,0,0,68,325,1,0,0,0,70,341,
-		1,0,0,0,72,345,1,0,0,0,74,360,1,0,0,0,76,362,1,0,0,0,78,383,1,0,0,0,80,
-		387,1,0,0,0,82,389,1,0,0,0,84,391,1,0,0,0,86,412,1,0,0,0,88,91,3,2,1,0,
-		89,91,3,16,8,0,90,88,1,0,0,0,90,89,1,0,0,0,91,92,1,0,0,0,92,90,1,0,0,0,
-		92,93,1,0,0,0,93,1,1,0,0,0,94,102,3,40,20,0,95,102,3,44,22,0,96,102,3,
-		60,30,0,97,102,3,64,32,0,98,102,3,68,34,0,99,102,3,72,36,0,100,102,3,84,
-		42,0,101,94,1,0,0,0,101,95,1,0,0,0,101,96,1,0,0,0,101,97,1,0,0,0,101,98,
-		1,0,0,0,101,99,1,0,0,0,101,100,1,0,0,0,102,3,1,0,0,0,103,104,7,0,0,0,104,
-		5,1,0,0,0,105,106,5,70,0,0,106,7,1,0,0,0,107,108,7,1,0,0,108,9,1,0,0,0,
-		109,114,3,6,3,0,110,111,3,6,3,0,111,112,3,38,19,0,112,114,1,0,0,0,113,
-		109,1,0,0,0,113,110,1,0,0,0,114,11,1,0,0,0,115,116,5,70,0,0,116,13,1,0,
-		0,0,117,118,7,2,0,0,118,15,1,0,0,0,119,120,3,14,7,0,120,121,3,6,3,0,121,
-		122,5,60,0,0,122,123,3,28,14,0,123,124,5,72,0,0,124,17,1,0,0,0,125,126,
-		6,9,-1,0,126,127,3,24,12,0,127,138,1,0,0,0,128,129,10,2,0,0,129,130,3,
-		20,10,0,130,131,3,18,9,3,131,137,1,0,0,0,132,133,10,1,0,0,133,134,3,22,
-		11,0,134,135,3,18,9,2,135,137,1,0,0,0,136,128,1,0,0,0,136,132,1,0,0,0,
-		137,140,1,0,0,0,138,136,1,0,0,0,138,139,1,0,0,0,139,19,1,0,0,0,140,138,
-		1,0,0,0,141,142,7,3,0,0,142,21,1,0,0,0,143,144,7,4,0,0,144,23,1,0,0,0,
-		145,148,3,26,13,0,146,148,3,28,14,0,147,145,1,0,0,0,147,146,1,0,0,0,148,
-		25,1,0,0,0,149,150,5,56,0,0,150,151,3,18,9,0,151,152,5,57,0,0,152,27,1,
-		0,0,0,153,160,5,68,0,0,154,160,5,69,0,0,155,160,5,67,0,0,156,160,3,4,2,
-		0,157,160,3,6,3,0,158,160,5,10,0,0,159,153,1,0,0,0,159,154,1,0,0,0,159,
-		155,1,0,0,0,159,156,1,0,0,0,159,157,1,0,0,0,159,158,1,0,0,0,160,29,1,0,
-		0,0,161,170,5,52,0,0,162,167,3,32,16,0,163,164,7,5,0,0,164,166,3,32,16,
-		0,165,163,1,0,0,0,166,169,1,0,0,0,167,165,1,0,0,0,167,168,1,0,0,0,168,
-		171,1,0,0,0,169,167,1,0,0,0,170,162,1,0,0,0,170,171,1,0,0,0,171,172,1,
-		0,0,0,172,173,5,53,0,0,173,31,1,0,0,0,174,194,3,10,5,0,175,176,5,68,0,
-		0,176,177,5,45,0,0,177,194,3,10,5,0,178,179,5,68,0,0,179,180,5,45,0,0,
-		180,181,3,10,5,0,181,182,5,4,0,0,182,183,5,68,0,0,183,184,5,59,0,0,184,
-		194,1,0,0,0,185,186,5,68,0,0,186,188,5,45,0,0,187,185,1,0,0,0,187,188,
-		1,0,0,0,188,189,1,0,0,0,189,190,3,10,5,0,190,191,5,17,0,0,191,194,1,0,
-		0,0,192,194,3,34,17,0,193,174,1,0,0,0,193,175,1,0,0,0,193,178,1,0,0,0,
-		193,187,1,0,0,0,193,192,1,0,0,0,194,33,1,0,0,0,195,196,7,6,0,0,196,35,
-		1,0,0,0,197,198,5,56,0,0,198,199,3,14,7,0,199,204,3,6,3,0,200,201,5,58,
-		0,0,201,202,3,14,7,0,202,203,3,6,3,0,203,205,1,0,0,0,204,200,1,0,0,0,204,
-		205,1,0,0,0,205,206,1,0,0,0,206,207,5,57,0,0,207,37,1,0,0,0,208,211,5,
-		56,0,0,209,212,3,10,5,0,210,212,3,28,14,0,211,209,1,0,0,0,211,210,1,0,
-		0,0,211,212,1,0,0,0,212,213,1,0,0,0,213,214,5,57,0,0,214,39,1,0,0,0,215,
-		216,5,29,0,0,216,217,5,54,0,0,217,218,3,42,21,0,218,219,5,55,0,0,219,41,
-		1,0,0,0,220,221,5,42,0,0,221,222,5,51,0,0,222,223,3,6,3,0,223,224,5,72,
-		0,0,224,236,1,0,0,0,225,226,5,30,0,0,226,227,5,51,0,0,227,228,3,30,15,
-		0,228,229,5,72,0,0,229,236,1,0,0,0,230,231,5,41,0,0,231,232,5,51,0,0,232,
-		233,3,6,3,0,233,234,5,72,0,0,234,236,1,0,0,0,235,220,1,0,0,0,235,225,1,
-		0,0,0,235,230,1,0,0,0,236,237,1,0,0,0,237,235,1,0,0,0,237,238,1,0,0,0,
-		238,43,1,0,0,0,239,240,5,39,0,0,240,241,3,6,3,0,241,242,5,54,0,0,242,243,
-		3,46,23,0,243,244,5,55,0,0,244,45,1,0,0,0,245,252,3,48,24,0,246,252,3,
-		52,26,0,247,252,3,50,25,0,248,252,3,54,27,0,249,252,3,56,28,0,250,252,
-		3,58,29,0,251,245,1,0,0,0,251,246,1,0,0,0,251,247,1,0,0,0,251,248,1,0,
-		0,0,251,249,1,0,0,0,251,250,1,0,0,0,252,253,1,0,0,0,253,251,1,0,0,0,253,
-		254,1,0,0,0,254,47,1,0,0,0,255,256,5,31,0,0,256,257,5,51,0,0,257,258,5,
-		68,0,0,258,259,5,72,0,0,259,49,1,0,0,0,260,261,5,33,0,0,261,262,5,51,0,
-		0,262,263,5,68,0,0,263,264,5,72,0,0,264,51,1,0,0,0,265,266,5,32,0,0,266,
-		267,5,51,0,0,267,268,5,68,0,0,268,269,5,72,0,0,269,53,1,0,0,0,270,271,
-		5,34,0,0,271,272,5,51,0,0,272,273,3,30,15,0,273,274,5,72,0,0,274,55,1,
-		0,0,0,275,276,5,35,0,0,276,277,5,51,0,0,277,278,3,30,15,0,278,279,5,72,
-		0,0,279,57,1,0,0,0,280,281,5,36,0,0,281,282,5,51,0,0,282,283,3,6,3,0,283,
-		284,5,72,0,0,284,59,1,0,0,0,285,286,5,37,0,0,286,287,3,6,3,0,287,288,5,
-		54,0,0,288,289,3,62,31,0,289,290,5,55,0,0,290,61,1,0,0,0,291,292,5,38,
-		0,0,292,293,5,51,0,0,293,294,3,30,15,0,294,295,5,72,0,0,295,302,1,0,0,
-		0,296,297,5,40,0,0,297,298,5,51,0,0,298,299,3,30,15,0,299,300,5,72,0,0,
-		300,302,1,0,0,0,301,291,1,0,0,0,301,296,1,0,0,0,302,303,1,0,0,0,303,301,
-		1,0,0,0,303,304,1,0,0,0,304,63,1,0,0,0,305,306,5,1,0,0,306,307,3,6,3,0,
-		307,308,5,54,0,0,308,309,3,66,33,0,309,310,5,55,0,0,310,65,1,0,0,0,311,
-		312,5,2,0,0,312,313,5,51,0,0,313,314,3,8,4,0,314,315,5,72,0,0,315,322,
-		1,0,0,0,316,317,5,3,0,0,317,318,5,51,0,0,318,319,3,30,15,0,319,320,5,72,
-		0,0,320,322,1,0,0,0,321,311,1,0,0,0,321,316,1,0,0,0,322,323,1,0,0,0,323,
-		321,1,0,0,0,323,324,1,0,0,0,324,67,1,0,0,0,325,326,5,43,0,0,326,327,3,
-		6,3,0,327,328,5,54,0,0,328,329,3,70,35,0,329,330,5,55,0,0,330,69,1,0,0,
-		0,331,332,5,2,0,0,332,333,5,51,0,0,333,334,3,8,4,0,334,335,5,72,0,0,335,
-		342,1,0,0,0,336,337,5,6,0,0,337,338,5,51,0,0,338,339,3,30,15,0,339,340,
-		5,72,0,0,340,342,1,0,0,0,341,331,1,0,0,0,341,336,1,0,0,0,342,343,1,0,0,
-		0,343,341,1,0,0,0,343,344,1,0,0,0,344,71,1,0,0,0,345,346,5,7,0,0,346,348,
-		3,6,3,0,347,349,3,36,18,0,348,347,1,0,0,0,348,349,1,0,0,0,349,350,1,0,
-		0,0,350,352,5,54,0,0,351,353,3,74,37,0,352,351,1,0,0,0,353,354,1,0,0,0,
-		354,352,1,0,0,0,354,355,1,0,0,0,355,356,1,0,0,0,356,357,5,55,0,0,357,73,
-		1,0,0,0,358,361,3,76,38,0,359,361,3,78,39,0,360,358,1,0,0,0,360,359,1,
-		0,0,0,361,75,1,0,0,0,362,363,7,7,0,0,363,364,5,10,0,0,364,365,5,20,0,0,
-		365,366,3,18,9,0,366,367,5,72,0,0,367,77,1,0,0,0,368,369,5,23,0,0,369,
-		370,3,18,9,0,370,371,5,10,0,0,371,372,3,80,40,0,372,373,5,72,0,0,373,384,
-		1,0,0,0,374,375,5,9,0,0,375,376,3,30,15,0,376,377,5,13,0,0,377,378,3,8,
-		4,0,378,379,5,14,0,0,379,380,5,15,0,0,380,381,3,82,41,0,381,382,5,72,0,
-		0,382,384,1,0,0,0,383,368,1,0,0,0,383,374,1,0,0,0,384,385,1,0,0,0,385,
-		383,1,0,0,0,385,386,1,0,0,0,386,79,1,0,0,0,387,388,7,8,0,0,388,81,1,0,
-		0,0,389,390,7,9,0,0,390,83,1,0,0,0,391,392,5,24,0,0,392,393,3,6,3,0,393,
-		394,5,54,0,0,394,395,3,86,43,0,395,396,5,55,0,0,396,85,1,0,0,0,397,398,
-		5,25,0,0,398,399,5,51,0,0,399,400,3,12,6,0,400,401,5,72,0,0,401,413,1,
-		0,0,0,402,403,5,26,0,0,403,404,5,51,0,0,404,405,3,30,15,0,405,406,5,72,
-		0,0,406,413,1,0,0,0,407,408,5,9,0,0,408,409,5,51,0,0,409,410,3,30,15,0,
-		410,411,5,72,0,0,411,413,1,0,0,0,412,397,1,0,0,0,412,402,1,0,0,0,412,407,
-		1,0,0,0,413,414,1,0,0,0,414,412,1,0,0,0,414,415,1,0,0,0,415,87,1,0,0,0,
-		31,90,92,101,113,136,138,147,159,167,170,187,193,204,211,235,237,251,253,
-		301,303,321,323,341,343,348,354,360,383,385,412,414
+		2,43,7,43,2,44,7,44,2,45,7,45,1,0,1,0,4,0,95,8,0,11,0,12,0,96,1,1,1,1,
+		1,1,1,1,1,1,1,1,1,1,3,1,106,8,1,1,2,1,2,1,3,1,3,1,4,1,4,1,5,1,5,1,5,1,
+		5,3,5,118,8,5,1,6,1,6,1,7,1,7,1,8,1,8,1,8,1,8,1,8,1,8,1,9,1,9,1,9,1,9,
+		1,9,1,9,1,9,1,9,1,9,1,9,1,9,5,9,141,8,9,10,9,12,9,144,9,9,1,10,1,10,1,
+		11,1,11,1,12,1,12,3,12,152,8,12,1,13,1,13,1,13,1,13,1,14,1,14,1,14,1,14,
+		1,14,1,14,3,14,164,8,14,1,15,1,15,1,15,1,15,5,15,170,8,15,10,15,12,15,
+		173,9,15,3,15,175,8,15,1,15,1,15,1,16,1,16,1,16,1,16,1,16,1,16,1,16,1,
+		16,1,16,1,16,1,16,1,16,1,16,3,16,192,8,16,1,16,1,16,1,16,1,16,3,16,198,
+		8,16,1,17,1,17,1,18,1,18,1,18,1,18,1,18,1,18,1,18,3,18,209,8,18,1,18,1,
+		18,1,19,1,19,1,19,3,19,216,8,19,1,19,1,19,1,20,1,20,1,20,1,20,1,20,1,21,
+		1,21,1,21,1,21,1,21,1,21,1,21,4,21,232,8,21,11,21,12,21,233,1,22,1,22,
+		1,22,1,22,1,22,1,23,1,23,1,23,1,23,1,23,1,24,1,24,1,24,1,24,1,24,1,24,
+		1,25,1,25,1,25,1,25,1,25,1,25,4,25,258,8,25,11,25,12,25,259,1,26,1,26,
+		1,26,1,26,1,26,1,27,1,27,1,27,1,27,1,27,1,28,1,28,1,28,1,28,1,28,1,29,
+		1,29,1,29,1,29,1,29,1,30,1,30,1,30,1,30,1,30,1,31,1,31,1,31,1,31,1,31,
+		1,32,1,32,1,32,1,32,1,32,1,32,1,33,1,33,1,33,1,33,1,33,1,33,1,33,1,33,
+		1,33,1,33,4,33,308,8,33,11,33,12,33,309,1,34,1,34,1,34,1,34,1,34,1,34,
+		1,35,1,35,1,35,1,35,1,35,1,35,1,35,1,35,1,35,1,35,4,35,328,8,35,11,35,
+		12,35,329,1,36,1,36,1,36,1,36,1,36,1,36,1,37,1,37,1,37,1,37,1,37,1,37,
+		1,37,1,37,1,37,1,37,4,37,348,8,37,11,37,12,37,349,1,38,1,38,1,38,3,38,
+		355,8,38,1,38,1,38,4,38,359,8,38,11,38,12,38,360,1,38,1,38,1,39,1,39,3,
+		39,367,8,39,1,40,1,40,1,40,1,40,1,40,1,40,1,41,1,41,1,41,1,41,1,41,1,41,
+		1,41,1,41,1,41,1,41,1,41,1,41,1,41,1,41,1,41,4,41,390,8,41,11,41,12,41,
+		391,1,42,1,42,1,43,1,43,1,44,1,44,1,44,1,44,1,44,1,44,1,45,1,45,1,45,1,
+		45,1,45,1,45,1,45,1,45,1,45,1,45,1,45,1,45,1,45,1,45,1,45,4,45,419,8,45,
+		11,45,12,45,420,1,45,0,1,18,46,0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,
+		30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,
+		78,80,82,84,86,88,90,0,10,1,0,65,66,1,0,68,69,1,0,61,64,1,0,48,49,1,0,
+		46,47,2,0,5,5,58,58,2,0,16,17,44,44,1,0,18,19,1,0,11,12,2,0,16,17,22,22,
+		426,0,94,1,0,0,0,2,105,1,0,0,0,4,107,1,0,0,0,6,109,1,0,0,0,8,111,1,0,0,
+		0,10,117,1,0,0,0,12,119,1,0,0,0,14,121,1,0,0,0,16,123,1,0,0,0,18,129,1,
+		0,0,0,20,145,1,0,0,0,22,147,1,0,0,0,24,151,1,0,0,0,26,153,1,0,0,0,28,163,
+		1,0,0,0,30,165,1,0,0,0,32,197,1,0,0,0,34,199,1,0,0,0,36,201,1,0,0,0,38,
+		212,1,0,0,0,40,219,1,0,0,0,42,231,1,0,0,0,44,235,1,0,0,0,46,240,1,0,0,
+		0,48,245,1,0,0,0,50,257,1,0,0,0,52,261,1,0,0,0,54,266,1,0,0,0,56,271,1,
+		0,0,0,58,276,1,0,0,0,60,281,1,0,0,0,62,286,1,0,0,0,64,291,1,0,0,0,66,307,
+		1,0,0,0,68,311,1,0,0,0,70,327,1,0,0,0,72,331,1,0,0,0,74,347,1,0,0,0,76,
+		351,1,0,0,0,78,366,1,0,0,0,80,368,1,0,0,0,82,389,1,0,0,0,84,393,1,0,0,
+		0,86,395,1,0,0,0,88,397,1,0,0,0,90,418,1,0,0,0,92,95,3,2,1,0,93,95,3,16,
+		8,0,94,92,1,0,0,0,94,93,1,0,0,0,95,96,1,0,0,0,96,94,1,0,0,0,96,97,1,0,
+		0,0,97,1,1,0,0,0,98,106,3,40,20,0,99,106,3,48,24,0,100,106,3,64,32,0,101,
+		106,3,68,34,0,102,106,3,72,36,0,103,106,3,76,38,0,104,106,3,88,44,0,105,
+		98,1,0,0,0,105,99,1,0,0,0,105,100,1,0,0,0,105,101,1,0,0,0,105,102,1,0,
+		0,0,105,103,1,0,0,0,105,104,1,0,0,0,106,3,1,0,0,0,107,108,7,0,0,0,108,
+		5,1,0,0,0,109,110,5,70,0,0,110,7,1,0,0,0,111,112,7,1,0,0,112,9,1,0,0,0,
+		113,118,3,6,3,0,114,115,3,6,3,0,115,116,3,38,19,0,116,118,1,0,0,0,117,
+		113,1,0,0,0,117,114,1,0,0,0,118,11,1,0,0,0,119,120,5,70,0,0,120,13,1,0,
+		0,0,121,122,7,2,0,0,122,15,1,0,0,0,123,124,3,14,7,0,124,125,3,6,3,0,125,
+		126,5,60,0,0,126,127,3,28,14,0,127,128,5,72,0,0,128,17,1,0,0,0,129,130,
+		6,9,-1,0,130,131,3,24,12,0,131,142,1,0,0,0,132,133,10,2,0,0,133,134,3,
+		20,10,0,134,135,3,18,9,3,135,141,1,0,0,0,136,137,10,1,0,0,137,138,3,22,
+		11,0,138,139,3,18,9,2,139,141,1,0,0,0,140,132,1,0,0,0,140,136,1,0,0,0,
+		141,144,1,0,0,0,142,140,1,0,0,0,142,143,1,0,0,0,143,19,1,0,0,0,144,142,
+		1,0,0,0,145,146,7,3,0,0,146,21,1,0,0,0,147,148,7,4,0,0,148,23,1,0,0,0,
+		149,152,3,26,13,0,150,152,3,28,14,0,151,149,1,0,0,0,151,150,1,0,0,0,152,
+		25,1,0,0,0,153,154,5,56,0,0,154,155,3,18,9,0,155,156,5,57,0,0,156,27,1,
+		0,0,0,157,164,5,68,0,0,158,164,5,69,0,0,159,164,5,67,0,0,160,164,3,4,2,
+		0,161,164,3,6,3,0,162,164,5,10,0,0,163,157,1,0,0,0,163,158,1,0,0,0,163,
+		159,1,0,0,0,163,160,1,0,0,0,163,161,1,0,0,0,163,162,1,0,0,0,164,29,1,0,
+		0,0,165,174,5,52,0,0,166,171,3,32,16,0,167,168,7,5,0,0,168,170,3,32,16,
+		0,169,167,1,0,0,0,170,173,1,0,0,0,171,169,1,0,0,0,171,172,1,0,0,0,172,
+		175,1,0,0,0,173,171,1,0,0,0,174,166,1,0,0,0,174,175,1,0,0,0,175,176,1,
+		0,0,0,176,177,5,53,0,0,177,31,1,0,0,0,178,198,3,10,5,0,179,180,5,68,0,
+		0,180,181,5,45,0,0,181,198,3,10,5,0,182,183,5,68,0,0,183,184,5,45,0,0,
+		184,185,3,10,5,0,185,186,5,4,0,0,186,187,5,68,0,0,187,188,5,59,0,0,188,
+		198,1,0,0,0,189,190,5,68,0,0,190,192,5,45,0,0,191,189,1,0,0,0,191,192,
+		1,0,0,0,192,193,1,0,0,0,193,194,3,10,5,0,194,195,5,17,0,0,195,198,1,0,
+		0,0,196,198,3,34,17,0,197,178,1,0,0,0,197,179,1,0,0,0,197,182,1,0,0,0,
+		197,191,1,0,0,0,197,196,1,0,0,0,198,33,1,0,0,0,199,200,7,6,0,0,200,35,
+		1,0,0,0,201,202,5,56,0,0,202,203,3,14,7,0,203,208,3,6,3,0,204,205,5,58,
+		0,0,205,206,3,14,7,0,206,207,3,6,3,0,207,209,1,0,0,0,208,204,1,0,0,0,208,
+		209,1,0,0,0,209,210,1,0,0,0,210,211,5,57,0,0,211,37,1,0,0,0,212,215,5,
+		56,0,0,213,216,3,10,5,0,214,216,3,28,14,0,215,213,1,0,0,0,215,214,1,0,
+		0,0,215,216,1,0,0,0,216,217,1,0,0,0,217,218,5,57,0,0,218,39,1,0,0,0,219,
+		220,5,29,0,0,220,221,5,54,0,0,221,222,3,42,21,0,222,223,5,55,0,0,223,41,
+		1,0,0,0,224,232,3,44,22,0,225,226,5,30,0,0,226,227,5,51,0,0,227,228,3,
+		30,15,0,228,229,5,72,0,0,229,232,1,0,0,0,230,232,3,46,23,0,231,224,1,0,
+		0,0,231,225,1,0,0,0,231,230,1,0,0,0,232,233,1,0,0,0,233,231,1,0,0,0,233,
+		234,1,0,0,0,234,43,1,0,0,0,235,236,5,42,0,0,236,237,5,51,0,0,237,238,3,
+		6,3,0,238,239,5,72,0,0,239,45,1,0,0,0,240,241,5,41,0,0,241,242,5,51,0,
+		0,242,243,3,6,3,0,243,244,5,72,0,0,244,47,1,0,0,0,245,246,5,39,0,0,246,
+		247,3,6,3,0,247,248,5,54,0,0,248,249,3,50,25,0,249,250,5,55,0,0,250,49,
+		1,0,0,0,251,258,3,52,26,0,252,258,3,56,28,0,253,258,3,54,27,0,254,258,
+		3,58,29,0,255,258,3,60,30,0,256,258,3,62,31,0,257,251,1,0,0,0,257,252,
+		1,0,0,0,257,253,1,0,0,0,257,254,1,0,0,0,257,255,1,0,0,0,257,256,1,0,0,
+		0,258,259,1,0,0,0,259,257,1,0,0,0,259,260,1,0,0,0,260,51,1,0,0,0,261,262,
+		5,31,0,0,262,263,5,51,0,0,263,264,5,68,0,0,264,265,5,72,0,0,265,53,1,0,
+		0,0,266,267,5,33,0,0,267,268,5,51,0,0,268,269,5,68,0,0,269,270,5,72,0,
+		0,270,55,1,0,0,0,271,272,5,32,0,0,272,273,5,51,0,0,273,274,5,68,0,0,274,
+		275,5,72,0,0,275,57,1,0,0,0,276,277,5,34,0,0,277,278,5,51,0,0,278,279,
+		3,30,15,0,279,280,5,72,0,0,280,59,1,0,0,0,281,282,5,35,0,0,282,283,5,51,
+		0,0,283,284,3,30,15,0,284,285,5,72,0,0,285,61,1,0,0,0,286,287,5,36,0,0,
+		287,288,5,51,0,0,288,289,3,6,3,0,289,290,5,72,0,0,290,63,1,0,0,0,291,292,
+		5,37,0,0,292,293,3,6,3,0,293,294,5,54,0,0,294,295,3,66,33,0,295,296,5,
+		55,0,0,296,65,1,0,0,0,297,298,5,38,0,0,298,299,5,51,0,0,299,300,3,30,15,
+		0,300,301,5,72,0,0,301,308,1,0,0,0,302,303,5,40,0,0,303,304,5,51,0,0,304,
+		305,3,30,15,0,305,306,5,72,0,0,306,308,1,0,0,0,307,297,1,0,0,0,307,302,
+		1,0,0,0,308,309,1,0,0,0,309,307,1,0,0,0,309,310,1,0,0,0,310,67,1,0,0,0,
+		311,312,5,1,0,0,312,313,3,6,3,0,313,314,5,54,0,0,314,315,3,70,35,0,315,
+		316,5,55,0,0,316,69,1,0,0,0,317,318,5,2,0,0,318,319,5,51,0,0,319,320,3,
+		8,4,0,320,321,5,72,0,0,321,328,1,0,0,0,322,323,5,3,0,0,323,324,5,51,0,
+		0,324,325,3,30,15,0,325,326,5,72,0,0,326,328,1,0,0,0,327,317,1,0,0,0,327,
+		322,1,0,0,0,328,329,1,0,0,0,329,327,1,0,0,0,329,330,1,0,0,0,330,71,1,0,
+		0,0,331,332,5,43,0,0,332,333,3,6,3,0,333,334,5,54,0,0,334,335,3,74,37,
+		0,335,336,5,55,0,0,336,73,1,0,0,0,337,338,5,2,0,0,338,339,5,51,0,0,339,
+		340,3,8,4,0,340,341,5,72,0,0,341,348,1,0,0,0,342,343,5,6,0,0,343,344,5,
+		51,0,0,344,345,3,30,15,0,345,346,5,72,0,0,346,348,1,0,0,0,347,337,1,0,
+		0,0,347,342,1,0,0,0,348,349,1,0,0,0,349,347,1,0,0,0,349,350,1,0,0,0,350,
+		75,1,0,0,0,351,352,5,7,0,0,352,354,3,6,3,0,353,355,3,36,18,0,354,353,1,
+		0,0,0,354,355,1,0,0,0,355,356,1,0,0,0,356,358,5,54,0,0,357,359,3,78,39,
+		0,358,357,1,0,0,0,359,360,1,0,0,0,360,358,1,0,0,0,360,361,1,0,0,0,361,
+		362,1,0,0,0,362,363,5,55,0,0,363,77,1,0,0,0,364,367,3,80,40,0,365,367,
+		3,82,41,0,366,364,1,0,0,0,366,365,1,0,0,0,367,79,1,0,0,0,368,369,7,7,0,
+		0,369,370,5,10,0,0,370,371,5,20,0,0,371,372,3,18,9,0,372,373,5,72,0,0,
+		373,81,1,0,0,0,374,375,5,23,0,0,375,376,3,18,9,0,376,377,5,10,0,0,377,
+		378,3,84,42,0,378,379,5,72,0,0,379,390,1,0,0,0,380,381,5,9,0,0,381,382,
+		3,30,15,0,382,383,5,13,0,0,383,384,3,8,4,0,384,385,5,14,0,0,385,386,5,
+		15,0,0,386,387,3,86,43,0,387,388,5,72,0,0,388,390,1,0,0,0,389,374,1,0,
+		0,0,389,380,1,0,0,0,390,391,1,0,0,0,391,389,1,0,0,0,391,392,1,0,0,0,392,
+		83,1,0,0,0,393,394,7,8,0,0,394,85,1,0,0,0,395,396,7,9,0,0,396,87,1,0,0,
+		0,397,398,5,24,0,0,398,399,3,6,3,0,399,400,5,54,0,0,400,401,3,90,45,0,
+		401,402,5,55,0,0,402,89,1,0,0,0,403,404,5,25,0,0,404,405,5,51,0,0,405,
+		406,3,12,6,0,406,407,5,72,0,0,407,419,1,0,0,0,408,409,5,26,0,0,409,410,
+		5,51,0,0,410,411,3,30,15,0,411,412,5,72,0,0,412,419,1,0,0,0,413,414,5,
+		9,0,0,414,415,5,51,0,0,415,416,3,30,15,0,416,417,5,72,0,0,417,419,1,0,
+		0,0,418,403,1,0,0,0,418,408,1,0,0,0,418,413,1,0,0,0,419,420,1,0,0,0,420,
+		418,1,0,0,0,420,421,1,0,0,0,421,91,1,0,0,0,31,94,96,105,117,140,142,151,
+		163,171,174,191,197,208,215,231,233,257,259,307,309,327,329,347,349,354,
+		360,366,389,391,418,420
 	};
 
 	public static readonly ATN _ATN =

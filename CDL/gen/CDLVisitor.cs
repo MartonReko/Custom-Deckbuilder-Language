@@ -179,6 +179,18 @@ public interface ICDLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitGameProperties([NotNull] CDLParser.GamePropertiesContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="CDLParser.gamePropPlayerselect"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitGamePropPlayerselect([NotNull] CDLParser.GamePropPlayerselectContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CDLParser.gamePropName"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitGamePropName([NotNull] CDLParser.GamePropNameContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="CDLParser.stageDefinition"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

@@ -50,11 +50,19 @@ params
 	: LPAREN (varRef | literalExpression)? RPAREN;
 
 gameSetup: GAME LCURLY gameProperties RCURLY;
-gameProperties: (
+/* gameProperties: (
 		PLAYERSELECT CLN varName EOS
 		| STAGES CLN list EOS
 		| NAME CLN varName EOS
+	)+; */
+gameProperties: (
+		gamePropPlayerselect
+		| STAGES CLN list EOS
+		| gamePropName
 	)+;
+gamePropPlayerselect:PLAYERSELECT CLN varName EOS ;
+gamePropName:NAME CLN varName EOS ;
+
 
 stageDefinition: STAGE varName LCURLY stageProperties RCURLY;
 stageProperties: (
