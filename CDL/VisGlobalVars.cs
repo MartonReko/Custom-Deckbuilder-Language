@@ -7,7 +7,7 @@ namespace CDL;
 
 public class VisGlobalVars(EnvManager em) : CDLBaseVisitor<object>
 {
-    private readonly ILogger<VisGlobalVars> _logger = LoggerFactory.Create(builder => builder.AddNLog()).CreateLogger<VisGlobalVars>(); 
+    private readonly ILogger<VisGlobalVars> _logger = LoggerFactory.Create(builder => builder.AddNLog().SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace)).CreateLogger<VisGlobalVars>(); 
     private void AddSymbolToTable(string typeName,ParserRuleContext varNameContext){
         var type = em.Ts[typeName];
         var symbol = new Symbol(varNameContext.GetText(), type);

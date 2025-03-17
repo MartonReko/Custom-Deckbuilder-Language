@@ -7,27 +7,32 @@ namespace CDL;
 
 public class VisBlocks(EnvManager em) : CDLBaseVisitor<object>
 {
+    private List<Card> Cards { get; set; } = [];
     bool gameVisited = false;
     bool charVisited = false;
     Dictionary<string, int> defNumbers = [];
-
     List<Symbol> currentList = new();
+    private readonly ILogger<VisBlocks> _logger = LoggerFactory.Create(builder => builder.AddNLog().SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace)).CreateLogger<VisBlocks>();
 
-    private readonly ILogger<VisBlocks> _logger = LoggerFactory.Create(builder => builder.AddNLog()).CreateLogger<VisBlocks>(); 
-    private bool CheckExist(ParserRuleContext[] context, int count){
-        if(context.Length == 0){
-            _logger.LogError("Missing {x}",context.GetType());
+    private bool CheckExist(ParserRuleContext[] context, int count)
+    {
+        if (context.Length == 0)
+        {
+            _logger.LogError("Missing {x}", context.GetType());
             return false;
         }
-        if(context.Length != count){
-            _logger.LogError("Missing or multiple {x}",context[0].GetChild(0).GetText());
+        if (context.Length != count)
+        {
+            _logger.LogError("Missing or multiple {x}", context[0].GetChild(0).GetText());
             return false;
         }
         return true;
     }
-    private bool CheckExist(Antlr4.Runtime.Tree.ITerminalNode[] context, int count){
-        if(context.Length != count){
-            _logger.LogError("Missing or multiple {x}",context[0].GetText());
+    private bool CheckExist(Antlr4.Runtime.Tree.ITerminalNode[] context, int count)
+    {
+        if (context.Length != count)
+        {
+            _logger.LogError("Missing or multiple {x}", context[0].GetText());
             return false;
         }
         return true;
@@ -53,14 +58,14 @@ public class VisBlocks(EnvManager em) : CDLBaseVisitor<object>
         {
             _logger.LogInformation("Number of {name} definitions is {value}", item.Key, item.Value);
         }
+        foreach(var card in Cards){
+            _logger.LogDebug("Card {c} properties:\n\tRarity:\t{r}\n\tValidTargets:\t{t}\n\tApplies:\t{a}",card.Name,card.Rarity,card.ValidTargets,card.EffectsApplied);
+        }
 
         return result;
     }
     public override object VisitStageProperties([NotNull] CDLParser.StagePropertiesContext context)
     {
-        System.Console.WriteLine(context.lengthDef().GetType() + "\n\n");
-/*         if(context.lengthDef().Length != 1)
-            _logger.LogError("Missing or multiple Stage Length"); */
         CheckExist(context.lengthDef(), 1);
         return base.VisitStageProperties(context);
     }
@@ -78,32 +83,10 @@ public class VisBlocks(EnvManager em) : CDLBaseVisitor<object>
     }
     public override object VisitGameProperties([NotNull] CDLParser.GamePropertiesContext context)
     {
-/*         if (context.gamePropName().Length != 1)
-        {
-            _logger.LogError("Missing or multiple Game Name");
-        }
-        if (context.STAGES().Length != 1)
-        {
-            _logger.LogError("Missing or multiple Game Stages");
-        }
-        if (context.gamePropPlayerselect().Length != 1)
-        {
-            _logger.LogError("Missing or multiple Game Player");
-        } */
-        CheckExist(context.gamePropName(),1);
-        CheckExist(context.STAGES(),1);
-        CheckExist(context.gamePropPlayerselect(),1);
+        CheckExist(context.gamePropName(), 1);
+        CheckExist(context.STAGES(), 1);
+        CheckExist(context.gamePropPlayerselect(), 1);
 
-        // TODO listákat hogyan? Ez is tagváltozó?
-
-        // TODO
-        // Throw or return or try to continue?
-        // New parser rules?
-        /*         string gameName =
-                if (context.GetChild(0).GetText().Equals(  "Player"))
-                {
-                    em.getVariableFromScope(context, context.GetChild(2).GetText());
-                } */
         em.Env = new Env(em.Env);
         var result = base.VisitGameProperties(context);
 
@@ -111,21 +94,19 @@ public class VisBlocks(EnvManager em) : CDLBaseVisitor<object>
         if (currentList.Any(x => !x.GetType().Equals(em.Ts.STAGE)))
         { _logger.LogError("Invalid type in stages list"); }
 
-
         em.Env = em.Env.PrevEnv;
         currentList.Clear();
         return result;
     }
     public override object VisitListItem([NotNull] CDLParser.ListItemContext context)
     {
-        if(context.varRef() != null){
-
-        
-        var listSymbol = em.getVariableFromScope(context, context.varRef().varName().GetText());
-        if (listSymbol != null)
+        if (context.varRef() != null)
         {
-            currentList.Add(listSymbol);
-        }
+            var listSymbol = em.getVariableFromScope(context, context.varRef().varName().GetText());
+            if (listSymbol != null)
+            {
+                currentList.Add(listSymbol);
+            }
         }
         return base.VisitListItem(context);
     }
@@ -184,8 +165,42 @@ public class VisBlocks(EnvManager em) : CDLBaseVisitor<object>
     }
     public override object VisitCardDefinition([NotNull] CDLParser.CardDefinitionContext context)
     {
+        Card newCard = new()
+        {
+            Name = context.GetChild(1).GetText()
+        };
+        Cards.Add(newCard);
         defNumbers.TryGetValue(context.GetChild(0).GetText(), out var currentCount);
         defNumbers[context.GetChild(0).GetText()] = currentCount + 1;
         return base.VisitCardDefinition(context);
+    }
+    public override object VisitCardProperties([NotNull] CDLParser.CardPropertiesContext context)
+    {
+        //Card curCard = Cards.Last();
+        //curCard.Rarity = context.rarityName().First().GetText();
+
+        return base.VisitCardProperties(context);
+    }
+    public override object VisitRarityName([NotNull] CDLParser.RarityNameContext context)
+    {
+        Card lastCard = Cards.Last();
+        if (lastCard.Rarity == null)
+        {
+            lastCard.Rarity = context.GetText();
+        }
+        else
+        {
+            _logger.LogError("Multiple rarity definitions for card {c} {d}", lastCard.Name, lastCard.Rarity);
+        }
+        return base.VisitRarityName(context);
+    }
+    public override object VisitTargetItem([NotNull] CDLParser.TargetItemContext context)
+    {
+        Card lastCard = Cards.Last();
+        if (Enum.TryParse(context.GetText(), out TargetTypes target))
+        {
+            lastCard.ValidTargets.Add(target);
+        }
+        return base.VisitTargetItem(context);
     }
 }
