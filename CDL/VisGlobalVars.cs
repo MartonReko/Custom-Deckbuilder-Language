@@ -1,3 +1,4 @@
+using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Microsoft.Extensions.Logging;
 
@@ -6,6 +7,12 @@ namespace CDL;
 public class VisGlobalVars(ILoggerFactory loggerFactory, EnvManager em) : CDLBaseVisitor<object>
 {
     private readonly ILogger<VisGlobalVars> _logger = loggerFactory.CreateLogger<VisGlobalVars>();
+    private void AddSymbolToTable(string typeName,ParserRuleContext varNameContext){
+        var type = em.Ts[typeName];
+        var symbol = new Symbol(varNameContext.GetText(), type);
+        em.AddVariableToScope(varNameContext, symbol);
+    }
+    private readonly List<CDLType> localProps = [];
 
     public override object VisitProgram([NotNull] CDLParser.ProgramContext context)
     {
@@ -52,45 +59,52 @@ public class VisGlobalVars(ILoggerFactory loggerFactory, EnvManager em) : CDLBas
         _logger.LogInformation("Var declaration visited, enviroment:\n{env}", em.Env.ToString());
         return base.VisitVariableDeclaration(context);
     }
-    public override List<CDLType> VisitParamsDef([NotNull] CDLParser.ParamsDefContext context)
+    public override object VisitParamsDef([NotNull] CDLParser.ParamsDefContext context)
     {
-        string propsString = "";
-        List<CDLType> typesInProps = new List<CDLType>();
+        //string propsString = "";
+        //List<CDLType> typesInProps = new List<CDLType>();
         foreach (var item in context.typeName())
         {
             if (item != null)
             {
-                propsString += item.GetText();
-                typesInProps.Add(em.Ts[item.GetText()]);
+                //propsString += item.GetText();
+                //typesInProps.Add(em.Ts[item.GetText()]);
+                CDLType sym = em.Ts[item.GetText()];
+                System.Console.WriteLine("\n\tHali"+sym);
+                localProps.Add(sym);
             }
         }
-        return typesInProps;
+        return base.VisitParamsDef(context);
     }
     public override object VisitEffectDefinition([NotNull] CDLParser.EffectDefinitionContext context)
     {
+        var result = base.VisitEffectDefinition(context);
+
         var type = em.Ts[context.GetChild(0).GetText()];
         string symbolText = context.varName().GetText();
-        List<CDLType> props = new List<CDLType>();
-        if (context.paramsDef() != null)
+        //List<CDLType> props = new List<CDLType>();
+/*         if (context.paramsDef() != null)
         {
             // TODO 
             // Kétszer lesz bejárva
             // Nem lehetne ezt az egészet átteni?
             props = VisitParamsDef(context.paramsDef());
-        }
-        var symbol = new Symbol(symbolText, type, props);
+        } */
+        //props = localProps;
+        var symbol = new Symbol(symbolText, type, localProps);
         em.AddVariableToScope(context.varName(), symbol);
 
+        localProps.Clear();
         _logger.LogInformation("Effect definition visited, enviroment:\n{env}", em.Env.ToString());
-        return base.VisitEffectDefinition(context);
+        return result;
     }
     public override object VisitCardDefinition([NotNull] CDLParser.CardDefinitionContext context)
     {
-        var type = em.Ts[context.GetChild(0).GetText()];
-        var symbol = new Symbol(context.varName().GetText(), type);
-        em.AddVariableToScope(context.varName(), symbol);
+        AddSymbolToTable(context.GetChild(0).GetText(), context.varName());
         return base.VisitCardDefinition(context);
     }
+
+    // Rarity names are parsed as strings, later nodes can refer to cards by it
     public override object VisitRarityName([NotNull] CDLParser.RarityNameContext context)
     {
         var type = em.Ts["string"];
@@ -100,30 +114,22 @@ public class VisGlobalVars(ILoggerFactory loggerFactory, EnvManager em) : CDLBas
     }
     public override object VisitStageDefinition([NotNull] CDLParser.StageDefinitionContext context)
     {
-        var type = em.Ts[context.GetChild(0).GetText()];
-        var symbol = new Symbol(context.varName().GetText(), type);
-        em.AddVariableToScope(context.varName(), symbol);
+        AddSymbolToTable(context.GetChild(0).GetText(), context.varName());
         return base.VisitStageDefinition(context);
     }
     public override object VisitNodeDefinition([NotNull] CDLParser.NodeDefinitionContext context)
     {
-        var type = em.Ts[context.GetChild(0).GetText()];
-        var symbol = new Symbol(context.varName().GetText(), type);
-        em.AddVariableToScope(context.varName(), symbol);
+        AddSymbolToTable(context.GetChild(0).GetText(), context.varName());
         return base.VisitNodeDefinition(context);
     }
     public override object VisitCharSetup([NotNull] CDLParser.CharSetupContext context)
     {
-        var type = em.Ts[context.GetChild(0).GetText()];
-        var symbol = new Symbol(context.varName().GetText(), type);
-        em.AddVariableToScope(context.varName(), symbol);
+        AddSymbolToTable(context.GetChild(0).GetText(), context.varName());
         return base.VisitCharSetup(context);
     }
     public override object VisitEnemyDefinition([NotNull] CDLParser.EnemyDefinitionContext context)
     {
-        var type = em.Ts[context.GetChild(0).GetText()];
-        var symbol = new Symbol(context.varName().GetText(), type);
-        em.AddVariableToScope(context.varName(), symbol);
+        AddSymbolToTable(context.GetChild(0).GetText(), context.varName());
         return base.VisitEnemyDefinition(context);
     }
 }
