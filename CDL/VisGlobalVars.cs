@@ -20,11 +20,12 @@ public class VisGlobalVars(EnvManager em) : CDLBaseVisitor<object>
         em.Env = new Env();
         em.Ts = new TypeSystem();
         var result = base.VisitProgram(context);
+        _logger.LogInformation("Final result of first visitor:\n{env}", em.Env.ToString());
         return result;
     }
     public override object VisitConfigBlock([NotNull] CDLParser.ConfigBlockContext context)
     {
-        _logger.LogInformation("Config block \"{name}\" visited, Env:\n{env}", context.GetChild(0).GetType(), em.Env.ToString());
+        _logger.LogDebug("Config block \"{name}\" visited, Env:\n{env}", context.GetChild(0).GetType(), em.Env.ToString());
         return base.VisitConfigBlock(context);
     }
     public override object VisitVariableDeclaration([NotNull] CDLParser.VariableDeclarationContext context)
@@ -57,7 +58,7 @@ public class VisGlobalVars(EnvManager em) : CDLBaseVisitor<object>
             }
         }
 
-        _logger.LogInformation("Var declaration visited, enviroment:\n{env}", em.Env.ToString());
+        _logger.LogDebug("Var declaration visited, enviroment:\n{env}", em.Env.ToString());
         return base.VisitVariableDeclaration(context);
     }
     public override object VisitParamsDef([NotNull] CDLParser.ParamsDefContext context)
@@ -68,10 +69,7 @@ public class VisGlobalVars(EnvManager em) : CDLBaseVisitor<object>
         {
             if (item != null)
             {
-                //propsString += item.GetText();
-                //typesInProps.Add(em.Ts[item.GetText()]);
                 CDLType sym = em.Ts[item.GetText()];
-                System.Console.WriteLine("\n\tHali"+sym);
                 localProps.Add(sym);
             }
         }
@@ -83,20 +81,12 @@ public class VisGlobalVars(EnvManager em) : CDLBaseVisitor<object>
 
         var type = em.Ts[context.GetChild(0).GetText()];
         string symbolText = context.varName().GetText();
-        //List<CDLType> props = new List<CDLType>();
-/*         if (context.paramsDef() != null)
-        {
-            // TODO 
-            // Kétszer lesz bejárva
-            // Nem lehetne ezt az egészet átteni?
-            props = VisitParamsDef(context.paramsDef());
-        } */
-        //props = localProps;
+        
         var symbol = new Symbol(symbolText, type, localProps);
         em.AddVariableToScope(context.varName(), symbol);
 
         localProps.Clear();
-        _logger.LogInformation("Effect definition visited, enviroment:\n{env}", em.Env.ToString());
+        _logger.LogDebug("Effect definition visited, enviroment:\n{env}", em.Env.ToString());
         return result;
     }
     public override object VisitCardDefinition([NotNull] CDLParser.CardDefinitionContext context)
