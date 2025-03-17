@@ -1,6 +1,5 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
-using Microsoft.Extensions.Logging;
 namespace CDL;
 
 
@@ -8,20 +7,11 @@ class Program
 {
     static void Main(string[] args)
     {
-        using var loggerFactory = LoggerFactory.Create(builder =>
-        {
-            builder
-                .AddFilter("CDL.Program", LogLevel.Debug)
-                .AddFilter("CDL.CDLVisitor", LogLevel.Debug)
-                .AddConsole();
-        });
-
-        //var ast = ReadAST("examples/ex_long.cdl");
         var ast = ReadAST("examples/ex_long_errors.cdl");
-        EnvManager envM = new EnvManager(loggerFactory);
-        VisGlobalVars visitorVars = new(loggerFactory, envM);
+        EnvManager envM = new EnvManager();
+        VisGlobalVars visitorVars = new(envM);
         visitorVars.Visit(ast);
-        VisBlocks visitorBlocks = new(loggerFactory, envM);
+        VisBlocks visitorBlocks = new(envM);
         visitorBlocks.Visit(ast);
     }
 

@@ -1,12 +1,13 @@
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Microsoft.Extensions.Logging;
+using NLog.Extensions.Logging;
 
 namespace CDL;
 
-public class VisGlobalVars(ILoggerFactory loggerFactory, EnvManager em) : CDLBaseVisitor<object>
+public class VisGlobalVars(EnvManager em) : CDLBaseVisitor<object>
 {
-    private readonly ILogger<VisGlobalVars> _logger = loggerFactory.CreateLogger<VisGlobalVars>();
+    private readonly ILogger<VisGlobalVars> _logger = LoggerFactory.Create(builder => builder.AddNLog()).CreateLogger<VisGlobalVars>(); 
     private void AddSymbolToTable(string typeName,ParserRuleContext varNameContext){
         var type = em.Ts[typeName];
         var symbol = new Symbol(varNameContext.GetText(), type);

@@ -1,12 +1,14 @@
 using Antlr4.Runtime;
 using Microsoft.Extensions.Logging;
+using NLog.Extensions.Logging;
+
 
 namespace CDL;
 
-public class EnvManager(ILoggerFactory loggerFactory)
+public class EnvManager()
 {
 
-    private readonly ILogger<VisGlobalVars> _logger = loggerFactory.CreateLogger<VisGlobalVars>();
+    private readonly ILogger<EnvManager> _logger = LoggerFactory.Create(builder => builder.AddNLog()).CreateLogger<EnvManager>();
     public Env Env { get; set; }
     public TypeSystem Ts { get; set; }
     public static string GetPos(ParserRuleContext context)

@@ -1,10 +1,11 @@
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Microsoft.Extensions.Logging;
+using NLog.Extensions.Logging;
 
 namespace CDL;
 
-public class VisBlocks(ILoggerFactory loggerFactory, EnvManager em) : CDLBaseVisitor<object>
+public class VisBlocks(EnvManager em) : CDLBaseVisitor<object>
 {
     bool gameVisited = false;
     bool charVisited = false;
@@ -12,7 +13,7 @@ public class VisBlocks(ILoggerFactory loggerFactory, EnvManager em) : CDLBaseVis
 
     List<Symbol> currentList = new();
 
-    private readonly ILogger<VisBlocks> _logger = loggerFactory.CreateLogger<VisBlocks>();
+    private readonly ILogger<VisBlocks> _logger = LoggerFactory.Create(builder => builder.AddNLog()).CreateLogger<VisBlocks>(); 
     private bool CheckExist(ParserRuleContext[] context, int count){
         if(context.Length == 0){
             _logger.LogError("Missing {x}",context.GetType());
