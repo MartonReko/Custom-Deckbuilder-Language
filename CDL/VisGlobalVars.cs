@@ -7,8 +7,9 @@ namespace CDL;
 
 public class VisGlobalVars(EnvManager em) : CDLBaseVisitor<object>
 {
-    private readonly ILogger<VisGlobalVars> _logger = LoggerFactory.Create(builder => builder.AddNLog().SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace)).CreateLogger<VisGlobalVars>(); 
-    private void AddSymbolToTable(string typeName,ParserRuleContext varNameContext){
+    private readonly ILogger<VisGlobalVars> _logger = LoggerFactory.Create(builder => builder.AddNLog().SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace)).CreateLogger<VisGlobalVars>();
+    private void AddSymbolToTable(string typeName, ParserRuleContext varNameContext)
+    {
         var type = em.Ts[typeName];
         var symbol = new Symbol(varNameContext.GetText(), type);
         em.AddVariableToScope(varNameContext, symbol);
@@ -18,8 +19,6 @@ public class VisGlobalVars(EnvManager em) : CDLBaseVisitor<object>
 
     public override object VisitProgram([NotNull] CDLParser.ProgramContext context)
     {
-        em.Env = new Env();
-        em.Ts = new TypeSystem();
         var result = base.VisitProgram(context);
         _logger.LogInformation("Final result of first visitor:\n{env}", em.Env.ToString());
         return result;
@@ -47,7 +46,7 @@ public class VisGlobalVars(EnvManager em) : CDLBaseVisitor<object>
             else
             {
                 var expressionType = em.GetType(context.literalExpression());
-                if (!expressionType.InheritsFrom(type))
+                if (expressionType != null && !expressionType.InheritsFrom(type))
                 {
                     _logger.LogError("Error at {pos}, type {type} of expression is not compatible with the type {typeName} of the variable", EnvManager.GetPos(context.literalExpression()), expressionType.Name, type.Name);
                 }
@@ -69,8 +68,15 @@ public class VisGlobalVars(EnvManager em) : CDLBaseVisitor<object>
             if (item != null)
             {
                 var type = em.Ts[item.typeName().GetText()];
-                var symbol = new Symbol(item.varName().GetText(), type);
-                currentFn?.AddParam(symbol.Name,symbol);
+                if (type == em.Ts.ERROR)
+                {
+                    // TODO exception
+                }
+                else
+                {
+                    var symbol = new Symbol(item.varName().GetText(), type);
+                    currentFn?.AddParam(symbol.Name, symbol);
+                }
             }
         }
         return base.VisitParamsDef(context);
@@ -78,6 +84,9 @@ public class VisGlobalVars(EnvManager em) : CDLBaseVisitor<object>
     public override object VisitEffectDefinition([NotNull] CDLParser.EffectDefinitionContext context)
     {
         var type = em.Ts[context.GetChild(0).GetText()];
+        if(type == em.Ts.ERROR){
+            //TODO exception
+        }
         string symbolText = context.varName().GetText();
         currentFn = new FnSymbol(symbolText, type);
         var result = base.VisitEffectDefinition(context);
@@ -97,8 +106,15 @@ public class VisGlobalVars(EnvManager em) : CDLBaseVisitor<object>
     public override object VisitRarityName([NotNull] CDLParser.RarityNameContext context)
     {
         var type = em.Ts["string"];
-        var symbol = new Symbol(context.GetText(), type);
-        em.AddVariableToScope(context, symbol);
+        if (type == em.Ts.ERROR)
+        {
+            // TODO exception
+        }
+        else
+        {
+            var symbol = new Symbol(context.GetText(), type);
+            em.AddVariableToScope(context, symbol);
+        }
         return base.VisitRarityName(context);
     }
     public override object VisitStageDefinition([NotNull] CDLParser.StageDefinitionContext context)

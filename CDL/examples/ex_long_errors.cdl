@@ -122,6 +122,7 @@ Card heal{
 
 Card poison{
     Rarity: rarity_common;
+    Rarity: rarity_common;
     ValidTargets: [player];
     Apply: [2x effect_poison(2)];
 }

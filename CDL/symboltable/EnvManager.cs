@@ -9,8 +9,8 @@ public class EnvManager()
 {
 
     private readonly ILogger<EnvManager> _logger = LoggerFactory.Create(builder => builder.AddNLog()).CreateLogger<EnvManager>();
-    public Env Env { get; set; }
-    public TypeSystem Ts { get; set; }
+    public Env Env { get; set; } = new();
+    public TypeSystem Ts { get; set; } = new();
     public static string GetPos(ParserRuleContext context)
     {
         return $"line #{context.Start.Line}, column #{context.Start.Column}";
@@ -37,7 +37,7 @@ public class EnvManager()
             _logger.LogError("Error at {pos}: function {symName} is already in scope", GetPos(ctx), symbol.Name);
         }
     }
-    public Symbol getVariableFromScope(ParserRuleContext context, string varName)
+    public Symbol? getVariableFromScope(ParserRuleContext context, string varName)
     {
         var symbol = Env[varName];
         if (symbol != null) return symbol;
@@ -50,11 +50,11 @@ public class EnvManager()
         return symbol != null;
         //_logger.LogError("Error at {pos}: name {varName} does not exist", GetPos(context), varName);
     }
-    public CDLType GetType(CDLParser.LiteralExpressionContext context)
+    public CDLType? GetType(CDLParser.LiteralExpressionContext context)
     {
         if (context.varName() != null)
         {
-            Symbol symbol = null;
+            Symbol? symbol = null;
             var varName = context.varName();
             symbol = getVariableFromScope(varName, varName.GetText());
             return symbol?.Type ?? Ts.ERROR;

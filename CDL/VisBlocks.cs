@@ -58,8 +58,16 @@ public class VisBlocks(EnvManager em) : CDLBaseVisitor<object>
         {
             _logger.LogInformation("Number of {name} definitions is {value}", item.Key, item.Value);
         }
-        foreach(var card in Cards){
-            _logger.LogDebug("Card {c} properties:\n\tRarity:\t{r}\n\tValidTargets:\t{t}\n\tApplies:\t{a}",card.Name,card.Rarity,card.ValidTargets,card.EffectsApplied);
+        foreach (var card in Cards)
+        {
+            string targets = "";
+            string effects = "";
+            foreach (TargetTypes target in card.ValidTargets)
+                targets += target.ToString() + " ";
+            foreach (Effect applied in card.EffectsApplied)
+                effects += applied.Name;
+
+            _logger.LogDebug("Card \"{c}\" properties:\n\tRarity: {r}\n\tValidTargets: {t}\n\tApplies: {a}", card.Name, card.Rarity, targets, effects);
         }
 
         return result;
@@ -94,7 +102,8 @@ public class VisBlocks(EnvManager em) : CDLBaseVisitor<object>
         if (currentList.Any(x => !x.GetType().Equals(em.Ts.STAGE)))
         { _logger.LogError("Invalid type in stages list"); }
 
-        em.Env = em.Env.PrevEnv;
+        if (em.Env.PrevEnv != null)
+            em.Env = em.Env.PrevEnv;
         currentList.Clear();
         return result;
     }
@@ -197,10 +206,41 @@ public class VisBlocks(EnvManager em) : CDLBaseVisitor<object>
     public override object VisitTargetItem([NotNull] CDLParser.TargetItemContext context)
     {
         Card lastCard = Cards.Last();
-        if (Enum.TryParse(context.GetText(), out TargetTypes target))
+
+        string targetString = context.GetText();
+        switch (targetString)
         {
-            lastCard.ValidTargets.Add(target);
+            case "enemy":
+                lastCard.ValidTargets.Add(TargetTypes.ENEMY);
+                break;
+            case "enemies":
+                lastCard.ValidTargets.Add(TargetTypes.ENEMIES);
+                break;
+            case "player":
+                lastCard.ValidTargets.Add(TargetTypes.PLAYER);
+                break;
+            default:
+                _logger.LogError("Unable to parse target {t}", targetString);
+                break;
         }
+        // if (Enum.TryParse(targetString, out TargetTypes target))
+        // {
+        //     _logger.LogDebug("Parsed target {t}", target);
+        //     lastCard.ValidTargets.Add(target);
+        // }
+        // else
+        // {
+        //     _logger.LogDebug("Failed to parse target {t}", target);
+        // }
         return base.VisitTargetItem(context);
+    }
+    public override object VisitCardEffectsList([NotNull] CDLParser.CardEffectsListContext context)
+    {
+        // foreach(var item in context.list().listItem()){
+        //     string name = item.varRef().@varName().GetText();    
+        //     int num = int.Parse( item.varRef().@params().literalExpression().GetText());
+        //     _logger.LogCritical("{a} {num}", name, num);
+        // }
+        return base.VisitCardEffectsList(context);
     }
 }
