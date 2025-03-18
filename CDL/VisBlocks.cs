@@ -1,13 +1,24 @@
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
+using CDL.exceptions;
+using CDL.game;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 
 namespace CDL;
 
-public class VisBlocks(EnvManager em) : CDLBaseVisitor<object>
+public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler) : CDLBaseVisitor<object>
 {
+    private GameSetup Game { get; set; } = new();
+    private GameCharacter Character {get;set;} = new();
+    private List<Stage> Stages { get; set; } = [];
+    private List<Node> Nodes { get; set; } = [];
+    private List<Enemy> Enemies { get; set; } = [];
+    private List<Effect> Effects { get; set; } = [];
     private List<Card> Cards { get; set; } = [];
+
+    private CDLExceptionHandler ExceptionHandler {get;set;} = exceptionHandler;
+
     bool gameVisited = false;
     bool charVisited = false;
     Dictionary<string, int> defNumbers = [];
@@ -40,6 +51,8 @@ public class VisBlocks(EnvManager em) : CDLBaseVisitor<object>
 
     public override object VisitProgram([NotNull] CDLParser.ProgramContext context)
     {
+        ExceptionHandler.AddException(new CDLException(1,1,"Test exception"));
+
         defNumbers.Add("Stage", 0);
         defNumbers.Add("Node", 0);
         defNumbers.Add("Enemy", 0);

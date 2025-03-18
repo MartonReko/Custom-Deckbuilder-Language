@@ -6,15 +6,21 @@ namespace CDL;
 
 class Program
 {
-    private static readonly CDLExceptionHandler exceptionHandler  = new();
+    public static  CDLExceptionHandler exceptionHandler  = new();
     static void Main(string[] args)
     {
         var ast = ReadAST("examples/ex_long_errors.cdl");
-        EnvManager envM = new EnvManager();
+        EnvManager envM = new();
         VisGlobalVars visitorVars = new(envM);
         visitorVars.Visit(ast);
-        VisBlocks visitorBlocks = new(envM);
+        VisBlocks visitorBlocks = new(envM, exceptionHandler);
         visitorBlocks.Visit(ast);
+        if(!exceptionHandler.isValid()){
+            foreach (var item in exceptionHandler.getExceptions())
+            {
+              System.Console.WriteLine(item);
+            }
+        }
     }
 
     public static IParseTree ReadAST(string fileName)

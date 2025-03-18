@@ -9,7 +9,6 @@ public class CDLExceptionHandler : BaseErrorListener, IAntlrErrorListener<int>{
     {
         base.SyntaxError(output, recognizer, offendingSymbol, line, charPositionInLine, msg, e);
         exceptions.Add(new CDLException(line,charPositionInLine,msg));
-
     }
     public List<CDLException> getExceptions(){
         return exceptions;
