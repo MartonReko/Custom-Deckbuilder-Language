@@ -14,6 +14,7 @@ public class VisGlobalVars(EnvManager em) : CDLBaseVisitor<object>
         em.AddVariableToScope(varNameContext, symbol);
     }
     private readonly List<CDLType> localProps = [];
+    private FnSymbol? currentFn;
 
     public override object VisitProgram([NotNull] CDLParser.ProgramContext context)
     {
@@ -63,27 +64,24 @@ public class VisGlobalVars(EnvManager em) : CDLBaseVisitor<object>
     }
     public override object VisitParamsDef([NotNull] CDLParser.ParamsDefContext context)
     {
-        //string propsString = "";
-        //List<CDLType> typesInProps = new List<CDLType>();
-        foreach (var item in context.typeName())
+        foreach (var item in context.typeNameVarName())
         {
             if (item != null)
             {
-                CDLType sym = em.Ts[item.GetText()];
-                localProps.Add(sym);
+                var type = em.Ts[item.typeName().GetText()];
+                var symbol = new Symbol(item.varName().GetText(), type);
+                currentFn?.AddParam(symbol.Name,symbol);
             }
         }
         return base.VisitParamsDef(context);
     }
     public override object VisitEffectDefinition([NotNull] CDLParser.EffectDefinitionContext context)
     {
-        var result = base.VisitEffectDefinition(context);
-
         var type = em.Ts[context.GetChild(0).GetText()];
         string symbolText = context.varName().GetText();
-        
-        var symbol = new Symbol(symbolText, type, localProps);
-        em.AddVariableToScope(context.varName(), symbol);
+        currentFn = new FnSymbol(symbolText, type);
+        var result = base.VisitEffectDefinition(context);
+        em.AddVariableToScope(context.varName(), currentFn);
 
         localProps.Clear();
         _logger.LogDebug("Effect definition visited, enviroment:\n{env}", em.Env.ToString());

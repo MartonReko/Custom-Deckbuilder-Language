@@ -86,6 +86,12 @@ public interface ICDLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitVariableDeclaration([NotNull] CDLParser.VariableDeclarationContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="CDLParser.typeNameVarName"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitTypeNameVarName([NotNull] CDLParser.TypeNameVarNameContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>primaryExpression</c>
 	/// labeled alternative in <see cref="CDLParser.expression"/>.
 	/// </summary>
@@ -322,4 +328,10 @@ public interface ICDLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitCardProperties([NotNull] CDLParser.CardPropertiesContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CDLParser.cardEffectsList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitCardEffectsList([NotNull] CDLParser.CardEffectsListContext context);
 }

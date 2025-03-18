@@ -26,6 +26,17 @@ public class EnvManager()
             _logger.LogError("Error at {pos}: variable {symName} is already in scope", GetPos(ctx), symbol.Name);
         }
     }
+    public void AddFnToScope(ParserRuleContext ctx, FnSymbol symbol)
+    {
+        try
+        {
+            Env[symbol.Name] = symbol;
+        }
+        catch
+        {
+            _logger.LogError("Error at {pos}: function {symName} is already in scope", GetPos(ctx), symbol.Name);
+        }
+    }
     public Symbol getVariableFromScope(ParserRuleContext context, string varName)
     {
         var symbol = Env[varName];

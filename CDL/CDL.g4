@@ -22,6 +22,7 @@ varRef: varName | varName params;
 rarityName: ID;
 typeName: INTTYPE | DOUBLETYPE | STRINGTYPE | BOOLEANTYPE; 
 variableDeclaration: typeName varName EQUALS literalExpression EOS;
+typeNameVarName: typeName varName;
 
 expression:
 	primary								# primaryExpression
@@ -44,7 +45,7 @@ listItem:
 targetItem: ENEMIES | ENEMYLC | PLAYER;
 
 paramsDef
-	: LPAREN typeName varName (COMMA typeName varName)? RPAREN
+	: LPAREN typeNameVarName (COMMA typeNameVarName)? RPAREN
 	;
 params
 	: LPAREN (varRef | literalExpression)? RPAREN;
@@ -108,8 +109,9 @@ cardDefinition: CARD varName LCURLY cardProperties RCURLY;
 cardProperties: (
 		RARITY CLN rarityName EOS
 		| VALIDTARGETS CLN list EOS
-		| APPLY CLN list EOS
+		| cardEffectsList
 	)+;
+cardEffectsList : APPLY CLN list EOS;
 
 //Lexer
 
