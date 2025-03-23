@@ -11,7 +11,7 @@ class Program
     {
         var ast = ReadAST("examples/ex_long_errors.cdl");
         EnvManager envM = new();
-        VisGlobalVars visitorVars = new(envM);
+        VisGlobalVars visitorVars = new(envM,exceptionHandler);
         visitorVars.Visit(ast);
         VisBlocks visitorBlocks = new(envM, exceptionHandler);
         visitorBlocks.Visit(ast);

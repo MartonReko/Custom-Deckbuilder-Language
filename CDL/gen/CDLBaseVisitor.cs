@@ -228,7 +228,8 @@ public partial class CDLBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// <return>The visitor result.</return>
 	public virtual Result VisitList([NotNull] CDLParser.ListContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CDLParser.listItem"/>.
+	/// Visit a parse tree produced by the <c>singleListItem</c>
+	/// labeled alternative in <see cref="CDLParser.listItem"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -236,7 +237,51 @@ public partial class CDLBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitListItem([NotNull] CDLParser.ListItemContext context) { return VisitChildren(context); }
+	public virtual Result VisitSingleListItem([NotNull] CDLParser.SingleListItemContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>numberedListItem</c>
+	/// labeled alternative in <see cref="CDLParser.listItem"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitNumberedListItem([NotNull] CDLParser.NumberedListItemContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>chanceListItem</c>
+	/// labeled alternative in <see cref="CDLParser.listItem"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitChanceListItem([NotNull] CDLParser.ChanceListItemContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>attackListItem</c>
+	/// labeled alternative in <see cref="CDLParser.listItem"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitAttackListItem([NotNull] CDLParser.AttackListItemContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>targetListItem</c>
+	/// labeled alternative in <see cref="CDLParser.listItem"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitTargetListItem([NotNull] CDLParser.TargetListItemContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="CDLParser.targetItem"/>.
 	/// <para>
@@ -247,6 +292,16 @@ public partial class CDLBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	public virtual Result VisitTargetItem([NotNull] CDLParser.TargetItemContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CDLParser.enemyTarget"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitEnemyTarget([NotNull] CDLParser.EnemyTargetContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="CDLParser.paramsDef"/>.
 	/// <para>
@@ -307,6 +362,16 @@ public partial class CDLBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	public virtual Result VisitGamePropName([NotNull] CDLParser.GamePropNameContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CDLParser.gameStages"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitGameStages([NotNull] CDLParser.GameStagesContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="CDLParser.stageDefinition"/>.
 	/// <para>
@@ -518,7 +583,8 @@ public partial class CDLBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// <return>The visitor result.</return>
 	public virtual Result VisitCardDefinition([NotNull] CDLParser.CardDefinitionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CDLParser.cardProperties"/>.
+	/// Visit a parse tree produced by the <c>cardRarity</c>
+	/// labeled alternative in <see cref="CDLParser.cardProperty"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -526,9 +592,10 @@ public partial class CDLBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitCardProperties([NotNull] CDLParser.CardPropertiesContext context) { return VisitChildren(context); }
+	public virtual Result VisitCardRarity([NotNull] CDLParser.CardRarityContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CDLParser.cardEffectsList"/>.
+	/// Visit a parse tree produced by the <c>cardTargets</c>
+	/// labeled alternative in <see cref="CDLParser.cardProperty"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -536,5 +603,16 @@ public partial class CDLBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitCardEffectsList([NotNull] CDLParser.CardEffectsListContext context) { return VisitChildren(context); }
+	public virtual Result VisitCardTargets([NotNull] CDLParser.CardTargetsContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>cardEffects</c>
+	/// labeled alternative in <see cref="CDLParser.cardProperty"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitCardEffects([NotNull] CDLParser.CardEffectsContext context) { return VisitChildren(context); }
 }

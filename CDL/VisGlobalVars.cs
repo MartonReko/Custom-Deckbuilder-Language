@@ -1,13 +1,15 @@
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
+using CDL.exceptions;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 
 namespace CDL;
 
-public class VisGlobalVars(EnvManager em) : CDLBaseVisitor<object>
+public class VisGlobalVars(EnvManager em, CDLExceptionHandler exceptionHandler) : CDLBaseVisitor<object>
 {
     private readonly ILogger<VisGlobalVars> _logger = LoggerFactory.Create(builder => builder.AddNLog().SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace)).CreateLogger<VisGlobalVars>();
+    private CDLExceptionHandler ExceptionHandler { get; set; } = exceptionHandler;
     private void AddSymbolToTable(string typeName, ParserRuleContext varNameContext)
     {
         var type = em.Ts[typeName];
@@ -70,6 +72,8 @@ public class VisGlobalVars(EnvManager em) : CDLBaseVisitor<object>
                 var type = em.Ts[item.typeName().GetText()];
                 if (type == em.Ts.ERROR)
                 {
+                    (int, int) pos = EnvManager.GetPosLineCol(context);
+                    ExceptionHandler.AddException(new CDLException(pos.Item1, pos.Item2, "Type error"));
                     // TODO exception
                 }
                 else
@@ -84,8 +88,11 @@ public class VisGlobalVars(EnvManager em) : CDLBaseVisitor<object>
     public override object VisitEffectDefinition([NotNull] CDLParser.EffectDefinitionContext context)
     {
         var type = em.Ts[context.GetChild(0).GetText()];
-        if(type == em.Ts.ERROR){
+        if (type == em.Ts.ERROR)
+        {
             //TODO exception
+            (int, int) pos = EnvManager.GetPosLineCol(context);
+            ExceptionHandler.AddException(new CDLException(pos.Item1, pos.Item2, "Type error"));
         }
         string symbolText = context.varName().GetText();
         currentFn = new FnSymbol(symbolText, type);
@@ -108,7 +115,10 @@ public class VisGlobalVars(EnvManager em) : CDLBaseVisitor<object>
         var type = em.Ts["string"];
         if (type == em.Ts.ERROR)
         {
+
             // TODO exception
+            (int, int) pos = EnvManager.GetPosLineCol(context);
+            ExceptionHandler.AddException(new CDLException(pos.Item1, pos.Item2, "Type error"));
         }
         else
         {

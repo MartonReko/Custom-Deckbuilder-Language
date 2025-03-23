@@ -149,17 +149,52 @@ public interface ICDLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitList([NotNull] CDLParser.ListContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CDLParser.listItem"/>.
+	/// Visit a parse tree produced by the <c>singleListItem</c>
+	/// labeled alternative in <see cref="CDLParser.listItem"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitListItem([NotNull] CDLParser.ListItemContext context);
+	Result VisitSingleListItem([NotNull] CDLParser.SingleListItemContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>numberedListItem</c>
+	/// labeled alternative in <see cref="CDLParser.listItem"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitNumberedListItem([NotNull] CDLParser.NumberedListItemContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>chanceListItem</c>
+	/// labeled alternative in <see cref="CDLParser.listItem"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitChanceListItem([NotNull] CDLParser.ChanceListItemContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>attackListItem</c>
+	/// labeled alternative in <see cref="CDLParser.listItem"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitAttackListItem([NotNull] CDLParser.AttackListItemContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>targetListItem</c>
+	/// labeled alternative in <see cref="CDLParser.listItem"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitTargetListItem([NotNull] CDLParser.TargetListItemContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="CDLParser.targetItem"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitTargetItem([NotNull] CDLParser.TargetItemContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CDLParser.enemyTarget"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitEnemyTarget([NotNull] CDLParser.EnemyTargetContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="CDLParser.paramsDef"/>.
 	/// </summary>
@@ -196,6 +231,12 @@ public interface ICDLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitGamePropName([NotNull] CDLParser.GamePropNameContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CDLParser.gameStages"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitGameStages([NotNull] CDLParser.GameStagesContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="CDLParser.stageDefinition"/>.
 	/// </summary>
@@ -323,15 +364,24 @@ public interface ICDLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitCardDefinition([NotNull] CDLParser.CardDefinitionContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CDLParser.cardProperties"/>.
+	/// Visit a parse tree produced by the <c>cardRarity</c>
+	/// labeled alternative in <see cref="CDLParser.cardProperty"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitCardProperties([NotNull] CDLParser.CardPropertiesContext context);
+	Result VisitCardRarity([NotNull] CDLParser.CardRarityContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CDLParser.cardEffectsList"/>.
+	/// Visit a parse tree produced by the <c>cardTargets</c>
+	/// labeled alternative in <see cref="CDLParser.cardProperty"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitCardEffectsList([NotNull] CDLParser.CardEffectsListContext context);
+	Result VisitCardTargets([NotNull] CDLParser.CardTargetsContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>cardEffects</c>
+	/// labeled alternative in <see cref="CDLParser.cardProperty"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitCardEffects([NotNull] CDLParser.CardEffectsContext context);
 }

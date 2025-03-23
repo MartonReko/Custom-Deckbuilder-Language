@@ -4,24 +4,23 @@ grammar CDL;
 
 program: (configBlock | variableDeclaration)+;
 
-configBlock: 
-		gameSetup
-		| stageDefinition
-		| nodeDefinition
-		| charSetup
-		| enemyDefinition
-		| effectDefinition
-		| cardDefinition
-	;
+configBlock:
+	gameSetup
+	| stageDefinition
+	| nodeDefinition
+	| charSetup
+	| enemyDefinition
+	| effectDefinition
+	| cardDefinition;
 
 boolean: TRUE | FALSE;
 varName: ID;
-//numberValue: MINUS? (INT | DOUBLE);
 number: INT | DOUBLE;
 varRef: varName | varName params;
 rarityName: ID;
-typeName: INTTYPE | DOUBLETYPE | STRINGTYPE | BOOLEANTYPE; 
-variableDeclaration: typeName varName EQUALS literalExpression EOS;
+typeName: INTTYPE | DOUBLETYPE | STRINGTYPE | BOOLEANTYPE;
+variableDeclaration:
+	typeName varName EQUALS literalExpression EOS;
 typeNameVarName: typeName varName;
 
 expression:
@@ -32,38 +31,39 @@ addSubOp: PLUS | MINUS;
 mulDivOp: MUL | DIV;
 primary: parenthesizedExpression | literalExpression;
 parenthesizedExpression: LPAREN expression RPAREN;
-literalExpression: INT | DOUBLE | STRING | boolean | varName | DAMAGE;
+literalExpression:
+	INT
+	| DOUBLE
+	| STRING
+	| boolean
+	| varName
+	| DAMAGE;
 
 list: LBRACKET (listItem ((OR | COMMA) listItem)*)? RBRACKET;
 listItem:
-	varRef
-	| INT X varRef
-	| INT X varRef WITHCHANCE INT PERCENT
-	//  Enemy attacks target with varRef
-	| (INT X)? varRef (PLAYER)
-	| targetItem;
+	varRef									# singleListItem
+	| INT X varRef							# numberedListItem
+	| INT X varRef WITHCHANCE INT PERCENT	# chanceListItem
+	| (INT X)? varRef enemyTarget			# attackListItem
+	| targetItem							# targetListItem;
 targetItem: ENEMIES | ENEMYLC | PLAYER;
+enemyTarget: PLAYER;
 
-paramsDef
-	: LPAREN typeNameVarName (COMMA typeNameVarName)? RPAREN
-	;
-params
-	: LPAREN (varRef | literalExpression)? RPAREN;
+paramsDef:
+	LPAREN typeNameVarName (COMMA typeNameVarName)? RPAREN;
+params: LPAREN (varRef | literalExpression)? RPAREN;
 
 gameSetup: GAME LCURLY gameProperties RCURLY;
-/* gameProperties: (
-		PLAYERSELECT CLN varName EOS
-		| STAGES CLN list EOS
-		| NAME CLN varName EOS
-	)+; */
+/* gameProperties: ( PLAYERSELECT CLN varName EOS | STAGES CLN list EOS | NAME CLN varName EOS )+;
+ */
 gameProperties: (
 		gamePropPlayerselect
-		| STAGES CLN list EOS
+		| gameStages
 		| gamePropName
 	)+;
-gamePropPlayerselect:PLAYERSELECT CLN varName EOS ;
-gamePropName:NAME CLN varName EOS ;
-
+gamePropPlayerselect: PLAYERSELECT CLN varName EOS;
+gamePropName: NAME CLN varName EOS;
+gameStages: STAGES CLN list EOS;
 
 stageDefinition: STAGE varName LCURLY stageProperties RCURLY;
 stageProperties: (
@@ -91,12 +91,10 @@ charProperties: (
 	)+;
 
 enemyDefinition: ENEMY varName LCURLY enemyProperties RCURLY;
-enemyProperties: (
-		HEALTH CLN number EOS
-		| ACTIONS CLN list EOS
-	)+;
+enemyProperties: (HEALTH CLN number EOS | ACTIONS CLN list EOS)+;
 
-effectDefinition: EFFECT varName paramsDef? LCURLY effectType+ RCURLY;
+effectDefinition:
+	EFFECT varName paramsDef? LCURLY effectType+ RCURLY;
 effectType: passiveEffect | activeEffect;
 passiveEffect: (OUTGOING | INCOMING) DAMAGE IS expression EOS;
 activeEffect: (
@@ -105,13 +103,11 @@ activeEffect: (
 	)+;
 effectActivationOpt: INSTANTLY | ENDOFTURN;
 effectTarget: ENEMIES | TARGET | PLAYER;
-cardDefinition: CARD varName LCURLY cardProperties RCURLY;
-cardProperties: (
-		RARITY CLN rarityName EOS
-		| VALIDTARGETS CLN list EOS
-		| cardEffectsList
-	)+;
-cardEffectsList : APPLY CLN list EOS;
+cardDefinition: CARD varName LCURLY cardProperty+ RCURLY;
+cardProperty:
+	RARITY CLN rarityName EOS	# cardRarity
+	| VALIDTARGETS CLN list EOS	# cardTargets
+	| APPLY CLN list EOS		# cardEffects;
 
 //Lexer
 

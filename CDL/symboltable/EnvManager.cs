@@ -15,6 +15,9 @@ public class EnvManager()
     {
         return $"line #{context.Start.Line}, column #{context.Start.Column}";
     }
+    public static (int,int) GetPosLineCol(ParserRuleContext context){
+        return (context.Start.Line,context.Start.Column);
+    }
     public void AddVariableToScope(ParserRuleContext ctx, Symbol symbol)
     {
         try
