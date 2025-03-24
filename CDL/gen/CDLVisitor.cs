@@ -334,17 +334,26 @@ public interface ICDLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitEffectType([NotNull] CDLParser.EffectTypeContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CDLParser.passiveEffect"/>.
+	/// Visit a parse tree produced by the <c>damageModEffect</c>
+	/// labeled alternative in <see cref="CDLParser.passiveEffect"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitPassiveEffect([NotNull] CDLParser.PassiveEffectContext context);
+	Result VisitDamageModEffect([NotNull] CDLParser.DamageModEffectContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CDLParser.activeEffect"/>.
+	/// Visit a parse tree produced by the <c>damageDealEffect</c>
+	/// labeled alternative in <see cref="CDLParser.activeEffect"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitActiveEffect([NotNull] CDLParser.ActiveEffectContext context);
+	Result VisitDamageDealEffect([NotNull] CDLParser.DamageDealEffectContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>applierEffect</c>
+	/// labeled alternative in <see cref="CDLParser.activeEffect"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitApplierEffect([NotNull] CDLParser.ApplierEffectContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="CDLParser.effectActivationOpt"/>.
 	/// </summary>

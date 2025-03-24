@@ -96,11 +96,10 @@ enemyProperties: (HEALTH CLN number EOS | ACTIONS CLN list EOS)+;
 effectDefinition:
 	EFFECT varName paramsDef? LCURLY effectType+ RCURLY;
 effectType: passiveEffect | activeEffect;
-passiveEffect: (OUTGOING | INCOMING) DAMAGE IS expression EOS;
-activeEffect: (
-		(DEAL) expression DAMAGE effectActivationOpt EOS
-		| APPLY list FOR number TURNS TO effectTarget EOS
-	)+;
+passiveEffect: (OUTGOING | INCOMING) DAMAGE IS expression EOS # damageModEffect;
+activeEffect:
+	(DEAL) expression DAMAGE effectActivationOpt EOS	# damageDealEffect
+	| APPLY list FOR number TURNS TO effectTarget EOS	# applierEffect;
 effectActivationOpt: INSTANTLY | ENDOFTURN;
 effectTarget: ENEMIES | TARGET | PLAYER;
 cardDefinition: CARD varName LCURLY cardProperty+ RCURLY;

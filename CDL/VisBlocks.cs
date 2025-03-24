@@ -179,4 +179,13 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler) : CD
         }
         return base.VisitTargetItem(context);
     }
+
+    public override object VisitEffectDefinition([NotNull] CDLParser.EffectDefinitionContext context)
+    {
+        Effects.Add(new Effect(context.varName().GetText()));
+        var result = base.VisitEffectDefinition(context);
+        return result;
+    }
 }
+// TODO
+// Check for variable name repetitions?

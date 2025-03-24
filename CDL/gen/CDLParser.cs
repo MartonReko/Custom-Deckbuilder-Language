@@ -2940,6 +2940,18 @@ public partial class CDLParser : Parser {
 	}
 
 	public partial class PassiveEffectContext : ParserRuleContext {
+		public PassiveEffectContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_passiveEffect; } }
+	 
+		public PassiveEffectContext() { }
+		public virtual void CopyFrom(PassiveEffectContext context) {
+			base.CopyFrom(context);
+		}
+	}
+	public partial class DamageModEffectContext : PassiveEffectContext {
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DAMAGE() { return GetToken(CDLParser.DAMAGE, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode IS() { return GetToken(CDLParser.IS, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
@@ -2948,15 +2960,11 @@ public partial class CDLParser : Parser {
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode EOS() { return GetToken(CDLParser.EOS, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OUTGOING() { return GetToken(CDLParser.OUTGOING, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode INCOMING() { return GetToken(CDLParser.INCOMING, 0); }
-		public PassiveEffectContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_passiveEffect; } }
+		public DamageModEffectContext(PassiveEffectContext context) { CopyFrom(context); }
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ICDLVisitor<TResult> typedVisitor = visitor as ICDLVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitPassiveEffect(this);
+			if (typedVisitor != null) return typedVisitor.VisitDamageModEffect(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
@@ -2967,6 +2975,7 @@ public partial class CDLParser : Parser {
 		EnterRule(_localctx, 86, RULE_passiveEffect);
 		int _la;
 		try {
+			_localctx = new DamageModEffectContext(_localctx);
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 377;
@@ -3000,73 +3009,55 @@ public partial class CDLParser : Parser {
 	}
 
 	public partial class ActiveEffectContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext[] expression() {
-			return GetRuleContexts<ExpressionContext>();
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression(int i) {
-			return GetRuleContext<ExpressionContext>(i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] DAMAGE() { return GetTokens(CDLParser.DAMAGE); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DAMAGE(int i) {
-			return GetToken(CDLParser.DAMAGE, i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public EffectActivationOptContext[] effectActivationOpt() {
-			return GetRuleContexts<EffectActivationOptContext>();
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public EffectActivationOptContext effectActivationOpt(int i) {
-			return GetRuleContext<EffectActivationOptContext>(i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] EOS() { return GetTokens(CDLParser.EOS); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode EOS(int i) {
-			return GetToken(CDLParser.EOS, i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] APPLY() { return GetTokens(CDLParser.APPLY); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode APPLY(int i) {
-			return GetToken(CDLParser.APPLY, i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ListContext[] list() {
-			return GetRuleContexts<ListContext>();
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ListContext list(int i) {
-			return GetRuleContext<ListContext>(i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] FOR() { return GetTokens(CDLParser.FOR); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FOR(int i) {
-			return GetToken(CDLParser.FOR, i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public NumberContext[] number() {
-			return GetRuleContexts<NumberContext>();
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public NumberContext number(int i) {
-			return GetRuleContext<NumberContext>(i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] TURNS() { return GetTokens(CDLParser.TURNS); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TURNS(int i) {
-			return GetToken(CDLParser.TURNS, i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] TO() { return GetTokens(CDLParser.TO); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TO(int i) {
-			return GetToken(CDLParser.TO, i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public EffectTargetContext[] effectTarget() {
-			return GetRuleContexts<EffectTargetContext>();
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public EffectTargetContext effectTarget(int i) {
-			return GetRuleContext<EffectTargetContext>(i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] DEAL() { return GetTokens(CDLParser.DEAL); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DEAL(int i) {
-			return GetToken(CDLParser.DEAL, i);
-		}
 		public ActiveEffectContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_activeEffect; } }
+	 
+		public ActiveEffectContext() { }
+		public virtual void CopyFrom(ActiveEffectContext context) {
+			base.CopyFrom(context);
+		}
+	}
+	public partial class DamageDealEffectContext : ActiveEffectContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DAMAGE() { return GetToken(CDLParser.DAMAGE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public EffectActivationOptContext effectActivationOpt() {
+			return GetRuleContext<EffectActivationOptContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode EOS() { return GetToken(CDLParser.EOS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DEAL() { return GetToken(CDLParser.DEAL, 0); }
+		public DamageDealEffectContext(ActiveEffectContext context) { CopyFrom(context); }
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ICDLVisitor<TResult> typedVisitor = visitor as ICDLVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitActiveEffect(this);
+			if (typedVisitor != null) return typedVisitor.VisitDamageDealEffect(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class ApplierEffectContext : ActiveEffectContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode APPLY() { return GetToken(CDLParser.APPLY, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ListContext list() {
+			return GetRuleContext<ListContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FOR() { return GetToken(CDLParser.FOR, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public NumberContext number() {
+			return GetRuleContext<NumberContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TURNS() { return GetToken(CDLParser.TURNS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TO() { return GetToken(CDLParser.TO, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public EffectTargetContext effectTarget() {
+			return GetRuleContext<EffectTargetContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode EOS() { return GetToken(CDLParser.EOS, 0); }
+		public ApplierEffectContext(ActiveEffectContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ICDLVisitor<TResult> typedVisitor = visitor as ICDLVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitApplierEffect(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
@@ -3076,67 +3067,51 @@ public partial class CDLParser : Parser {
 		ActiveEffectContext _localctx = new ActiveEffectContext(Context, State);
 		EnterRule(_localctx, 88, RULE_activeEffect);
 		try {
-			int _alt;
-			EnterOuterAlt(_localctx, 1);
-			{
 			State = 398;
 			ErrorHandler.Sync(this);
-			_alt = 1;
-			do {
-				switch (_alt) {
-				case 1:
-					{
-					State = 398;
-					ErrorHandler.Sync(this);
-					switch (TokenStream.LA(1)) {
-					case DEAL:
-						{
-						{
-						State = 383;
-						Match(DEAL);
-						}
-						State = 384;
-						expression(0);
-						State = 385;
-						Match(DAMAGE);
-						State = 386;
-						effectActivationOpt();
-						State = 387;
-						Match(EOS);
-						}
-						break;
-					case APPLY:
-						{
-						State = 389;
-						Match(APPLY);
-						State = 390;
-						list();
-						State = 391;
-						Match(FOR);
-						State = 392;
-						number();
-						State = 393;
-						Match(TURNS);
-						State = 394;
-						Match(TO);
-						State = 395;
-						effectTarget();
-						State = 396;
-						Match(EOS);
-						}
-						break;
-					default:
-						throw new NoViableAltException(this);
-					}
-					}
-					break;
-				default:
-					throw new NoViableAltException(this);
+			switch (TokenStream.LA(1)) {
+			case DEAL:
+				_localctx = new DamageDealEffectContext(_localctx);
+				EnterOuterAlt(_localctx, 1);
+				{
+				{
+				State = 383;
+				Match(DEAL);
 				}
-				State = 400;
-				ErrorHandler.Sync(this);
-				_alt = Interpreter.AdaptivePredict(TokenStream,28,Context);
-			} while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.INVALID_ALT_NUMBER );
+				State = 384;
+				expression(0);
+				State = 385;
+				Match(DAMAGE);
+				State = 386;
+				effectActivationOpt();
+				State = 387;
+				Match(EOS);
+				}
+				break;
+			case APPLY:
+				_localctx = new ApplierEffectContext(_localctx);
+				EnterOuterAlt(_localctx, 2);
+				{
+				State = 389;
+				Match(APPLY);
+				State = 390;
+				list();
+				State = 391;
+				Match(FOR);
+				State = 392;
+				number();
+				State = 393;
+				Match(TURNS);
+				State = 394;
+				Match(TO);
+				State = 395;
+				effectTarget();
+				State = 396;
+				Match(EOS);
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
 			}
 		}
 		catch (RecognitionException re) {
@@ -3174,7 +3149,7 @@ public partial class CDLParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 402;
+			State = 400;
 			_la = TokenStream.LA(1);
 			if ( !(_la==INSTANTLY || _la==ENDOFTURN) ) {
 			ErrorHandler.RecoverInline(this);
@@ -3221,7 +3196,7 @@ public partial class CDLParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 404;
+			State = 402;
 			_la = TokenStream.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 4390912L) != 0)) ) {
 			ErrorHandler.RecoverInline(this);
@@ -3277,27 +3252,27 @@ public partial class CDLParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 406;
+			State = 404;
 			Match(CARD);
-			State = 407;
+			State = 405;
 			varName();
-			State = 408;
+			State = 406;
 			Match(LCURLY);
-			State = 410;
+			State = 408;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			do {
 				{
 				{
-				State = 409;
+				State = 407;
 				cardProperty();
 				}
 				}
-				State = 412;
+				State = 410;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & 100663808L) != 0) );
-			State = 414;
+			State = 412;
 			Match(RCURLY);
 			}
 		}
@@ -3375,20 +3350,20 @@ public partial class CDLParser : Parser {
 		CardPropertyContext _localctx = new CardPropertyContext(Context, State);
 		EnterRule(_localctx, 96, RULE_cardProperty);
 		try {
-			State = 431;
+			State = 429;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
 			case RARITY:
 				_localctx = new CardRarityContext(_localctx);
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 416;
+				State = 414;
 				Match(RARITY);
-				State = 417;
+				State = 415;
 				Match(CLN);
-				State = 418;
+				State = 416;
 				rarityName();
-				State = 419;
+				State = 417;
 				Match(EOS);
 				}
 				break;
@@ -3396,13 +3371,13 @@ public partial class CDLParser : Parser {
 				_localctx = new CardTargetsContext(_localctx);
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 421;
+				State = 419;
 				Match(VALIDTARGETS);
-				State = 422;
+				State = 420;
 				Match(CLN);
-				State = 423;
+				State = 421;
 				list();
-				State = 424;
+				State = 422;
 				Match(EOS);
 				}
 				break;
@@ -3410,13 +3385,13 @@ public partial class CDLParser : Parser {
 				_localctx = new CardEffectsContext(_localctx);
 				EnterOuterAlt(_localctx, 3);
 				{
-				State = 426;
+				State = 424;
 				Match(APPLY);
-				State = 427;
+				State = 425;
 				Match(CLN);
-				State = 428;
+				State = 426;
 				list();
-				State = 429;
+				State = 427;
 				Match(EOS);
 				}
 				break;
@@ -3450,7 +3425,7 @@ public partial class CDLParser : Parser {
 	}
 
 	private static int[] _serializedATN = {
-		4,1,73,434,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,7,
+		4,1,73,432,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,7,
 		7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,2,14,7,14,
 		2,15,7,15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,2,20,7,20,2,21,7,21,
 		2,22,7,22,2,23,7,23,2,24,7,24,2,25,7,25,2,26,7,26,2,27,7,27,2,28,7,28,
@@ -3479,115 +3454,114 @@ public partial class CDLParser : Parser {
 		1,40,4,40,357,8,40,11,40,12,40,358,1,41,1,41,1,41,3,41,364,8,41,1,41,1,
 		41,4,41,368,8,41,11,41,12,41,369,1,41,1,41,1,42,1,42,3,42,376,8,42,1,43,
 		1,43,1,43,1,43,1,43,1,43,1,44,1,44,1,44,1,44,1,44,1,44,1,44,1,44,1,44,
-		1,44,1,44,1,44,1,44,1,44,1,44,4,44,399,8,44,11,44,12,44,400,1,45,1,45,
-		1,46,1,46,1,47,1,47,1,47,1,47,4,47,411,8,47,11,47,12,47,412,1,47,1,47,
-		1,48,1,48,1,48,1,48,1,48,1,48,1,48,1,48,1,48,1,48,1,48,1,48,1,48,1,48,
-		1,48,3,48,432,8,48,1,48,0,1,20,49,0,2,4,6,8,10,12,14,16,18,20,22,24,26,
-		28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,
-		76,78,80,82,84,86,88,90,92,94,96,0,10,1,0,65,66,1,0,68,69,1,0,61,64,1,
-		0,48,49,1,0,46,47,2,0,5,5,58,58,2,0,16,17,44,44,1,0,18,19,1,0,11,12,2,
-		0,16,17,22,22,434,0,100,1,0,0,0,2,111,1,0,0,0,4,113,1,0,0,0,6,115,1,0,
-		0,0,8,117,1,0,0,0,10,123,1,0,0,0,12,125,1,0,0,0,14,127,1,0,0,0,16,129,
-		1,0,0,0,18,135,1,0,0,0,20,138,1,0,0,0,22,154,1,0,0,0,24,156,1,0,0,0,26,
-		160,1,0,0,0,28,162,1,0,0,0,30,172,1,0,0,0,32,174,1,0,0,0,34,206,1,0,0,
-		0,36,208,1,0,0,0,38,210,1,0,0,0,40,212,1,0,0,0,42,220,1,0,0,0,44,227,1,
-		0,0,0,46,235,1,0,0,0,48,239,1,0,0,0,50,244,1,0,0,0,52,249,1,0,0,0,54,254,
-		1,0,0,0,56,266,1,0,0,0,58,270,1,0,0,0,60,275,1,0,0,0,62,280,1,0,0,0,64,
-		285,1,0,0,0,66,290,1,0,0,0,68,295,1,0,0,0,70,300,1,0,0,0,72,316,1,0,0,
-		0,74,320,1,0,0,0,76,336,1,0,0,0,78,340,1,0,0,0,80,356,1,0,0,0,82,360,1,
-		0,0,0,84,375,1,0,0,0,86,377,1,0,0,0,88,398,1,0,0,0,90,402,1,0,0,0,92,404,
-		1,0,0,0,94,406,1,0,0,0,96,431,1,0,0,0,98,101,3,2,1,0,99,101,3,16,8,0,100,
-		98,1,0,0,0,100,99,1,0,0,0,101,102,1,0,0,0,102,100,1,0,0,0,102,103,1,0,
-		0,0,103,1,1,0,0,0,104,112,3,44,22,0,105,112,3,54,27,0,106,112,3,70,35,
-		0,107,112,3,74,37,0,108,112,3,78,39,0,109,112,3,82,41,0,110,112,3,94,47,
-		0,111,104,1,0,0,0,111,105,1,0,0,0,111,106,1,0,0,0,111,107,1,0,0,0,111,
-		108,1,0,0,0,111,109,1,0,0,0,111,110,1,0,0,0,112,3,1,0,0,0,113,114,7,0,
-		0,0,114,5,1,0,0,0,115,116,5,70,0,0,116,7,1,0,0,0,117,118,7,1,0,0,118,9,
-		1,0,0,0,119,124,3,6,3,0,120,121,3,6,3,0,121,122,3,42,21,0,122,124,1,0,
-		0,0,123,119,1,0,0,0,123,120,1,0,0,0,124,11,1,0,0,0,125,126,5,70,0,0,126,
-		13,1,0,0,0,127,128,7,2,0,0,128,15,1,0,0,0,129,130,3,14,7,0,130,131,3,6,
-		3,0,131,132,5,60,0,0,132,133,3,30,15,0,133,134,5,72,0,0,134,17,1,0,0,0,
-		135,136,3,14,7,0,136,137,3,6,3,0,137,19,1,0,0,0,138,139,6,10,-1,0,139,
-		140,3,26,13,0,140,151,1,0,0,0,141,142,10,2,0,0,142,143,3,22,11,0,143,144,
-		3,20,10,3,144,150,1,0,0,0,145,146,10,1,0,0,146,147,3,24,12,0,147,148,3,
-		20,10,2,148,150,1,0,0,0,149,141,1,0,0,0,149,145,1,0,0,0,150,153,1,0,0,
-		0,151,149,1,0,0,0,151,152,1,0,0,0,152,21,1,0,0,0,153,151,1,0,0,0,154,155,
-		7,3,0,0,155,23,1,0,0,0,156,157,7,4,0,0,157,25,1,0,0,0,158,161,3,28,14,
-		0,159,161,3,30,15,0,160,158,1,0,0,0,160,159,1,0,0,0,161,27,1,0,0,0,162,
-		163,5,56,0,0,163,164,3,20,10,0,164,165,5,57,0,0,165,29,1,0,0,0,166,173,
-		5,68,0,0,167,173,5,69,0,0,168,173,5,67,0,0,169,173,3,4,2,0,170,173,3,6,
-		3,0,171,173,5,10,0,0,172,166,1,0,0,0,172,167,1,0,0,0,172,168,1,0,0,0,172,
-		169,1,0,0,0,172,170,1,0,0,0,172,171,1,0,0,0,173,31,1,0,0,0,174,183,5,52,
-		0,0,175,180,3,34,17,0,176,177,7,5,0,0,177,179,3,34,17,0,178,176,1,0,0,
-		0,179,182,1,0,0,0,180,178,1,0,0,0,180,181,1,0,0,0,181,184,1,0,0,0,182,
-		180,1,0,0,0,183,175,1,0,0,0,183,184,1,0,0,0,184,185,1,0,0,0,185,186,5,
-		53,0,0,186,33,1,0,0,0,187,207,3,10,5,0,188,189,5,68,0,0,189,190,5,45,0,
-		0,190,207,3,10,5,0,191,192,5,68,0,0,192,193,5,45,0,0,193,194,3,10,5,0,
-		194,195,5,4,0,0,195,196,5,68,0,0,196,197,5,59,0,0,197,207,1,0,0,0,198,
-		199,5,68,0,0,199,201,5,45,0,0,200,198,1,0,0,0,200,201,1,0,0,0,201,202,
-		1,0,0,0,202,203,3,10,5,0,203,204,3,38,19,0,204,207,1,0,0,0,205,207,3,36,
-		18,0,206,187,1,0,0,0,206,188,1,0,0,0,206,191,1,0,0,0,206,200,1,0,0,0,206,
-		205,1,0,0,0,207,35,1,0,0,0,208,209,7,6,0,0,209,37,1,0,0,0,210,211,5,17,
-		0,0,211,39,1,0,0,0,212,213,5,56,0,0,213,216,3,18,9,0,214,215,5,58,0,0,
-		215,217,3,18,9,0,216,214,1,0,0,0,216,217,1,0,0,0,217,218,1,0,0,0,218,219,
-		5,57,0,0,219,41,1,0,0,0,220,223,5,56,0,0,221,224,3,10,5,0,222,224,3,30,
-		15,0,223,221,1,0,0,0,223,222,1,0,0,0,223,224,1,0,0,0,224,225,1,0,0,0,225,
-		226,5,57,0,0,226,43,1,0,0,0,227,228,5,29,0,0,228,229,5,54,0,0,229,230,
-		3,46,23,0,230,231,5,55,0,0,231,45,1,0,0,0,232,236,3,48,24,0,233,236,3,
-		52,26,0,234,236,3,50,25,0,235,232,1,0,0,0,235,233,1,0,0,0,235,234,1,0,
-		0,0,236,237,1,0,0,0,237,235,1,0,0,0,237,238,1,0,0,0,238,47,1,0,0,0,239,
-		240,5,42,0,0,240,241,5,51,0,0,241,242,3,6,3,0,242,243,5,72,0,0,243,49,
-		1,0,0,0,244,245,5,41,0,0,245,246,5,51,0,0,246,247,3,6,3,0,247,248,5,72,
-		0,0,248,51,1,0,0,0,249,250,5,30,0,0,250,251,5,51,0,0,251,252,3,32,16,0,
-		252,253,5,72,0,0,253,53,1,0,0,0,254,255,5,39,0,0,255,256,3,6,3,0,256,257,
-		5,54,0,0,257,258,3,56,28,0,258,259,5,55,0,0,259,55,1,0,0,0,260,267,3,58,
-		29,0,261,267,3,62,31,0,262,267,3,60,30,0,263,267,3,64,32,0,264,267,3,66,
-		33,0,265,267,3,68,34,0,266,260,1,0,0,0,266,261,1,0,0,0,266,262,1,0,0,0,
-		266,263,1,0,0,0,266,264,1,0,0,0,266,265,1,0,0,0,267,268,1,0,0,0,268,266,
-		1,0,0,0,268,269,1,0,0,0,269,57,1,0,0,0,270,271,5,31,0,0,271,272,5,51,0,
-		0,272,273,5,68,0,0,273,274,5,72,0,0,274,59,1,0,0,0,275,276,5,33,0,0,276,
-		277,5,51,0,0,277,278,5,68,0,0,278,279,5,72,0,0,279,61,1,0,0,0,280,281,
-		5,32,0,0,281,282,5,51,0,0,282,283,5,68,0,0,283,284,5,72,0,0,284,63,1,0,
-		0,0,285,286,5,34,0,0,286,287,5,51,0,0,287,288,3,32,16,0,288,289,5,72,0,
-		0,289,65,1,0,0,0,290,291,5,35,0,0,291,292,5,51,0,0,292,293,3,32,16,0,293,
-		294,5,72,0,0,294,67,1,0,0,0,295,296,5,36,0,0,296,297,5,51,0,0,297,298,
-		3,6,3,0,298,299,5,72,0,0,299,69,1,0,0,0,300,301,5,37,0,0,301,302,3,6,3,
-		0,302,303,5,54,0,0,303,304,3,72,36,0,304,305,5,55,0,0,305,71,1,0,0,0,306,
-		307,5,38,0,0,307,308,5,51,0,0,308,309,3,32,16,0,309,310,5,72,0,0,310,317,
-		1,0,0,0,311,312,5,40,0,0,312,313,5,51,0,0,313,314,3,32,16,0,314,315,5,
-		72,0,0,315,317,1,0,0,0,316,306,1,0,0,0,316,311,1,0,0,0,317,318,1,0,0,0,
-		318,316,1,0,0,0,318,319,1,0,0,0,319,73,1,0,0,0,320,321,5,1,0,0,321,322,
-		3,6,3,0,322,323,5,54,0,0,323,324,3,76,38,0,324,325,5,55,0,0,325,75,1,0,
-		0,0,326,327,5,2,0,0,327,328,5,51,0,0,328,329,3,8,4,0,329,330,5,72,0,0,
-		330,337,1,0,0,0,331,332,5,3,0,0,332,333,5,51,0,0,333,334,3,32,16,0,334,
-		335,5,72,0,0,335,337,1,0,0,0,336,326,1,0,0,0,336,331,1,0,0,0,337,338,1,
-		0,0,0,338,336,1,0,0,0,338,339,1,0,0,0,339,77,1,0,0,0,340,341,5,43,0,0,
-		341,342,3,6,3,0,342,343,5,54,0,0,343,344,3,80,40,0,344,345,5,55,0,0,345,
-		79,1,0,0,0,346,347,5,2,0,0,347,348,5,51,0,0,348,349,3,8,4,0,349,350,5,
-		72,0,0,350,357,1,0,0,0,351,352,5,6,0,0,352,353,5,51,0,0,353,354,3,32,16,
-		0,354,355,5,72,0,0,355,357,1,0,0,0,356,346,1,0,0,0,356,351,1,0,0,0,357,
-		358,1,0,0,0,358,356,1,0,0,0,358,359,1,0,0,0,359,81,1,0,0,0,360,361,5,7,
-		0,0,361,363,3,6,3,0,362,364,3,40,20,0,363,362,1,0,0,0,363,364,1,0,0,0,
-		364,365,1,0,0,0,365,367,5,54,0,0,366,368,3,84,42,0,367,366,1,0,0,0,368,
-		369,1,0,0,0,369,367,1,0,0,0,369,370,1,0,0,0,370,371,1,0,0,0,371,372,5,
-		55,0,0,372,83,1,0,0,0,373,376,3,86,43,0,374,376,3,88,44,0,375,373,1,0,
-		0,0,375,374,1,0,0,0,376,85,1,0,0,0,377,378,7,7,0,0,378,379,5,10,0,0,379,
-		380,5,20,0,0,380,381,3,20,10,0,381,382,5,72,0,0,382,87,1,0,0,0,383,384,
-		5,23,0,0,384,385,3,20,10,0,385,386,5,10,0,0,386,387,3,90,45,0,387,388,
-		5,72,0,0,388,399,1,0,0,0,389,390,5,9,0,0,390,391,3,32,16,0,391,392,5,13,
-		0,0,392,393,3,8,4,0,393,394,5,14,0,0,394,395,5,15,0,0,395,396,3,92,46,
-		0,396,397,5,72,0,0,397,399,1,0,0,0,398,383,1,0,0,0,398,389,1,0,0,0,399,
-		400,1,0,0,0,400,398,1,0,0,0,400,401,1,0,0,0,401,89,1,0,0,0,402,403,7,8,
-		0,0,403,91,1,0,0,0,404,405,7,9,0,0,405,93,1,0,0,0,406,407,5,24,0,0,407,
-		408,3,6,3,0,408,410,5,54,0,0,409,411,3,96,48,0,410,409,1,0,0,0,411,412,
-		1,0,0,0,412,410,1,0,0,0,412,413,1,0,0,0,413,414,1,0,0,0,414,415,5,55,0,
-		0,415,95,1,0,0,0,416,417,5,25,0,0,417,418,5,51,0,0,418,419,3,12,6,0,419,
-		420,5,72,0,0,420,432,1,0,0,0,421,422,5,26,0,0,422,423,5,51,0,0,423,424,
-		3,32,16,0,424,425,5,72,0,0,425,432,1,0,0,0,426,427,5,9,0,0,427,428,5,51,
-		0,0,428,429,3,32,16,0,429,430,5,72,0,0,430,432,1,0,0,0,431,416,1,0,0,0,
-		431,421,1,0,0,0,431,426,1,0,0,0,432,97,1,0,0,0,31,100,102,111,123,149,
-		151,160,172,180,183,200,206,216,223,235,237,266,268,316,318,336,338,356,
-		358,363,369,375,398,400,412,431
+		1,44,1,44,1,44,1,44,1,44,1,44,3,44,399,8,44,1,45,1,45,1,46,1,46,1,47,1,
+		47,1,47,1,47,4,47,409,8,47,11,47,12,47,410,1,47,1,47,1,48,1,48,1,48,1,
+		48,1,48,1,48,1,48,1,48,1,48,1,48,1,48,1,48,1,48,1,48,1,48,3,48,430,8,48,
+		1,48,0,1,20,49,0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,
+		40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,78,80,82,84,86,
+		88,90,92,94,96,0,10,1,0,65,66,1,0,68,69,1,0,61,64,1,0,48,49,1,0,46,47,
+		2,0,5,5,58,58,2,0,16,17,44,44,1,0,18,19,1,0,11,12,2,0,16,17,22,22,431,
+		0,100,1,0,0,0,2,111,1,0,0,0,4,113,1,0,0,0,6,115,1,0,0,0,8,117,1,0,0,0,
+		10,123,1,0,0,0,12,125,1,0,0,0,14,127,1,0,0,0,16,129,1,0,0,0,18,135,1,0,
+		0,0,20,138,1,0,0,0,22,154,1,0,0,0,24,156,1,0,0,0,26,160,1,0,0,0,28,162,
+		1,0,0,0,30,172,1,0,0,0,32,174,1,0,0,0,34,206,1,0,0,0,36,208,1,0,0,0,38,
+		210,1,0,0,0,40,212,1,0,0,0,42,220,1,0,0,0,44,227,1,0,0,0,46,235,1,0,0,
+		0,48,239,1,0,0,0,50,244,1,0,0,0,52,249,1,0,0,0,54,254,1,0,0,0,56,266,1,
+		0,0,0,58,270,1,0,0,0,60,275,1,0,0,0,62,280,1,0,0,0,64,285,1,0,0,0,66,290,
+		1,0,0,0,68,295,1,0,0,0,70,300,1,0,0,0,72,316,1,0,0,0,74,320,1,0,0,0,76,
+		336,1,0,0,0,78,340,1,0,0,0,80,356,1,0,0,0,82,360,1,0,0,0,84,375,1,0,0,
+		0,86,377,1,0,0,0,88,398,1,0,0,0,90,400,1,0,0,0,92,402,1,0,0,0,94,404,1,
+		0,0,0,96,429,1,0,0,0,98,101,3,2,1,0,99,101,3,16,8,0,100,98,1,0,0,0,100,
+		99,1,0,0,0,101,102,1,0,0,0,102,100,1,0,0,0,102,103,1,0,0,0,103,1,1,0,0,
+		0,104,112,3,44,22,0,105,112,3,54,27,0,106,112,3,70,35,0,107,112,3,74,37,
+		0,108,112,3,78,39,0,109,112,3,82,41,0,110,112,3,94,47,0,111,104,1,0,0,
+		0,111,105,1,0,0,0,111,106,1,0,0,0,111,107,1,0,0,0,111,108,1,0,0,0,111,
+		109,1,0,0,0,111,110,1,0,0,0,112,3,1,0,0,0,113,114,7,0,0,0,114,5,1,0,0,
+		0,115,116,5,70,0,0,116,7,1,0,0,0,117,118,7,1,0,0,118,9,1,0,0,0,119,124,
+		3,6,3,0,120,121,3,6,3,0,121,122,3,42,21,0,122,124,1,0,0,0,123,119,1,0,
+		0,0,123,120,1,0,0,0,124,11,1,0,0,0,125,126,5,70,0,0,126,13,1,0,0,0,127,
+		128,7,2,0,0,128,15,1,0,0,0,129,130,3,14,7,0,130,131,3,6,3,0,131,132,5,
+		60,0,0,132,133,3,30,15,0,133,134,5,72,0,0,134,17,1,0,0,0,135,136,3,14,
+		7,0,136,137,3,6,3,0,137,19,1,0,0,0,138,139,6,10,-1,0,139,140,3,26,13,0,
+		140,151,1,0,0,0,141,142,10,2,0,0,142,143,3,22,11,0,143,144,3,20,10,3,144,
+		150,1,0,0,0,145,146,10,1,0,0,146,147,3,24,12,0,147,148,3,20,10,2,148,150,
+		1,0,0,0,149,141,1,0,0,0,149,145,1,0,0,0,150,153,1,0,0,0,151,149,1,0,0,
+		0,151,152,1,0,0,0,152,21,1,0,0,0,153,151,1,0,0,0,154,155,7,3,0,0,155,23,
+		1,0,0,0,156,157,7,4,0,0,157,25,1,0,0,0,158,161,3,28,14,0,159,161,3,30,
+		15,0,160,158,1,0,0,0,160,159,1,0,0,0,161,27,1,0,0,0,162,163,5,56,0,0,163,
+		164,3,20,10,0,164,165,5,57,0,0,165,29,1,0,0,0,166,173,5,68,0,0,167,173,
+		5,69,0,0,168,173,5,67,0,0,169,173,3,4,2,0,170,173,3,6,3,0,171,173,5,10,
+		0,0,172,166,1,0,0,0,172,167,1,0,0,0,172,168,1,0,0,0,172,169,1,0,0,0,172,
+		170,1,0,0,0,172,171,1,0,0,0,173,31,1,0,0,0,174,183,5,52,0,0,175,180,3,
+		34,17,0,176,177,7,5,0,0,177,179,3,34,17,0,178,176,1,0,0,0,179,182,1,0,
+		0,0,180,178,1,0,0,0,180,181,1,0,0,0,181,184,1,0,0,0,182,180,1,0,0,0,183,
+		175,1,0,0,0,183,184,1,0,0,0,184,185,1,0,0,0,185,186,5,53,0,0,186,33,1,
+		0,0,0,187,207,3,10,5,0,188,189,5,68,0,0,189,190,5,45,0,0,190,207,3,10,
+		5,0,191,192,5,68,0,0,192,193,5,45,0,0,193,194,3,10,5,0,194,195,5,4,0,0,
+		195,196,5,68,0,0,196,197,5,59,0,0,197,207,1,0,0,0,198,199,5,68,0,0,199,
+		201,5,45,0,0,200,198,1,0,0,0,200,201,1,0,0,0,201,202,1,0,0,0,202,203,3,
+		10,5,0,203,204,3,38,19,0,204,207,1,0,0,0,205,207,3,36,18,0,206,187,1,0,
+		0,0,206,188,1,0,0,0,206,191,1,0,0,0,206,200,1,0,0,0,206,205,1,0,0,0,207,
+		35,1,0,0,0,208,209,7,6,0,0,209,37,1,0,0,0,210,211,5,17,0,0,211,39,1,0,
+		0,0,212,213,5,56,0,0,213,216,3,18,9,0,214,215,5,58,0,0,215,217,3,18,9,
+		0,216,214,1,0,0,0,216,217,1,0,0,0,217,218,1,0,0,0,218,219,5,57,0,0,219,
+		41,1,0,0,0,220,223,5,56,0,0,221,224,3,10,5,0,222,224,3,30,15,0,223,221,
+		1,0,0,0,223,222,1,0,0,0,223,224,1,0,0,0,224,225,1,0,0,0,225,226,5,57,0,
+		0,226,43,1,0,0,0,227,228,5,29,0,0,228,229,5,54,0,0,229,230,3,46,23,0,230,
+		231,5,55,0,0,231,45,1,0,0,0,232,236,3,48,24,0,233,236,3,52,26,0,234,236,
+		3,50,25,0,235,232,1,0,0,0,235,233,1,0,0,0,235,234,1,0,0,0,236,237,1,0,
+		0,0,237,235,1,0,0,0,237,238,1,0,0,0,238,47,1,0,0,0,239,240,5,42,0,0,240,
+		241,5,51,0,0,241,242,3,6,3,0,242,243,5,72,0,0,243,49,1,0,0,0,244,245,5,
+		41,0,0,245,246,5,51,0,0,246,247,3,6,3,0,247,248,5,72,0,0,248,51,1,0,0,
+		0,249,250,5,30,0,0,250,251,5,51,0,0,251,252,3,32,16,0,252,253,5,72,0,0,
+		253,53,1,0,0,0,254,255,5,39,0,0,255,256,3,6,3,0,256,257,5,54,0,0,257,258,
+		3,56,28,0,258,259,5,55,0,0,259,55,1,0,0,0,260,267,3,58,29,0,261,267,3,
+		62,31,0,262,267,3,60,30,0,263,267,3,64,32,0,264,267,3,66,33,0,265,267,
+		3,68,34,0,266,260,1,0,0,0,266,261,1,0,0,0,266,262,1,0,0,0,266,263,1,0,
+		0,0,266,264,1,0,0,0,266,265,1,0,0,0,267,268,1,0,0,0,268,266,1,0,0,0,268,
+		269,1,0,0,0,269,57,1,0,0,0,270,271,5,31,0,0,271,272,5,51,0,0,272,273,5,
+		68,0,0,273,274,5,72,0,0,274,59,1,0,0,0,275,276,5,33,0,0,276,277,5,51,0,
+		0,277,278,5,68,0,0,278,279,5,72,0,0,279,61,1,0,0,0,280,281,5,32,0,0,281,
+		282,5,51,0,0,282,283,5,68,0,0,283,284,5,72,0,0,284,63,1,0,0,0,285,286,
+		5,34,0,0,286,287,5,51,0,0,287,288,3,32,16,0,288,289,5,72,0,0,289,65,1,
+		0,0,0,290,291,5,35,0,0,291,292,5,51,0,0,292,293,3,32,16,0,293,294,5,72,
+		0,0,294,67,1,0,0,0,295,296,5,36,0,0,296,297,5,51,0,0,297,298,3,6,3,0,298,
+		299,5,72,0,0,299,69,1,0,0,0,300,301,5,37,0,0,301,302,3,6,3,0,302,303,5,
+		54,0,0,303,304,3,72,36,0,304,305,5,55,0,0,305,71,1,0,0,0,306,307,5,38,
+		0,0,307,308,5,51,0,0,308,309,3,32,16,0,309,310,5,72,0,0,310,317,1,0,0,
+		0,311,312,5,40,0,0,312,313,5,51,0,0,313,314,3,32,16,0,314,315,5,72,0,0,
+		315,317,1,0,0,0,316,306,1,0,0,0,316,311,1,0,0,0,317,318,1,0,0,0,318,316,
+		1,0,0,0,318,319,1,0,0,0,319,73,1,0,0,0,320,321,5,1,0,0,321,322,3,6,3,0,
+		322,323,5,54,0,0,323,324,3,76,38,0,324,325,5,55,0,0,325,75,1,0,0,0,326,
+		327,5,2,0,0,327,328,5,51,0,0,328,329,3,8,4,0,329,330,5,72,0,0,330,337,
+		1,0,0,0,331,332,5,3,0,0,332,333,5,51,0,0,333,334,3,32,16,0,334,335,5,72,
+		0,0,335,337,1,0,0,0,336,326,1,0,0,0,336,331,1,0,0,0,337,338,1,0,0,0,338,
+		336,1,0,0,0,338,339,1,0,0,0,339,77,1,0,0,0,340,341,5,43,0,0,341,342,3,
+		6,3,0,342,343,5,54,0,0,343,344,3,80,40,0,344,345,5,55,0,0,345,79,1,0,0,
+		0,346,347,5,2,0,0,347,348,5,51,0,0,348,349,3,8,4,0,349,350,5,72,0,0,350,
+		357,1,0,0,0,351,352,5,6,0,0,352,353,5,51,0,0,353,354,3,32,16,0,354,355,
+		5,72,0,0,355,357,1,0,0,0,356,346,1,0,0,0,356,351,1,0,0,0,357,358,1,0,0,
+		0,358,356,1,0,0,0,358,359,1,0,0,0,359,81,1,0,0,0,360,361,5,7,0,0,361,363,
+		3,6,3,0,362,364,3,40,20,0,363,362,1,0,0,0,363,364,1,0,0,0,364,365,1,0,
+		0,0,365,367,5,54,0,0,366,368,3,84,42,0,367,366,1,0,0,0,368,369,1,0,0,0,
+		369,367,1,0,0,0,369,370,1,0,0,0,370,371,1,0,0,0,371,372,5,55,0,0,372,83,
+		1,0,0,0,373,376,3,86,43,0,374,376,3,88,44,0,375,373,1,0,0,0,375,374,1,
+		0,0,0,376,85,1,0,0,0,377,378,7,7,0,0,378,379,5,10,0,0,379,380,5,20,0,0,
+		380,381,3,20,10,0,381,382,5,72,0,0,382,87,1,0,0,0,383,384,5,23,0,0,384,
+		385,3,20,10,0,385,386,5,10,0,0,386,387,3,90,45,0,387,388,5,72,0,0,388,
+		399,1,0,0,0,389,390,5,9,0,0,390,391,3,32,16,0,391,392,5,13,0,0,392,393,
+		3,8,4,0,393,394,5,14,0,0,394,395,5,15,0,0,395,396,3,92,46,0,396,397,5,
+		72,0,0,397,399,1,0,0,0,398,383,1,0,0,0,398,389,1,0,0,0,399,89,1,0,0,0,
+		400,401,7,8,0,0,401,91,1,0,0,0,402,403,7,9,0,0,403,93,1,0,0,0,404,405,
+		5,24,0,0,405,406,3,6,3,0,406,408,5,54,0,0,407,409,3,96,48,0,408,407,1,
+		0,0,0,409,410,1,0,0,0,410,408,1,0,0,0,410,411,1,0,0,0,411,412,1,0,0,0,
+		412,413,5,55,0,0,413,95,1,0,0,0,414,415,5,25,0,0,415,416,5,51,0,0,416,
+		417,3,12,6,0,417,418,5,72,0,0,418,430,1,0,0,0,419,420,5,26,0,0,420,421,
+		5,51,0,0,421,422,3,32,16,0,422,423,5,72,0,0,423,430,1,0,0,0,424,425,5,
+		9,0,0,425,426,5,51,0,0,426,427,3,32,16,0,427,428,5,72,0,0,428,430,1,0,
+		0,0,429,414,1,0,0,0,429,419,1,0,0,0,429,424,1,0,0,0,430,97,1,0,0,0,30,
+		100,102,111,123,149,151,160,172,180,183,200,206,216,223,235,237,266,268,
+		316,318,336,338,356,358,363,369,375,398,410,429
 	};
 
 	public static readonly ATN _ATN =
