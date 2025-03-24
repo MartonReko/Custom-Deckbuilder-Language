@@ -25,7 +25,15 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler) : CD
 
     // 
     private List<object> LocalListContent { get; set; } = [];
-
+    private readonly struct ExpressionHelper(CDLType type, object value)
+    {
+        readonly CDLType type = type;
+        readonly object value = value;
+        public override string ToString()
+        {
+            return $"ExpressionHelper type: {type.Name}\tvalue: {value.ToString()}";
+        }
+    }
     private void LogCards()
     {
         foreach (var card in Cards)
@@ -152,7 +160,8 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler) : CD
     }
     public override object VisitCardEffects([NotNull] CDLParser.CardEffectsContext context)
     {
-        foreach(var item in LocalListContent){
+        foreach (var item in LocalListContent)
+        {
             // TODO
             // Add effect objects probably to the card when we have actual effects
         }
@@ -179,12 +188,38 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler) : CD
         }
         return base.VisitTargetItem(context);
     }
-
+    public override object VisitLiteralExpression([NotNull] CDLParser.LiteralExpressionContext context)
+    {
+        var expressionType = em.GetType(context);
+        if (expressionType == null)
+        {
+            return base.VisitLiteralExpression(context);
+        }
+        return new ExpressionHelper(
+            expressionType, context.GetText()
+        );
+        return base.VisitLiteralExpression(context);
+    }
+    public override object VisitPrimaryExpression([NotNull] CDLParser.PrimaryExpressionContext context)
+    {
+        var result = base.VisitPrimaryExpression(context);
+        if (result != null)
+            System.Console.WriteLine(result.ToString());
+        return result;
+    }
     public override object VisitEffectDefinition([NotNull] CDLParser.EffectDefinitionContext context)
     {
         Effects.Add(new Effect(context.varName().GetText()));
         var result = base.VisitEffectDefinition(context);
         return result;
+    }
+    public override object VisitDamageModEffect([NotNull] CDLParser.DamageModEffectContext context)
+    {
+        if (context.OUTGOING != null)
+        {
+            //Effects.Last().OutDmgMod = 
+        }
+        return base.VisitDamageModEffect(context);
     }
 }
 // TODO
