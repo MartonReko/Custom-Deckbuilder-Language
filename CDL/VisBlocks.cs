@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using CDL.exceptions;
@@ -31,7 +32,7 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler) : CD
         readonly object value = value;
         public override string ToString()
         {
-            return $"ExpressionHelper type: {type.Name}\tvalue: {value.ToString()}";
+            return $"ExpressionHelper type: {type.Name}\tvalue: {value}";
         }
     }
     private void LogCards()
@@ -42,11 +43,59 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler) : CD
             string effects = "";
             foreach (TargetTypes target in card.ValidTargets)
                 targets += target.ToString() + " ";
-            foreach (Effect applied in card.EffectsApplied)
-                effects += applied.Name;
+            foreach ((Effect effect, int cnt) in card.EffectsApplied)
+                effects += $"{cnt}x\t{effect.Name}";
 
             _logger.LogDebug("Card \"{c}\" properties:\n\tRarity: {r}\n\tValidTargets: {t}\n\tApplies: {a}", card.Name, card.Rarity, targets, effects);
         }
+    }
+    private void LogEffects()
+    {
+        foreach (var item in Effects)
+        {
+            _logger.LogDebug("Effect \"{c}\" properties:\n\tInDmgMod: {t}\n\tOutDmgMod: {a}", item.Name, item.InDmgMod, item.OutDmgMod);
+        }
+    }
+    private void LogNodes()
+    {
+        foreach (var item in Nodes)
+        {
+            _logger.LogDebug("Node \"{c}\"", item.Name);
+        }
+    }
+    private void LogStages()
+    {
+        foreach (var item in Nodes)
+        {
+            _logger.LogDebug("Stage \"{c}\"", item.Name);
+        }
+    }
+    private void LogEnemies()
+    {
+        foreach (var item in Enemies)
+        {
+            _logger.LogDebug("Enemy \"{c}\"", item.Name);
+        }
+    }
+    public override object VisitParamsDef([NotNull] CDLParser.ParamsDefContext context)
+    {
+        foreach (var item in context.typeNameVarName())
+        {
+            var type = em.Ts[item.typeName().GetText()];
+            var symbol = new Symbol(item.varName().GetText(), type);
+            if (type == em.Ts.ERROR)
+            {
+
+                (int, int) pos = EnvManager.GetPosLineCol(context);
+                ExceptionHandler.AddException(new CDLException(pos.Item1, pos.Item2, "Type error in function parameters definition"));
+            }
+            else
+            {
+            }
+            em.AddVariableToScope(context, symbol);
+
+        }
+        return base.VisitParamsDef(context);
     }
     public override object VisitList([NotNull] CDLParser.ListContext context)
     {
@@ -56,14 +105,14 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler) : CD
     public override object VisitSingleListItem([NotNull] CDLParser.SingleListItemContext context)
     {
         string varName = context.varRef().GetText();
-        LocalListContent.Add((0, varName, 0));
+        LocalListContent.Add((1, varName, 1));
         return base.VisitSingleListItem(context);
     }
     public override object VisitNumberedListItem([NotNull] CDLParser.NumberedListItemContext context)
     {
         string varName = context.varRef().GetText();
         int num = int.Parse(context.INT().GetText());
-        LocalListContent.Add((num, varName, 0));
+        LocalListContent.Add((num, varName, 1));
         return base.VisitNumberedListItem(context);
     }
     public override object VisitChanceListItem([NotNull] CDLParser.ChanceListItemContext context)
@@ -97,7 +146,12 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler) : CD
     public override object VisitProgram([NotNull] CDLParser.ProgramContext context)
     {
         var result = base.VisitProgram(context);
+        LogStages();
+        LogNodes();
+        LogEnemies();
+        LogEffects();
         LogCards();
+
         return result;
     }
     public override object VisitGameProperties([NotNull] CDLParser.GamePropertiesContext context)
@@ -160,12 +214,36 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler) : CD
     }
     public override object VisitCardEffects([NotNull] CDLParser.CardEffectsContext context)
     {
+        var result = base.VisitCardEffects(context);
+
         foreach (var item in LocalListContent)
         {
-            // TODO
-            // Add effect objects probably to the card when we have actual effects
+            try
+            {
+                (int cnt, string varName, int chance) = ((int, string, int))item;
+
+                // TODO
+                // How to handle effect parameters?
+
+                //var referredEffect = new Effect(Effects.Where(x => x.Name ==tmp.eff.Name));
+                //Cards.Last().EffectsApplied.Add();
+
+                // Placeholder
+                var referredEffect = Effects.Where(x => x.Name == varName).FirstOrDefault();
+                if (referredEffect != null)
+                    Cards.Last().EffectsApplied.Add((referredEffect, 1));
+                
+                // TODO
+                // Probably need to create Effects for example in VisGlobarVars for above to work
+            }
+            catch (System.Exception)
+            {
+                _logger.LogError("Unable to parse effect in card effects list");
+                throw;
+            }
+
         }
-        return base.VisitCardEffects(context);
+        return result;
     }
     public override object VisitTargetItem([NotNull] CDLParser.TargetItemContext context)
     {
@@ -203,6 +281,8 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler) : CD
     public override object VisitPrimaryExpression([NotNull] CDLParser.PrimaryExpressionContext context)
     {
         var result = base.VisitPrimaryExpression(context);
+        // TODO WIP
+        // Expression evaluation cont
         if (result != null)
             System.Console.WriteLine(result.ToString());
         return result;
@@ -222,5 +302,3 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler) : CD
         return base.VisitDamageModEffect(context);
     }
 }
-// TODO
-// Check for variable name repetitions?

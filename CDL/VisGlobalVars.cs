@@ -74,7 +74,6 @@ public class VisGlobalVars(EnvManager em, CDLExceptionHandler exceptionHandler) 
                 {
                     (int, int) pos = EnvManager.GetPosLineCol(context);
                     ExceptionHandler.AddException(new CDLException(pos.Item1, pos.Item2, "Type error"));
-                    // TODO exception
                 }
                 else
                 {
@@ -90,7 +89,6 @@ public class VisGlobalVars(EnvManager em, CDLExceptionHandler exceptionHandler) 
         var type = em.Ts[context.GetChild(0).GetText()];
         if (type == em.Ts.ERROR)
         {
-            //TODO exception
             (int, int) pos = EnvManager.GetPosLineCol(context);
             ExceptionHandler.AddException(new CDLException(pos.Item1, pos.Item2, "Type error"));
         }
@@ -116,7 +114,6 @@ public class VisGlobalVars(EnvManager em, CDLExceptionHandler exceptionHandler) 
         if (type == em.Ts.ERROR)
         {
 
-            // TODO exception
             (int, int) pos = EnvManager.GetPosLineCol(context);
             ExceptionHandler.AddException(new CDLException(pos.Item1, pos.Item2, "Type error"));
         }

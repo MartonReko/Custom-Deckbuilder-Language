@@ -2,15 +2,16 @@ namespace CDL.game;
 
 public class Effect(string name){
     public string Name { get; set; } = name;
-    public string Type {get; set;} = "";
+    //public string Type {get; set;} = "";
     public double InDmgMod { get; set; } = 1;
     public double OutDmgMod { get; set; } = 1;
-    public Action<Entity>? InstantAction { get; set; } = null;
-    public Action<Entity>? PerTurnAction { get; set; } = null;
+    public List<Action<Entity>> InstantAction { get; set; } = [];
+    public List<Action<Entity>> PerTurnAction { get; set; } = [];
 
-    // TODO activeffect passiveeffect
+    public Dictionary<string,(CDLType,object)> EffectParameters { get; set; } = [];
 }
-public enum EffectDirection{
-    INCOMING,
-    OUTGOING
-}
+
+// public enum EffectDirection{
+//     INCOMING,
+//     OUTGOING
+// }

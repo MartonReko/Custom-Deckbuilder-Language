@@ -12,7 +12,7 @@ Character The_Player{
     EffectEveryTurn: [miniscule_healing];
 }
 
-Stage stage_beginner{
+Staage stage_beginner{
     //Length: 5;
     //Length: 5;
     Max-width: 3;
