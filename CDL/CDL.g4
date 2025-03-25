@@ -2,7 +2,7 @@ grammar CDL;
 
 //Parser
 
-program: (configBlock | variableDeclaration)+;
+program: (configBlock | variableDeclaration)+ EOF;
 
 configBlock:
 	gameSetup
