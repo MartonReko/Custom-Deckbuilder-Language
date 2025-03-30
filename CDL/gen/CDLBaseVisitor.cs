@@ -333,7 +333,8 @@ public partial class CDLBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// <return>The visitor result.</return>
 	public virtual Result VisitGameSetup([NotNull] CDLParser.GameSetupContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CDLParser.gameProperties"/>.
+	/// Visit a parse tree produced by the <c>gamePlayerSelect</c>
+	/// labeled alternative in <see cref="CDLParser.gameProperties"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -341,9 +342,10 @@ public partial class CDLBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitGameProperties([NotNull] CDLParser.GamePropertiesContext context) { return VisitChildren(context); }
+	public virtual Result VisitGamePlayerSelect([NotNull] CDLParser.GamePlayerSelectContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CDLParser.gamePropPlayerselect"/>.
+	/// Visit a parse tree produced by the <c>gameName</c>
+	/// labeled alternative in <see cref="CDLParser.gameProperties"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -351,19 +353,10 @@ public partial class CDLBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitGamePropPlayerselect([NotNull] CDLParser.GamePropPlayerselectContext context) { return VisitChildren(context); }
+	public virtual Result VisitGameName([NotNull] CDLParser.GameNameContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CDLParser.gamePropName"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitGamePropName([NotNull] CDLParser.GamePropNameContext context) { return VisitChildren(context); }
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="CDLParser.gameStages"/>.
+	/// Visit a parse tree produced by the <c>gameStages</c>
+	/// labeled alternative in <see cref="CDLParser.gameProperties"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -383,7 +376,8 @@ public partial class CDLBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// <return>The visitor result.</return>
 	public virtual Result VisitStageDefinition([NotNull] CDLParser.StageDefinitionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CDLParser.stageProperties"/>.
+	/// Visit a parse tree produced by the <c>stageLength</c>
+	/// labeled alternative in <see cref="CDLParser.stageProperties"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -391,9 +385,10 @@ public partial class CDLBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitStageProperties([NotNull] CDLParser.StagePropertiesContext context) { return VisitChildren(context); }
+	public virtual Result VisitStageLength([NotNull] CDLParser.StageLengthContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CDLParser.lengthDef"/>.
+	/// Visit a parse tree produced by the <c>stageWidthMin</c>
+	/// labeled alternative in <see cref="CDLParser.stageProperties"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -401,9 +396,10 @@ public partial class CDLBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitLengthDef([NotNull] CDLParser.LengthDefContext context) { return VisitChildren(context); }
+	public virtual Result VisitStageWidthMin([NotNull] CDLParser.StageWidthMinContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CDLParser.minWidthDef"/>.
+	/// Visit a parse tree produced by the <c>stageWidthMax</c>
+	/// labeled alternative in <see cref="CDLParser.stageProperties"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -411,9 +407,10 @@ public partial class CDLBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitMinWidthDef([NotNull] CDLParser.MinWidthDefContext context) { return VisitChildren(context); }
+	public virtual Result VisitStageWidthMax([NotNull] CDLParser.StageWidthMaxContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CDLParser.maxWidthDef"/>.
+	/// Visit a parse tree produced by the <c>stageFillWith</c>
+	/// labeled alternative in <see cref="CDLParser.stageProperties"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -421,9 +418,10 @@ public partial class CDLBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitMaxWidthDef([NotNull] CDLParser.MaxWidthDefContext context) { return VisitChildren(context); }
+	public virtual Result VisitStageFillWith([NotNull] CDLParser.StageFillWithContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CDLParser.fillWithDef"/>.
+	/// Visit a parse tree produced by the <c>stageMustContain</c>
+	/// labeled alternative in <see cref="CDLParser.stageProperties"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -431,9 +429,10 @@ public partial class CDLBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitFillWithDef([NotNull] CDLParser.FillWithDefContext context) { return VisitChildren(context); }
+	public virtual Result VisitStageMustContain([NotNull] CDLParser.StageMustContainContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CDLParser.mustContainDef"/>.
+	/// Visit a parse tree produced by the <c>stageEndsWith</c>
+	/// labeled alternative in <see cref="CDLParser.stageProperties"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -441,17 +440,7 @@ public partial class CDLBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitMustContainDef([NotNull] CDLParser.MustContainDefContext context) { return VisitChildren(context); }
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="CDLParser.endsWithDef"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitEndsWithDef([NotNull] CDLParser.EndsWithDefContext context) { return VisitChildren(context); }
+	public virtual Result VisitStageEndsWith([NotNull] CDLParser.StageEndsWithContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="CDLParser.nodeDefinition"/>.
 	/// <para>
@@ -463,7 +452,8 @@ public partial class CDLBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// <return>The visitor result.</return>
 	public virtual Result VisitNodeDefinition([NotNull] CDLParser.NodeDefinitionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CDLParser.nodeProperties"/>.
+	/// Visit a parse tree produced by the <c>nodeEnemies</c>
+	/// labeled alternative in <see cref="CDLParser.nodeProperties"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -471,7 +461,18 @@ public partial class CDLBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitNodeProperties([NotNull] CDLParser.NodePropertiesContext context) { return VisitChildren(context); }
+	public virtual Result VisitNodeEnemies([NotNull] CDLParser.NodeEnemiesContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>nodeRewards</c>
+	/// labeled alternative in <see cref="CDLParser.nodeProperties"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitNodeRewards([NotNull] CDLParser.NodeRewardsContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="CDLParser.charSetup"/>.
 	/// <para>
@@ -483,7 +484,8 @@ public partial class CDLBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// <return>The visitor result.</return>
 	public virtual Result VisitCharSetup([NotNull] CDLParser.CharSetupContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CDLParser.charProperties"/>.
+	/// Visit a parse tree produced by the <c>charHealth</c>
+	/// labeled alternative in <see cref="CDLParser.charProperties"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -491,7 +493,18 @@ public partial class CDLBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitCharProperties([NotNull] CDLParser.CharPropertiesContext context) { return VisitChildren(context); }
+	public virtual Result VisitCharHealth([NotNull] CDLParser.CharHealthContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>charEffects</c>
+	/// labeled alternative in <see cref="CDLParser.charProperties"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitCharEffects([NotNull] CDLParser.CharEffectsContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="CDLParser.enemyDefinition"/>.
 	/// <para>
@@ -503,7 +516,8 @@ public partial class CDLBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// <return>The visitor result.</return>
 	public virtual Result VisitEnemyDefinition([NotNull] CDLParser.EnemyDefinitionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CDLParser.enemyProperties"/>.
+	/// Visit a parse tree produced by the <c>enemyHealth</c>
+	/// labeled alternative in <see cref="CDLParser.enemyProperties"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -511,7 +525,18 @@ public partial class CDLBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitEnemyProperties([NotNull] CDLParser.EnemyPropertiesContext context) { return VisitChildren(context); }
+	public virtual Result VisitEnemyHealth([NotNull] CDLParser.EnemyHealthContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>enemyActions</c>
+	/// labeled alternative in <see cref="CDLParser.enemyProperties"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitEnemyActions([NotNull] CDLParser.EnemyActionsContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="CDLParser.effectDefinition"/>.
 	/// <para>

@@ -6,7 +6,6 @@ public class Card
     public string Rarity { get; set; } = "";
     public HashSet<TargetTypes> ValidTargets { get; set; } = [];
     public List<(Effect effect, int effectCount)> EffectsApplied { get; set; } = [];
-
     
 }
 

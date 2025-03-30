@@ -53,45 +53,37 @@ paramsDef:
 	LPAREN typeNameVarName (COMMA typeNameVarName)? RPAREN;
 params: LPAREN (varRef | literalExpression)? RPAREN;
 
-gameSetup: GAME LCURLY gameProperties RCURLY;
+gameSetup: GAME LCURLY gameProperties+ RCURLY;
 /* gameProperties: ( PLAYERSELECT CLN varName EOS | STAGES CLN list EOS | NAME CLN varName EOS )+;
  */
-gameProperties: (
-		gamePropPlayerselect
-		| gameStages
-		| gamePropName
-	)+;
-gamePropPlayerselect: PLAYERSELECT CLN varName EOS;
-gamePropName: NAME CLN varName EOS;
-gameStages: STAGES CLN list EOS;
+gameProperties:
+	PLAYERSELECT CLN varName EOS	# gamePlayerSelect
+	| NAME CLN varName EOS			# gameName
+	| STAGES CLN list EOS			# gameStages;
 
-stageDefinition: STAGE varName LCURLY stageProperties RCURLY;
-stageProperties: (
-		lengthDef
-		| maxWidthDef
-		| minWidthDef
-		| fillWithDef
-		| mustContainDef
-		| endsWithDef
-	)+;
-lengthDef: LENGTH CLN INT EOS;
-minWidthDef: MINWIDTH CLN INT EOS;
-maxWidthDef: MAXWIDTH CLN INT EOS;
-fillWithDef: FILLWITH CLN list EOS;
-mustContainDef: MUSTCONTAIN CLN list EOS;
-endsWithDef: ENDSWITH CLN varName EOS;
+stageDefinition: STAGE varName LCURLY stageProperties+ RCURLY;
+stageProperties:
+	LENGTH CLN INT EOS			# stageLength
+	| MINWIDTH CLN INT EOS		# stageWidthMin
+	| MAXWIDTH CLN INT EOS		# stageWidthMax
+	| FILLWITH CLN list EOS		# stageFillWith
+	| MUSTCONTAIN CLN list EOS	# stageMustContain
+	| ENDSWITH CLN varName EOS	# stageEndsWith;
 
-nodeDefinition: NODE varName LCURLY nodeProperties RCURLY;
-nodeProperties: (NODEENEMIES CLN list EOS | REWARDS CLN list EOS)+;
+nodeDefinition: NODE varName LCURLY nodeProperties+ RCURLY;
+nodeProperties:
+	NODEENEMIES CLN list EOS	# nodeEnemies
+	| REWARDS CLN list EOS		# nodeRewards;
 
-charSetup: CHARACTER varName LCURLY charProperties RCURLY;
-charProperties: (
-		HEALTH CLN number EOS
-		| EFFECTEVERYTURN CLN list EOS
-	)+;
+charSetup: CHARACTER varName LCURLY charProperties+ RCURLY;
+charProperties:
+	HEALTH CLN number EOS			# charHealth
+	| EFFECTEVERYTURN CLN list EOS	# charEffects;
 
-enemyDefinition: ENEMY varName LCURLY enemyProperties RCURLY;
-enemyProperties: (HEALTH CLN number EOS | ACTIONS CLN list EOS)+;
+enemyDefinition: ENEMY varName LCURLY enemyProperties+ RCURLY;
+enemyProperties:
+	HEALTH CLN number EOS	# enemyHealth
+	| ACTIONS CLN list EOS	# enemyActions;
 
 effectDefinition:
 	EFFECT varName paramsDef? LCURLY effectType+ RCURLY;

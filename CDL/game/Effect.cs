@@ -7,11 +7,4 @@ public class Effect(string name){
     public double OutDmgMod { get; set; } = 1;
     public List<Action<Entity>> InstantAction { get; set; } = [];
     public List<Action<Entity>> PerTurnAction { get; set; } = [];
-
-    public Dictionary<string,(CDLType,object)> EffectParameters { get; set; } = [];
 }
-
-// public enum EffectDirection{
-//     INCOMING,
-//     OUTGOING
-// }
