@@ -1,9 +1,9 @@
-
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 
 namespace CDL;
 
+// Currently has no use since props have no parameters
 public class FnSymbol : Symbol
 {
     public List<CDLType> Properties { get; set; } = [];

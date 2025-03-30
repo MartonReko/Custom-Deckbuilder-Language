@@ -6,7 +6,7 @@ using NLog.Extensions.Logging;
 
 namespace CDL;
 
-public class VisGlobalVars(EnvManager em, CDLExceptionHandler exceptionHandler) : CDLBaseVisitor<object>
+public class VisGlobalVars(EnvManager em, CDLExceptionHandler exceptionHandler, ObjectsHelper oh) : CDLBaseVisitor<object>
 {
     private readonly ILogger<VisGlobalVars> _logger = LoggerFactory.Create(builder => builder.AddNLog().SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace)).CreateLogger<VisGlobalVars>();
     private CDLExceptionHandler ExceptionHandler { get; set; } = exceptionHandler;

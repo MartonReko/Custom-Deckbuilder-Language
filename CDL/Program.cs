@@ -11,9 +11,10 @@ class Program
     {
         var ast = ReadAST("examples/ex_long_errors.cdl");
         EnvManager envM = new();
-        VisGlobalVars visitorVars = new(envM,exceptionHandler);
+        ObjectsHelper oh = new();
+        VisGlobalVars visitorVars = new(envM,exceptionHandler, oh);
         visitorVars.Visit(ast);
-        VisBlocks visitorBlocks = new(envM, exceptionHandler);
+        VisBlocks visitorBlocks = new(envM, exceptionHandler, oh);
         visitorBlocks.Visit(ast);
         if(!exceptionHandler.isValid()){
             foreach (var item in exceptionHandler.getExceptions())

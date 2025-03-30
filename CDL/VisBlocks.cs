@@ -9,22 +9,21 @@ using NLog.Targets;
 
 namespace CDL;
 
-public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler) : CDLBaseVisitor<object>
+public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, ObjectsHelper oH) : CDLBaseVisitor<object>
 {
-    // All game objects are stored in these lists
-    private GameSetup Game { get; set; } = new();
-    private GameCharacter Character { get; set; } = new();
-    private List<Stage> Stages { get; set; } = [];
-    private List<Node> Nodes { get; set; } = [];
-    private List<Enemy> Enemies { get; set; } = [];
-    private List<Effect> Effects { get; set; } = [];
-    private List<Card> Cards { get; set; } = [];
+    // // All game objects are stored in these lists
+    // private GameSetup Game { get; set; } = new();
+    // private GameCharacter Character { get; set; } = new();
+    // private List<Stage> Stages { get; set; } = [];
+    // private List<Node> Nodes { get; set; } = [];
+    // private List<Enemy> Enemies { get; set; } = [];
+    // private List<Effect> Effects { get; set; } = [];
+    // private List<Card> Cards { get; set; } = [];
 
     private CDLExceptionHandler ExceptionHandler { get; set; } = exceptionHandler;
 
     private readonly ILogger<VisBlocks> _logger = LoggerFactory.Create(builder => builder.AddNLog().SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace)).CreateLogger<VisBlocks>();
 
-    // 
     private List<object> LocalListContent { get; set; } = [];
     private readonly struct ExpressionHelper(CDLType type, object value)
     {
@@ -37,7 +36,7 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler) : CD
     }
     private void LogCards()
     {
-        foreach (var card in Cards)
+        foreach (var card in oH.Cards)
         {
             string targets = "";
             string effects = "";
@@ -51,28 +50,28 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler) : CD
     }
     private void LogEffects()
     {
-        foreach (var item in Effects)
+        foreach (var item in oH.Effects)
         {
             _logger.LogDebug("Effect \"{c}\" properties:\n\tInDmgMod: {t}\n\tOutDmgMod: {a}", item.Name, item.InDmgMod, item.OutDmgMod);
         }
     }
     private void LogNodes()
     {
-        foreach (var item in Nodes)
+        foreach (var item in oH.Nodes)
         {
             _logger.LogDebug("Node \"{c}\"", item.Name);
         }
     }
     private void LogStages()
     {
-        foreach (var item in Nodes)
+        foreach (var item in oH.Nodes)
         {
             _logger.LogDebug("Stage \"{c}\"", item.Name);
         }
     }
     private void LogEnemies()
     {
-        foreach (var item in Enemies)
+        foreach (var item in oH.Enemies)
         {
             _logger.LogDebug("Enemy \"{c}\"", item.Name);
         }
@@ -104,20 +103,20 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler) : CD
     }
     public override object VisitSingleListItem([NotNull] CDLParser.SingleListItemContext context)
     {
-        string varName = context.varRef().GetText();
+        string varName = context.varRef().varName().GetText();
         LocalListContent.Add((1, varName, 1));
         return base.VisitSingleListItem(context);
     }
     public override object VisitNumberedListItem([NotNull] CDLParser.NumberedListItemContext context)
     {
-        string varName = context.varRef().GetText();
+        string varName = context.varRef().varName().GetText();
         int num = int.Parse(context.INT().GetText());
         LocalListContent.Add((num, varName, 1));
         return base.VisitNumberedListItem(context);
     }
     public override object VisitChanceListItem([NotNull] CDLParser.ChanceListItemContext context)
     {
-        string varName = context.varRef().GetText();
+        string varName = context.varRef().varName().GetText();
         int num = int.Parse(context.INT(0).GetText());
         int chance = int.Parse(context.INT(1).GetText());
         LocalListContent.Add((num, varName, chance));
@@ -125,7 +124,7 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler) : CD
     }
     public override object VisitAttackListItem([NotNull] CDLParser.AttackListItemContext context)
     {
-        string varName = context.varRef().GetText();
+        string varName = context.varRef().varName().GetText();
         int num = 1;
         if (context.INT() != null)
         {
@@ -154,17 +153,20 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler) : CD
 
         return result;
     }
-    public override object VisitGameProperties([NotNull] CDLParser.GamePropertiesContext context)
+
+    // Visitors for gameSetup block
+
+    public override object VisitGameSetup([NotNull] CDLParser.GameSetupContext context)
     {
         em.Env = new Env(em.Env);
-        var result = base.VisitGameProperties(context);
+        var result = base.VisitGameSetup(context);
 
         if (em.Env.PrevEnv != null)
             em.Env = em.Env.PrevEnv;
 
         return result;
     }
-    public override object VisitGamePropName([NotNull] CDLParser.GamePropNameContext context)
+    public override object VisitGameName([NotNull] CDLParser.GameNameContext context)
     {
         if (!em.isVariableOnScope(context.varName().GetText()))
         {
@@ -174,25 +176,50 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler) : CD
         {
             _logger.LogError("Invalid Game Name \"{n}\", already taken", context.varName().GetText());
         }
-        return base.VisitGamePropName(context);
+        return base.VisitGameName(context);
     }
-    public override object VisitGamePropPlayerselect([NotNull] CDLParser.GamePropPlayerselectContext context)
+
+    public override object VisitGamePlayerSelect([NotNull] CDLParser.GamePlayerSelectContext context)
     {
         em.getVariableFromScope(context, context.varName().GetText());
-        return base.VisitGamePropPlayerselect(context);
+        return base.VisitGamePlayerSelect(context);
     }
+
+    public override object VisitGameStages([NotNull] CDLParser.GameStagesContext context)
+    {
+        // TODO
+        var result = base.VisitGameStages(context);
+        foreach (var item in LocalListContent)
+        {
+            System.Console.WriteLine("\ntest: "+ item.ToString());
+        }
+        return result;
+    }
+
+    // Visitors for stageDefinition
+
+    // Visitors for nodeDefinition
+
+    // Visitors for charSetup
+
+    // Visitors for enemyDefinition
+
+    // Visitors for effectDefinition
+
+    // Visitors for cardDefinition
+
     public override object VisitCardDefinition([NotNull] CDLParser.CardDefinitionContext context)
     {
         Card newCard = new()
         {
             Name = context.GetChild(1).GetText()
         };
-        Cards.Add(newCard);
+        oH.Cards.Add(newCard);
         return base.VisitCardDefinition(context);
     }
     public override object VisitCardRarity([NotNull] CDLParser.CardRarityContext context)
     {
-        Card lastCard = Cards.Last();
+        Card lastCard = oH.Cards.Last();
         if (lastCard.Rarity == "")
         {
             lastCard.Rarity = context.rarityName().GetText();
@@ -208,7 +235,7 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler) : CD
         var result = base.VisitCardTargets(context);
         foreach (var item in LocalListContent)
         {
-            Cards.Last().ValidTargets.Add((TargetTypes)item);
+            oH.Cards.Last().ValidTargets.Add((TargetTypes)item);
         }
         return result;
     }
@@ -229,10 +256,10 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler) : CD
                 //Cards.Last().EffectsApplied.Add();
 
                 // Placeholder
-                var referredEffect = Effects.Where(x => x.Name == varName).FirstOrDefault();
+                var referredEffect = oH.Effects.Where(x => x.Name == varName).FirstOrDefault();
                 if (referredEffect != null)
-                    Cards.Last().EffectsApplied.Add((referredEffect, 1));
-                
+                    oH.Cards.Last().EffectsApplied.Add((referredEffect, 1));
+
                 // TODO
                 // Probably need to create Effects for example in VisGlobarVars for above to work
             }
@@ -289,7 +316,7 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler) : CD
     }
     public override object VisitEffectDefinition([NotNull] CDLParser.EffectDefinitionContext context)
     {
-        Effects.Add(new Effect(context.varName().GetText()));
+        oH.Effects.Add(new Effect(context.varName().GetText()));
         var result = base.VisitEffectDefinition(context);
         return result;
     }
