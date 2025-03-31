@@ -5,7 +5,7 @@ Game{
     stage_advanced,
     testInt
     ];
-    Player: ThePlayer;
+    Player: "Dr Geci";
 }
 Character The_Player{
     Health: 100;

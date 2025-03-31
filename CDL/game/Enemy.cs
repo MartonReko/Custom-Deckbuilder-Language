@@ -4,7 +4,7 @@ namespace CDL.game;
 
 public class Enemy(string name) : Entity
 {
-    public string Name { get; set; } = name;
+    public readonly string Name = name;
     public List<Effect> Actions { get; set; } = [];
 }
 

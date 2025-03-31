@@ -1,4 +1,6 @@
 using Antlr4.Runtime;
+using Microsoft.Extensions.Logging;
+using NLog.Extensions.Logging;
 using NLog.Targets;
 
 namespace CDL.exceptions;
@@ -17,7 +19,11 @@ public class CDLExceptionHandler : BaseErrorListener, IAntlrErrorListener<int>{
         exceptions.Add(exc);
     }
     public void AddException(ParserRuleContext context, string message){
-        CDLException exc = new CDLException(context.Start.Line, context.Start.Column, message);
+        CDLException exc = new(context.Start.Line, context.Start.Column, message);
+        AddException(exc);
+    }
+    public void AddException(string message){
+        CDLException exc = new(message);
         AddException(exc);
     }
     public bool isValid(){

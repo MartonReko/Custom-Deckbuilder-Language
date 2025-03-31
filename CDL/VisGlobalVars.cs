@@ -1,20 +1,22 @@
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using CDL.exceptions;
+using CDL.game;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 
 namespace CDL;
 
-public class VisGlobalVars(EnvManager em, CDLExceptionHandler exceptionHandler, ObjectsHelper oh) : CDLBaseVisitor<object>
+public class VisGlobalVars(EnvManager em, CDLExceptionHandler exceptionHandler, ObjectsHelper oHelper) : CDLBaseVisitor<object>
 {
     private readonly ILogger<VisGlobalVars> _logger = LoggerFactory.Create(builder => builder.AddNLog().SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace)).CreateLogger<VisGlobalVars>();
     private CDLExceptionHandler ExceptionHandler { get; set; } = exceptionHandler;
-    private void AddSymbolToTable(string typeName, ParserRuleContext varNameContext)
+    private bool AddSymbolToTable(string typeName, ParserRuleContext varNameContext)
     {
         var type = em.Ts[typeName];
         var symbol = new Symbol(varNameContext.GetText(), type);
         em.AddVariableToScope(varNameContext, symbol);
+        return type != em.Ts.ERROR;
     }
     private readonly List<CDLType> localProps = [];
     private FnSymbol? currentFn;
@@ -84,28 +86,6 @@ public class VisGlobalVars(EnvManager em, CDLExceptionHandler exceptionHandler, 
         }
         return base.VisitParamsDef(context);
     }
-    public override object VisitEffectDefinition([NotNull] CDLParser.EffectDefinitionContext context)
-    {
-        var type = em.Ts[context.GetChild(0).GetText()];
-        if (type == em.Ts.ERROR)
-        {
-            (int, int) pos = EnvManager.GetPosLineCol(context);
-            ExceptionHandler.AddException(new CDLException(pos.Item1, pos.Item2, "Type error"));
-        }
-        string symbolText = context.varName().GetText();
-        currentFn = new FnSymbol(symbolText, type);
-        var result = base.VisitEffectDefinition(context);
-        em.AddVariableToScope(context.varName(), currentFn);
-
-        localProps.Clear();
-        _logger.LogDebug("Effect definition visited, enviroment:\n{env}", em.Env.ToString());
-        return result;
-    }
-    public override object VisitCardDefinition([NotNull] CDLParser.CardDefinitionContext context)
-    {
-        AddSymbolToTable(context.GetChild(0).GetText(), context.varName());
-        return base.VisitCardDefinition(context);
-    }
 
     // Rarity names are parsed as strings, later nodes can refer to cards by it
     public override object VisitRarityName([NotNull] CDLParser.RarityNameContext context)
@@ -126,22 +106,49 @@ public class VisGlobalVars(EnvManager em, CDLExceptionHandler exceptionHandler, 
     }
     public override object VisitStageDefinition([NotNull] CDLParser.StageDefinitionContext context)
     {
-        AddSymbolToTable(context.GetChild(0).GetText(), context.varName());
+        if (AddSymbolToTable(context.GetChild(0).GetText(), context.varName()))
+            oHelper.Stages.Add(new game.Stage(context.varName().GetText()));
         return base.VisitStageDefinition(context);
     }
     public override object VisitNodeDefinition([NotNull] CDLParser.NodeDefinitionContext context)
     {
-        AddSymbolToTable(context.GetChild(0).GetText(), context.varName());
+        if (AddSymbolToTable(context.GetChild(0).GetText(), context.varName()))
+            oHelper.Nodes.Add(new game.Node(context.varName().GetText()));
         return base.VisitNodeDefinition(context);
     }
     public override object VisitCharSetup([NotNull] CDLParser.CharSetupContext context)
     {
-        AddSymbolToTable(context.GetChild(0).GetText(), context.varName());
+        if (AddSymbolToTable(context.GetChild(0).GetText(), context.varName()))
+            oHelper.Character = new game.GameCharacter(context.varName().GetText());
         return base.VisitCharSetup(context);
     }
     public override object VisitEnemyDefinition([NotNull] CDLParser.EnemyDefinitionContext context)
     {
-        AddSymbolToTable(context.GetChild(0).GetText(), context.varName());
+        if (AddSymbolToTable(context.GetChild(0).GetText(), context.varName()))
+            oHelper.Enemies.Add(new game.Enemy(context.varName().GetText()));
         return base.VisitEnemyDefinition(context);
+    }
+    public override object VisitCardDefinition([NotNull] CDLParser.CardDefinitionContext context)
+    {
+        if (AddSymbolToTable(context.GetChild(0).GetText(), context.varName()))
+            oHelper.Cards.Add(new game.Card(context.varName().GetText()));
+        return base.VisitCardDefinition(context);
+    }
+    public override object VisitEffectDefinition([NotNull] CDLParser.EffectDefinitionContext context)
+    {
+        var type = em.Ts[context.GetChild(0).GetText()];
+        if (type == em.Ts.ERROR)
+        {
+            (int, int) pos = EnvManager.GetPosLineCol(context);
+            ExceptionHandler.AddException(new CDLException(pos.Item1, pos.Item2, "Type error"));
+        }
+        string symbolText = context.varName().GetText();
+        currentFn = new FnSymbol(symbolText, type);
+        var result = base.VisitEffectDefinition(context);
+        em.AddVariableToScope(context.varName(), currentFn);
+
+        localProps.Clear();
+        _logger.LogDebug("Effect definition visited, enviroment:\n{env}", em.Env.ToString());
+        return result;
     }
 }
