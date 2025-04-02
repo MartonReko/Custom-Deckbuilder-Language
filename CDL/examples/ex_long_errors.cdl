@@ -5,11 +5,14 @@ Game{
     stage_advanced,
     testInt
     ];
-    Player: "Play er";
+    Player: badplayername;
 }
 Character The_Player{
     Health: 100;
     EffectEveryTurn: [miniscule_healing];
+}
+Effect miniscule_healing{
+    Deal 5 damage instantly;
 }
 
 Stage stage_beginner{
@@ -54,7 +57,7 @@ Node node_elite{
 
 Node node_boss{
     Enemies: [
-    1x enemy_boss
+    1x enemy_boss,
     2x enemy_elite
     ];
     Rewards: [

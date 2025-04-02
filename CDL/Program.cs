@@ -10,6 +10,14 @@ class Program
     static void Main(string[] args)
     {
         var ast = ReadAST("examples/ex_long_errors.cdl");
+        if(!exceptionHandler.isValid()){
+            System.Console.WriteLine("Could not parse grammar, exiting...");
+            foreach (var item in exceptionHandler.getExceptions())
+            {
+              System.Console.WriteLine(item);
+            }
+            return;
+        }
         EnvManager envM = new();
         ObjectsHelper oh = new();
         VisGlobalVars visitorVars = new(envM,exceptionHandler, oh);

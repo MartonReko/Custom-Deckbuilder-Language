@@ -146,6 +146,7 @@ public class VisGlobalVars(EnvManager em, CDLExceptionHandler exceptionHandler, 
         currentFn = new FnSymbol(symbolText, type);
         var result = base.VisitEffectDefinition(context);
         em.AddVariableToScope(context.varName(), currentFn);
+        oHelper.Effects.Add(new game.Effect(context.varName().GetText()));
 
         localProps.Clear();
         _logger.LogDebug("Effect definition visited, enviroment:\n{env}", em.Env.ToString());
