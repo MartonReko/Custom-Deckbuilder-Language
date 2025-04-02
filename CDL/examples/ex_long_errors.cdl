@@ -5,7 +5,7 @@ Game{
     stage_advanced,
     testInt
     ];
-    Player: "Dr Geci";
+    Player: "Play er";
 }
 Character The_Player{
     Health: 100;
@@ -17,7 +17,7 @@ Stage stage_beginner{
     //Length: 5;
     Max-width: 3;
     Min-width: 1;
-    FillWith: [node_easy];
+    FillWith: [node_easy, testInt];
     MustContain: [1x node_elite];
     EndsWith: node_boss;
 }

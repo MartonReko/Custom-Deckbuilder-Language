@@ -1,9 +1,11 @@
+using System.Data;
 using System.Runtime.CompilerServices;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using CDL.exceptions;
 using CDL.game;
 using Microsoft.Extensions.Logging;
+using Microsoft.VisualBasic;
 using NLog.Extensions.Logging;
 using NLog.Targets;
 
@@ -16,6 +18,7 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
     private readonly ILogger<VisBlocks> _logger = LoggerFactory.Create(builder => builder.AddNLog().SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace)).CreateLogger<VisBlocks>();
 
     private List<object> LocalListContent { get; set; } = [];
+    private List<ListHelper> NewLocalListContent { get; set; } = [];
     private readonly struct ExpressionHelper(CDLType type, object value)
     {
         readonly CDLType type = type;
@@ -25,7 +28,15 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
             return $"ExpressionHelper type: {type.Name}\tvalue: {value}";
         }
     }
-    private string currentStageName = "";
+    private readonly struct ListHelper(string name, int num = -1, int chance = -1)
+    {
+        public readonly int num = num;
+        public readonly string name = name;
+        public readonly int chance = chance;
+
+    }
+    //private string currentStageName = "";
+    private Stage? currentStage = null;
     private void LogCards()
     {
         foreach (var card in oH.Cards)
@@ -56,9 +67,26 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
     }
     private void LogStages()
     {
+        string fill = "", cont = "";
         foreach (var item in oH.Stages)
         {
-            _logger.LogDebug("Stage \"{c}\" properties:\n\tLength: {length}", item.Name, item.StageLength);
+            fill = "";
+            cont = "";
+            foreach (var node in item.FillWith)
+            {
+                fill += $"{node.Name} ";
+            }
+            foreach (var node in item.MustContain)
+            {
+                cont += $"{node.Value}x {node.Key.Name} ";
+            }
+            _logger.LogDebug(@"Stage ""{c}"" properties:
+    Length: {length}
+    MinWidth: {minW} 
+    MaxWidth: {maxW}
+    Fill: {fill}
+    MustContain: {cont}
+    EndsWith: {end}", item.Name, item.StageLength, item.StageWidthMin, item.StageWidthMax, fill, cont, item?.EndsWith?.Name);
         }
     }
     private void LogGame()
@@ -102,6 +130,7 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
     public override object VisitList([NotNull] CDLParser.ListContext context)
     {
         LocalListContent.Clear();
+        NewLocalListContent.Clear();
         return base.VisitList(context);
     }
     public override object VisitSingleListItem([NotNull] CDLParser.SingleListItemContext context)
@@ -115,6 +144,7 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
         string varName = context.varRef().varName().GetText();
         int num = int.Parse(context.INT().GetText());
         LocalListContent.Add((num, varName, 1));
+        NewLocalListContent.Add(new ListHelper(varName, num));
         return base.VisitNumberedListItem(context);
     }
     public override object VisitChanceListItem([NotNull] CDLParser.ChanceListItemContext context)
@@ -123,6 +153,7 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
         int num = int.Parse(context.INT(0).GetText());
         int chance = int.Parse(context.INT(1).GetText());
         LocalListContent.Add((num, varName, chance));
+        NewLocalListContent.Add(new ListHelper(varName, num, chance));
         return base.VisitChanceListItem(context);
     }
     public override object VisitAttackListItem([NotNull] CDLParser.AttackListItemContext context)
@@ -174,7 +205,7 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
     }
     public override object VisitGameName([NotNull] CDLParser.GameNameContext context)
     {
-        if (!em.isVariableOnScope(context.varName().GetText()))
+        if (!em.IsVariableOnScope(context.varName().GetText()))
         {
             // Cannot be null because it must be initialized higher in the tree
             if (oH.Game != null)
@@ -189,7 +220,7 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
 
     public override object VisitGamePlayerSelect([NotNull] CDLParser.GamePlayerSelectContext context)
     {
-        Symbol? playerName = em.getVariableFromScope(context, context.varName().GetText());
+        Symbol? playerName = em.GetVariableFromScope(context, context.varName().GetText());
         if (playerName == null)
         {
             ExceptionHandler.AddException($"No character found by name {context.varName().GetText()}");
@@ -208,7 +239,7 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
         // Explicit cast generated by VSCode
         foreach ((int num, string name, int chance) item in LocalListContent.Select(v => ((int num, string name, int chance))v))
         {
-            Symbol? stage = em.getVariableFromScope(context, item.name);
+            Symbol? stage = em.GetVariableFromScope(context, item.name);
             if (stage == null)
             {
                 ExceptionHandler.AddException(context, $"No stage exists by the name {item.name}");
@@ -229,9 +260,11 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
 
     public override object VisitStageDefinition([NotNull] CDLParser.StageDefinitionContext context)
     {
-        currentStageName = context.varName().GetText();
+        string currentStageName = context.varName().GetText();
+        currentStage = oH.Stages.Where(x => x.Name == currentStageName).First();
         var result = base.VisitStageDefinition(context);
         currentStageName = "";
+        currentStage = null;
         return result;
     }
 
@@ -239,17 +272,102 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
     {
         if (!int.TryParse(context.INT().GetText(), out int length))
         {
-            ExceptionHandler.AddException(context, $"Could not parse stage length for {currentStageName}");
+            ExceptionHandler.AddException(context, $"Could not parse stage length for {currentStage?.Name}");
         }
         else if (length < 1)
         {
-            ExceptionHandler.AddException(context,$"Invalid value for stage {currentStageName} length: {length}");
+            ExceptionHandler.AddException(context, $"Invalid value for stage {currentStage?.Name} length: {length}");
         }
         else
         {
-            oH.Stages.Where(x => x.Name == currentStageName).First().StageLength = length;
+            oH.Stages.Where(x => x.Name == currentStage?.Name).First().StageLength = length;
         }
         return base.VisitStageLength(context);
+    }
+    public override object VisitStageWidthMax([NotNull] CDLParser.StageWidthMaxContext context)
+    {
+        if (!int.TryParse(context.INT().GetText(), out int length))
+        {
+            ExceptionHandler.AddException(context, $"Could not parse stage max width for {currentStage?.Name}");
+        }
+        else if (length < 1)
+        {
+            ExceptionHandler.AddException(context, $"Invalid value for stage {currentStage?.Name} max width: {length}");
+        }
+        else
+        {
+            oH.Stages.Where(x => x.Name == currentStage?.Name).First().StageWidthMax = length;
+        }
+        return base.VisitStageWidthMax(context);
+    }
+    public override object VisitStageWidthMin([NotNull] CDLParser.StageWidthMinContext context)
+    {
+        if (!int.TryParse(context.INT().GetText(), out int length))
+        {
+            ExceptionHandler.AddException(context, $"Could not parse stage min width for {currentStage?.Name}");
+        }
+        else if (length < 1)
+        {
+            ExceptionHandler.AddException(context, $"Invalid value for stage {currentStage?.Name} min width: {length}");
+        }
+        else
+        {
+            //oH.Stages.Where(x => x.Name == currentStageName).First().StageWidthMin = length;
+            if (currentStage != null) { currentStage.StageWidthMin = length; }
+        }
+        return base.VisitStageWidthMin(context);
+    }
+    public override object VisitStageFillWith([NotNull] CDLParser.StageFillWithContext context)
+    {
+        var result = base.VisitStageFillWith(context);
+        foreach ((int num, string name, int chance) in LocalListContent.Select(v => ((int num, string name, int chance))v))
+        {
+            if (em.CheckVarType(name, em.Ts.NODE))
+            {
+                Node listNode = oH.Nodes.First(x => x.Name == name);
+                currentStage?.FillWith.Add(listNode);
+            }
+            else
+            {
+                ExceptionHandler.AddException(context, $"{name} has invalid type, not a node");
+            }
+        }
+
+        return result;
+    }
+
+    public override object VisitStageMustContain([NotNull] CDLParser.StageMustContainContext context)
+    {
+        var result = base.VisitStageMustContain(context);
+        // TODO also use NewLocalListContent for other places instead of casting...
+        foreach (var item in NewLocalListContent)
+        {
+            if (em.CheckVarType(item.name, em.Ts.NODE))
+            {
+                Node listNode = oH.Nodes.First(x => x.Name == item.name);
+                currentStage?.MustContain.Add(listNode, item.num);
+            }
+            else
+            {
+                ExceptionHandler.AddException(context, $"{item.name} has invalid type, not a node");
+            }
+        }
+
+        return result;
+    }
+
+    public override object VisitStageEndsWith([NotNull] CDLParser.StageEndsWithContext context)
+    {
+        if (em.CheckVarType(context.varName().GetText(), em.Ts.NODE))
+        {
+            Node listNode = oH.Nodes.First(x => x.Name == context.varName().GetText());
+            if (currentStage != null) { currentStage.EndsWith = listNode; }
+        }
+        else
+        {
+            ExceptionHandler.AddException(context, $"{context.varName().GetText()} has invalid type, not a node");
+        }
+        return base.VisitStageEndsWith(context);
     }
 
     // Visitors for nodeDefinition

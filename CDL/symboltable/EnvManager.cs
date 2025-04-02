@@ -40,18 +40,25 @@ public class EnvManager()
             _logger.LogError("Error at {pos}: function {symName} is already in scope", GetPos(ctx), symbol.Name);
         }
     }
-    public Symbol? getVariableFromScope(ParserRuleContext context, string varName)
+    public Symbol? GetVariableFromScope(ParserRuleContext context, string varName)
     {
         var symbol = Env[varName];
         if (symbol != null) return symbol;
         _logger.LogError("Error at {pos}: name {varName} does not exist", GetPos(context), varName);
         return null;
     }
-    public bool isVariableOnScope( string varName)
+    public bool IsVariableOnScope( string varName)
     {
         var symbol = Env[varName];
         return symbol != null;
         //_logger.LogError("Error at {pos}: name {varName} does not exist", GetPos(context), varName);
+    }
+    public bool CheckVarType(string varName, CDLType type){
+        var symbol = Env[varName];
+        if(symbol == null){
+            return false;
+        }
+        return symbol.Type == type;
     }
     public CDLType? GetType(CDLParser.LiteralExpressionContext context)
     {
@@ -59,7 +66,7 @@ public class EnvManager()
         {
             Symbol? symbol = null;
             var varName = context.varName();
-            symbol = getVariableFromScope(varName, varName.GetText());
+            symbol = GetVariableFromScope(varName, varName.GetText());
             return symbol?.Type ?? Ts.ERROR;
         }
         if (context.INT() != null)
