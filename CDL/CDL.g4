@@ -39,7 +39,7 @@ literalExpression:
 	| varName
 	| DAMAGE;
 
-list: LBRACKET (listItem ((OR | COMMA) listItem)*)? RBRACKET;
+list: LBRACKET (listItem (COMMA listItem)*)? RBRACKET;
 listItem:
 	varRef									# singleListItem
 	| INT X varRef							# numberedListItem
