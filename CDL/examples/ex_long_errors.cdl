@@ -34,11 +34,11 @@ Stage stage_advanced{
 Node node_easy{
     Enemies: [
     2x enemy_easy,
-    1x enemy_hard or
-    4x enemy_easy
+    1x enemy_hard,
+    1x enemy_baby
     ];
     Rewards: [
-		3x rarity_common with chance 80% or
+		3x rarity_common with chance 80%,
 		2x rarity_rare with chance 20%
     ];
 }
@@ -54,7 +54,7 @@ Node node_elite{
 
 Node node_boss{
     Enemies: [
-    1x enemy_boss or
+    1x enemy_boss
     2x enemy_elite
     ];
     Rewards: [

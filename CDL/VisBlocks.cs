@@ -60,9 +60,20 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
     }
     private void LogNodes()
     {
+        string enemies = "",rewards = "";
         foreach (var item in oH.Nodes)
         {
-            _logger.LogDebug("Node \"{c}\"", item.Name);
+            enemies = "";
+            rewards = "";
+            foreach(var enemy in item.Enemies){
+                enemies += $"{enemy.Value}x {enemy.Key.Name} ";
+            }
+            foreach(var reward in item.RarityNumChance){
+                rewards += $"{reward.Value.Item1}x {reward.Key} {reward.Value.Item2}% ";
+            }
+            _logger.LogDebug(@"Node ""{c}"" properties:
+    Enemies: {enemies}
+    Rewards: {rewards}", item.Name,enemies,rewards);
         }
     }
     private void LogStages()
@@ -129,6 +140,7 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
     }
     public override object VisitList([NotNull] CDLParser.ListContext context)
     {
+
         LocalListContent.Clear();
         NewLocalListContent.Clear();
         return base.VisitList(context);
@@ -365,12 +377,55 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
         }
         else
         {
-            ExceptionHandler.AddException(context, $"{context.varName().GetText()} has invalid type, not a node");
+            ExceptionHandler.AddException(context, $"{context.varName().GetText()} has invalid type, must be node");
         }
         return base.VisitStageEndsWith(context);
     }
 
     // Visitors for nodeDefinition
+
+    private Node currentNode;
+    public override object VisitNodeDefinition([NotNull] CDLParser.NodeDefinitionContext context)
+    {
+        string nodeName = context.varName().GetText();
+        currentNode = oH.Nodes.First(x => x.Name == nodeName);
+        return base.VisitNodeDefinition(context);
+    }
+
+    public override object VisitNodeEnemies([NotNull] CDLParser.NodeEnemiesContext context)
+    {
+        var result = base.VisitNodeEnemies(context);
+        foreach (var item in NewLocalListContent)
+        {
+            if (!em.CheckVarType(item.name, em.Ts.ENEMY))
+            {
+                ExceptionHandler.AddException(context, $"{item.name} has invalid type, must be enemy, or does not exist");
+            }
+            else
+            {
+                Enemy enemy = oH.Enemies.First(x => x.Name == item.name);
+                currentNode.Enemies.Add(enemy,item.num);
+            }
+        }
+        return result;
+    }
+
+    public override object VisitNodeRewards([NotNull] CDLParser.NodeRewardsContext context)
+    {
+        var result = base.VisitNodeRewards(context);
+        foreach (var item in NewLocalListContent)
+        {
+            if (!em.CheckVarType(item.name, em.Ts.STRING))
+            {
+                ExceptionHandler.AddException(context, $"{item.name} has invalid type, must be string, or does not exist");
+            }
+            else
+            {
+                currentNode.RarityNumChance.Add(item.name,(item.num,item.chance));
+            }
+        }
+        return result;
+    }
 
     // Visitors for charSetup
 
