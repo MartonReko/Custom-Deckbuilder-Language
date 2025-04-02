@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.IO.Pipelines;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using Antlr4.Runtime;
@@ -23,6 +24,7 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
     private List<object> LocalListContent { get; set; } = [];
     private List<ListHelper> NewLocalListContent { get; set; } = [];
     private List<(int num, string varName, EnemyTarget target)> LocalEnemyAttackList { get; set; } = [];
+    private HashSet<TargetTypes> LocalCardTargetList { get; set; } = [];
     private readonly struct ExpressionHelper(CDLType type, object value)
     {
         readonly CDLType type = type;
@@ -32,7 +34,7 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
             return $"ExpressionHelper type: {type.Name}\tvalue: {value}";
         }
     }
-    private readonly struct ListHelper(string name, int num = -1, int chance = -1)
+    private readonly struct ListHelper(string name, int num = 1, int chance = 100)
     {
         public readonly int num = num;
         public readonly string name = name;
@@ -71,9 +73,15 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
     }
     private void LogEffects()
     {
+        string effects = "";
         foreach (var item in oH.Effects)
         {
-            _logger.LogDebug("Effect \"{c}\" properties:\n\tInDmgMod: {t}\n\tOutDmgMod: {a}", item.Name, item.InDmgMod, item.OutDmgMod);
+            effects = "";
+            foreach (var effect in item.EffectsApplied)
+            {
+                effects += $"{effect.num}x {effect.effect.Name} to {effect.target}";
+            }
+            _logger.LogDebug("Effect \"{c}\" properties:\n\tInDmgMod: {t}\n\tOutDmgMod: {a}\n\tDamageDealt: {dmg}\n\tEffects applied: {effects}", item.Name, item.InDmgMod, item.OutDmgMod, item.DamageDealt, effects);
         }
     }
     private void LogNodes()
@@ -167,11 +175,15 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
         }
         return base.VisitParamsDef(context);
     }
+
+    // Visitors for lists
+
     public override object VisitList([NotNull] CDLParser.ListContext context)
     {
         LocalEnemyAttackList.Clear();
         LocalListContent.Clear();
         NewLocalListContent.Clear();
+        LocalCardTargetList.Clear();
         return base.VisitList(context);
     }
     public override object VisitSingleListItem([NotNull] CDLParser.SingleListItemContext context)
@@ -218,6 +230,28 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
                 break;
         }
         return base.VisitAttackListItem(context);
+    }
+
+    public override object VisitTargetItem([NotNull] CDLParser.TargetItemContext context)
+    {
+
+        string targetString = context.GetText();
+        switch (targetString)
+        {
+            case "enemy":
+                LocalCardTargetList.Add(TargetTypes.ENEMY);
+                break;
+            case "enemies":
+                LocalCardTargetList.Add(TargetTypes.ENEMIES);
+                break;
+            case "player":
+                LocalCardTargetList.Add(TargetTypes.PLAYER);
+                break;
+            default:
+                _logger.LogError("Unable to parse target {t}", targetString);
+                break;
+        }
+        return base.VisitTargetItem(context);
     }
     public override object VisitProgram([NotNull] CDLParser.ProgramContext context)
     {
@@ -538,99 +572,113 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
 
     // Visitors for effectDefinition
 
+
+    private Effect? currentEffect;
     public override object VisitEffectDefinition([NotNull] CDLParser.EffectDefinitionContext context)
     {
-        oH.Effects.Add(new Effect(context.varName().GetText()));
+        //oH.Effects.Add(new Effect(context.varName().GetText()));
+        currentEffect = oH.Effects.First(x => x.Name == context.varName().GetText());
         var result = base.VisitEffectDefinition(context);
         return result;
     }
+
     public override object VisitDamageModEffect([NotNull] CDLParser.DamageModEffectContext context)
     {
-        if (context.OUTGOING != null)
+        var result = base.VisitDamageModEffect(context);
+        // TODO need expressions for this
+        if (currentEffect != null)
         {
-            //Effects.Last().OutDmgMod = 
+            currentEffect.InDmgMod = 12;
         }
-        return base.VisitDamageModEffect(context);
+        return result;
+    }
+
+    public override object VisitDamageDealEffect([NotNull] CDLParser.DamageDealEffectContext context)
+    {
+        var result = base.VisitDamageDealEffect(context);
+
+        return result;
+    }
+
+    public override object VisitApplierEffect([NotNull] CDLParser.ApplierEffectContext context)
+    {
+        var result = base.VisitApplierEffect(context);
+        foreach (var item in NewLocalListContent)
+        {
+            if (!em.CheckVarType(item.name, em.Ts.EFFECT))
+            {
+                ExceptionHandler.AddException(context, $"{item.name} has invalid type, must be effect, or does not exist");
+            }
+            else
+            {
+                if (Enum.TryParse(typeof(EffectTarget), context.effectTarget().GetText().ToUpper(), out object? target))
+                {
+                    EffectTarget effectTarget = (EffectTarget)target;
+                    Effect effect = oH.Effects.First(x => x.Name == item.name);
+                    currentEffect?.EffectsApplied.Add((effect, item.num, effectTarget));
+                }
+                else
+                {
+                    ExceptionHandler.AddException(context, $"Unable to parse effect target {context.effectTarget().GetText()}");
+                }
+            }
+        }
+        return result;
     }
 
     // Visitors for cardDefinition
 
+    private Card? currentCard;
+    public override object VisitCardDefinition([NotNull] CDLParser.CardDefinitionContext context)
+    {
+        currentCard = oH.Cards.First(x => x.Name == context.varName().GetText());
+        var result = base.VisitCardDefinition(context);
+
+        return result;
+    }
     public override object VisitCardRarity([NotNull] CDLParser.CardRarityContext context)
     {
-        Card lastCard = oH.Cards.Last();
-        if (lastCard.Rarity == "")
+        if (currentCard?.Rarity == "")
         {
-            lastCard.Rarity = context.rarityName().GetText();
+            currentCard.Rarity = context.rarityName().GetText();
         }
         else
         {
-            _logger.LogError("Multiple rarity definitions for card {c} {d}", lastCard.Name, lastCard.Rarity);
+            _logger.LogError("Multiple rarity definitions for card {c} {d}", currentCard?.Name, currentCard?.Rarity);
         }
         return base.VisitCardRarity(context);
     }
     public override object VisitCardTargets([NotNull] CDLParser.CardTargetsContext context)
     {
         var result = base.VisitCardTargets(context);
-        foreach (var item in LocalListContent)
+        foreach (var item in LocalCardTargetList)
         {
-            oH.Cards.Last().ValidTargets.Add((TargetTypes)item);
+            currentCard?.ValidTargets.Add(item);
         }
         return result;
     }
     public override object VisitCardEffects([NotNull] CDLParser.CardEffectsContext context)
     {
         var result = base.VisitCardEffects(context);
-
-        foreach (var item in LocalListContent)
+        foreach (var item in NewLocalListContent)
         {
-            try
+            if (!em.CheckVarType(item.name, em.Ts.EFFECT))
             {
-                (int cnt, string varName, int chance) = ((int, string, int))item;
-
-                // TODO
-                // How to handle effect parameters?
-
-                //var referredEffect = new Effect(Effects.Where(x => x.Name ==tmp.eff.Name));
-                //Cards.Last().EffectsApplied.Add();
-
-                // Placeholder
-                var referredEffect = oH.Effects.Where(x => x.Name == varName).FirstOrDefault();
-                if (referredEffect != null)
-                    oH.Cards.Last().EffectsApplied.Add((referredEffect, 1));
-
-                // TODO
-                // Probably need to create Effects for example in VisGlobarVars for above to work
+                ExceptionHandler.AddException(context, $"{item.name} has invalid type, must be effect, or does not exist");
             }
-            catch (System.Exception)
+            else
             {
-                _logger.LogError("Unable to parse effect in card effects list");
-                throw;
+                Effect effect = oH.Effects.First(x => x.Name == item.name);
+                // TODO -1 check probably not needed anymore
+                int num = (item.num == -1) ? 1 : item.num;
+                currentCard?.EffectsApplied.Add((effect, num));
             }
-
         }
         return result;
     }
-    public override object VisitTargetItem([NotNull] CDLParser.TargetItemContext context)
-    {
 
-        string targetString = context.GetText();
-        switch (targetString)
-        {
-            case "enemy":
-                LocalListContent.Add(TargetTypes.ENEMY);
-                break;
-            case "enemies":
-                LocalListContent.Add(TargetTypes.ENEMIES);
-                break;
-            case "player":
-                LocalListContent.Add(TargetTypes.PLAYER);
-                break;
-            default:
-                _logger.LogError("Unable to parse target {t}", targetString);
-                break;
-        }
-        return base.VisitTargetItem(context);
-    }
+    // Visitors for expressions
+
     public override object VisitLiteralExpression([NotNull] CDLParser.LiteralExpressionContext context)
     {
         var expressionType = em.GetType(context);

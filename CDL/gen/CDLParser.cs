@@ -2689,6 +2689,7 @@ public partial class CDLParser : Parser {
 		}
 	}
 	public partial class DamageModEffectContext : PassiveEffectContext {
+		public IToken direction;
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DAMAGE() { return GetToken(CDLParser.DAMAGE, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode IS() { return GetToken(CDLParser.IS, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
@@ -2716,9 +2717,10 @@ public partial class CDLParser : Parser {
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 359;
+			((DamageModEffectContext)_localctx).direction = TokenStream.LT(1);
 			_la = TokenStream.LA(1);
 			if ( !(_la==OUTGOING || _la==INCOMING) ) {
-			ErrorHandler.RecoverInline(this);
+				((DamageModEffectContext)_localctx).direction = ErrorHandler.RecoverInline(this);
 			}
 			else {
 				ErrorHandler.ReportMatch(this);

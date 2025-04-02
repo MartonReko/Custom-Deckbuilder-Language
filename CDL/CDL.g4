@@ -88,10 +88,12 @@ enemyProperties:
 effectDefinition:
 	EFFECT varName paramsDef? LCURLY effectType+ RCURLY;
 effectType: passiveEffect | activeEffect;
-passiveEffect: (OUTGOING | INCOMING) DAMAGE IS expression EOS # damageModEffect;
+passiveEffect:
+	direction = (OUTGOING | INCOMING) DAMAGE IS expression EOS # damageModEffect;
 activeEffect:
 	(DEAL) expression DAMAGE effectActivationOpt EOS	# damageDealEffect
 	| APPLY list FOR number TURNS TO effectTarget EOS	# applierEffect;
+//| APPLY list FOR number TURNS EOS					# applierEffect;
 effectActivationOpt: INSTANTLY | ENDOFTURN;
 effectTarget: ENEMIES | TARGET | PLAYER;
 cardDefinition: CARD varName LCURLY cardProperty+ RCURLY;
