@@ -6,30 +6,29 @@ namespace CDL;
 
 class Program
 {
-    public static  CDLExceptionHandler exceptionHandler  = new();
+    public static CDLExceptionHandler exceptionHandler = new();
     static void Main(string[] args)
     {
         var ast = ReadAST("examples/ex_long_errors.cdl");
-        if(!exceptionHandler.isValid()){
+        if (!exceptionHandler.isValid())
+        {
             System.Console.WriteLine("Could not parse grammar, exiting...");
             foreach (var item in exceptionHandler.getExceptions())
             {
-              System.Console.WriteLine(item);
+                System.Console.WriteLine(item);
             }
             return;
         }
         EnvManager envM = new();
-        ObjectsHelper oh = new(envM,exceptionHandler);
-        VisGlobalVars visitorVars = new(envM,exceptionHandler, oh);
+        ObjectsHelper oh = new(envM, exceptionHandler);
+        VisGlobalVars visitorVars = new(envM, exceptionHandler, oh);
         visitorVars.Visit(ast);
         VisBlocks visitorBlocks = new(envM, exceptionHandler, oh);
         visitorBlocks.Visit(ast);
         oh.isValid();
-        if(!exceptionHandler.isValid()){
-            foreach (var item in exceptionHandler.getExceptions())
-            {
-              System.Console.WriteLine(item);
-            }
+        if (!exceptionHandler.isValid())
+        {
+            System.Console.WriteLine("Exceptions found :(");
         }
     }
 
