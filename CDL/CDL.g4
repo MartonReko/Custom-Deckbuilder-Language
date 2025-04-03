@@ -24,11 +24,14 @@ variableDeclaration:
 typeNameVarName: typeName varName;
 
 expression:
-	primary								# primaryExpression
-	| expression addSubOp expression	# addSubExpression
-	| expression mulDivOp expression	# mulDivExpression;
+	primary									# primaryExpression
+	| expression expressionOp expression	# opExpression;
+// | expression addSubOp expression # addSubExpression | expression mulDivOp expression #
+// mulDivExpression;
+expressionContainer: expression;
 addSubOp: PLUS | MINUS;
 mulDivOp: MUL | DIV;
+expressionOp: PLUS | MINUS | MUL | DIV;
 primary: parenthesizedExpression | literalExpression;
 parenthesizedExpression: LPAREN expression RPAREN;
 literalExpression:
@@ -36,8 +39,8 @@ literalExpression:
 	| DOUBLE
 	| STRING
 	| boolean
-	| varName
-	| DAMAGE;
+	| varName;
+	//| DAMAGE;
 
 list: LBRACKET (listItem (COMMA listItem)*)? RBRACKET;
 listItem:
@@ -89,9 +92,9 @@ effectDefinition:
 	EFFECT varName paramsDef? LCURLY effectType+ RCURLY;
 effectType: passiveEffect | activeEffect;
 passiveEffect:
-	direction = (OUTGOING | INCOMING) DAMAGE IS expression EOS # damageModEffect;
+	direction = (OUTGOING | INCOMING) DAMAGE IS expressionContainer X EOS # damageModEffect;
 activeEffect:
-	(DEAL) expression DAMAGE effectActivationOpt EOS	# damageDealEffect
+	(DEAL) expressionContainer DAMAGE effectActivationOpt EOS	# damageDealEffect
 	| APPLY list FOR number TURNS TO effectTarget EOS	# applierEffect;
 //| APPLY list FOR number TURNS EOS					# applierEffect;
 effectActivationOpt: INSTANTLY | ENDOFTURN;

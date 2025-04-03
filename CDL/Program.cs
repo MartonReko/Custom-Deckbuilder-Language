@@ -19,11 +19,12 @@ class Program
             return;
         }
         EnvManager envM = new();
-        ObjectsHelper oh = new();
+        ObjectsHelper oh = new(envM,exceptionHandler);
         VisGlobalVars visitorVars = new(envM,exceptionHandler, oh);
         visitorVars.Visit(ast);
         VisBlocks visitorBlocks = new(envM, exceptionHandler, oh);
         visitorBlocks.Visit(ast);
+        oh.isValid();
         if(!exceptionHandler.isValid()){
             foreach (var item in exceptionHandler.getExceptions())
             {

@@ -11,6 +11,7 @@ using CDL.game;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualBasic;
 using NLog.Extensions.Logging;
+using NLog.LayoutRenderers;
 using NLog.Targets;
 
 namespace CDL;
@@ -25,10 +26,10 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
     private List<ListHelper> NewLocalListContent { get; set; } = [];
     private List<(int num, string varName, EnemyTarget target)> LocalEnemyAttackList { get; set; } = [];
     private HashSet<TargetTypes> LocalCardTargetList { get; set; } = [];
-    private readonly struct ExpressionHelper(CDLType type, object value)
+    private readonly struct ExpressionHelper(CDLType type, string value)
     {
-        readonly CDLType type = type;
-        readonly object value = value;
+        public readonly CDLType type = type;
+        public readonly string value = value;
         public override string ToString()
         {
             return $"ExpressionHelper type: {type.Name}\tvalue: {value}";
@@ -465,7 +466,7 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
         {
             if (!em.CheckVarType(item.name, em.Ts.ENEMY))
             {
-                ExceptionHandler.AddException(context, $"{item.name} has invalid type, must be enemy, or does not exist");
+                ExceptionHandler.AddException(context, $"{item.name} does not exist or has invalid type, must be enemy");
             }
             else
             {
@@ -585,10 +586,10 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
     public override object VisitDamageModEffect([NotNull] CDLParser.DamageModEffectContext context)
     {
         var result = base.VisitDamageModEffect(context);
-        // TODO need expressions for this
         if (currentEffect != null)
         {
-            currentEffect.InDmgMod = 12;
+            double.TryParse(localExpressions.Pop().value, out double value);
+            currentEffect.InDmgMod = value;
         }
         return result;
     }
@@ -596,7 +597,8 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
     public override object VisitDamageDealEffect([NotNull] CDLParser.DamageDealEffectContext context)
     {
         var result = base.VisitDamageDealEffect(context);
-
+        double value = double.Parse(localExpressions.Pop().value);
+        if (currentEffect != null) currentEffect.DamageDealt = value;
         return result;
     }
 
@@ -679,25 +681,62 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
 
     // Visitors for expressions
 
+    private Stack<ExpressionHelper> localExpressions = [];
+    public override object VisitExpressionContainer([NotNull] CDLParser.ExpressionContainerContext context)
+    {
+        localExpressions.Clear();
+        var result = base.VisitExpressionContainer(context);
+        return result;
+    }
     public override object VisitLiteralExpression([NotNull] CDLParser.LiteralExpressionContext context)
     {
         var expressionType = em.GetType(context);
         if (expressionType == null)
         {
+            ExceptionHandler.AddException(context, $"Literal expression {context.GetText()} has unrecognized type");
             return base.VisitLiteralExpression(context);
         }
-        return new ExpressionHelper(
-            expressionType, context.GetText()
-        );
+        localExpressions.Push(new ExpressionHelper(expressionType, context.GetText()));
         return base.VisitLiteralExpression(context);
     }
     public override object VisitPrimaryExpression([NotNull] CDLParser.PrimaryExpressionContext context)
     {
         var result = base.VisitPrimaryExpression(context);
-        // TODO WIP
-        // Expression evaluation cont
-        if (result != null)
-            System.Console.WriteLine(result.ToString());
+        return result;
+    }
+    public override object VisitOpExpression([NotNull] CDLParser.OpExpressionContext context)
+    {
+        var result = base.VisitOpExpression(context);
+        foreach (ExpressionHelper item in localExpressions)
+        {
+            if (!(item.type == em.Ts.DOUBLE || item.type == em.Ts.INT))
+            {
+                localExpressions.Clear();
+                ExceptionHandler.AddException(context, $"Type error in evaluating expression: int or double expected, got {item.type.Name}");
+                return result;
+            }
+        }
+        double opB = double.Parse(localExpressions.Pop().value);
+        double opA = double.Parse(localExpressions.Pop().value);
+        switch (context.expressionOp().GetText())
+        {
+            case "+":
+                localExpressions.Push(new ExpressionHelper(em.Ts.DOUBLE, (opA + opB).ToString()));
+                break;
+            case "-":
+                localExpressions.Push(new ExpressionHelper(em.Ts.DOUBLE, (opA - opB).ToString()));
+                break;
+            case "*":
+                localExpressions.Push(new ExpressionHelper(em.Ts.DOUBLE, (opA * opB).ToString()));
+                break;
+            case "/":
+                localExpressions.Push(new ExpressionHelper(em.Ts.DOUBLE, (opA / opB).ToString()));
+                break;
+            default:
+                localExpressions.Clear();
+                localExpressions.Push(new ExpressionHelper(em.Ts.DOUBLE, 1.ToString()));
+                break;
+        }
         return result;
     }
 }

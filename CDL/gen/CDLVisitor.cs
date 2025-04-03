@@ -99,19 +99,18 @@ public interface ICDLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitPrimaryExpression([NotNull] CDLParser.PrimaryExpressionContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>mulDivExpression</c>
+	/// Visit a parse tree produced by the <c>opExpression</c>
 	/// labeled alternative in <see cref="CDLParser.expression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitMulDivExpression([NotNull] CDLParser.MulDivExpressionContext context);
+	Result VisitOpExpression([NotNull] CDLParser.OpExpressionContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>addSubExpression</c>
-	/// labeled alternative in <see cref="CDLParser.expression"/>.
+	/// Visit a parse tree produced by <see cref="CDLParser.expressionContainer"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitAddSubExpression([NotNull] CDLParser.AddSubExpressionContext context);
+	Result VisitExpressionContainer([NotNull] CDLParser.ExpressionContainerContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="CDLParser.addSubOp"/>.
 	/// </summary>
@@ -124,6 +123,12 @@ public interface ICDLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitMulDivOp([NotNull] CDLParser.MulDivOpContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CDLParser.expressionOp"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitExpressionOp([NotNull] CDLParser.ExpressionOpContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="CDLParser.primary"/>.
 	/// </summary>

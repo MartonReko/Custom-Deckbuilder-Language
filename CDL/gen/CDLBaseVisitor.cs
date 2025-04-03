@@ -146,7 +146,7 @@ public partial class CDLBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// <return>The visitor result.</return>
 	public virtual Result VisitPrimaryExpression([NotNull] CDLParser.PrimaryExpressionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by the <c>mulDivExpression</c>
+	/// Visit a parse tree produced by the <c>opExpression</c>
 	/// labeled alternative in <see cref="CDLParser.expression"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
@@ -155,10 +155,9 @@ public partial class CDLBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitMulDivExpression([NotNull] CDLParser.MulDivExpressionContext context) { return VisitChildren(context); }
+	public virtual Result VisitOpExpression([NotNull] CDLParser.OpExpressionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by the <c>addSubExpression</c>
-	/// labeled alternative in <see cref="CDLParser.expression"/>.
+	/// Visit a parse tree produced by <see cref="CDLParser.expressionContainer"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -166,7 +165,7 @@ public partial class CDLBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitAddSubExpression([NotNull] CDLParser.AddSubExpressionContext context) { return VisitChildren(context); }
+	public virtual Result VisitExpressionContainer([NotNull] CDLParser.ExpressionContainerContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="CDLParser.addSubOp"/>.
 	/// <para>
@@ -187,6 +186,16 @@ public partial class CDLBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	public virtual Result VisitMulDivOp([NotNull] CDLParser.MulDivOpContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CDLParser.expressionOp"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitExpressionOp([NotNull] CDLParser.ExpressionOpContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="CDLParser.primary"/>.
 	/// <para>
