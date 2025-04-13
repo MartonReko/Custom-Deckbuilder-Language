@@ -22,7 +22,6 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
 
     private readonly ILogger<VisBlocks> _logger = LoggerFactory.Create(builder => builder.AddNLog().SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace)).CreateLogger<VisBlocks>();
 
-    // Outdated, remove
     private List<ListHelper> LocalListContent { get; set; } = [];
     private List<(int num, string varName, EnemyTarget target)> LocalEnemyAttackList { get; set; } = [];
     private HashSet<TargetTypes> LocalCardTargetList { get; set; } = [];
@@ -582,6 +581,8 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
         var result = base.VisitDamageModEffect(context);
         if (currentEffect != null)
         {
+
+            // TODO direction
             double.TryParse(localExpressions.Pop().value, out double value);
             currentEffect.InDmgMod = value;
         }
@@ -592,6 +593,8 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
     {
         var result = base.VisitDamageDealEffect(context);
         double value = double.Parse(localExpressions.Pop().value);
+        // TODO
+        //currentEffect!.DamageDealt = 1;
         if (currentEffect != null) currentEffect.DamageDealt = value;
         return result;
     }
@@ -735,4 +738,4 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
     }
 }
 
-// TODO replace all logerrors with CDLExceptions ;(
+// TODO replace all logerrors with CDLExceptions

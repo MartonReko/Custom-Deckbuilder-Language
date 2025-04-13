@@ -14,7 +14,7 @@ public class ObjectsHelper(EnvManager em, CDLExceptionHandler exceptionHandler){
     public List<Effect> Effects { get; set; } = [];
     public List<Card> Cards { get; set; } = [];
 
-    public bool isValid(){
+    public bool IsValid(){
         bool validity = true;
         if(Game == null){
             exceptionHandler.AddException("Game missing");

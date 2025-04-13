@@ -15,3 +15,6 @@ public enum TargetTypes
     ENEMIES,
     PLAYER
 }
+
+// TODO
+// common project

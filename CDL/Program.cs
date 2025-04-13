@@ -10,10 +10,10 @@ class Program
     static void Main(string[] args)
     {
         var ast = ReadAST("examples/ex_long_errors.cdl");
-        if (!exceptionHandler.isValid())
+        if (!exceptionHandler.IsValid())
         {
             System.Console.WriteLine("Could not parse grammar, exiting...");
-            foreach (var item in exceptionHandler.getExceptions())
+            foreach (var item in exceptionHandler.GetExceptions())
             {
                 System.Console.WriteLine(item);
             }
@@ -25,8 +25,8 @@ class Program
         visitorVars.Visit(ast);
         VisBlocks visitorBlocks = new(envM, exceptionHandler, oh);
         visitorBlocks.Visit(ast);
-        oh.isValid();
-        if (!exceptionHandler.isValid())
+        oh.IsValid();
+        if (!exceptionHandler.IsValid())
         {
             System.Console.WriteLine("Exceptions found :(");
         }

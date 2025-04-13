@@ -12,7 +12,7 @@ public class CDLExceptionHandler : BaseErrorListener, IAntlrErrorListener<int>{
         base.SyntaxError(output, recognizer, offendingSymbol, line, charPositionInLine, msg, e);
         exceptions.Add(new CDLException(line,charPositionInLine,msg));
     }
-    public List<CDLException> getExceptions(){
+    public List<CDLException> GetExceptions(){
         return exceptions;
     }
     public void AddException(CDLException exc){
@@ -26,7 +26,7 @@ public class CDLExceptionHandler : BaseErrorListener, IAntlrErrorListener<int>{
         CDLException exc = new(message);
         AddException(exc);
     }
-    public bool isValid(){
+    public bool IsValid(){
         return exceptions.Count == 0;
     }
 
