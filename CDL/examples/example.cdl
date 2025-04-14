@@ -10,6 +10,7 @@ Game{
 Character Bob{
     Health: 75;
     EffectEveryTurn: [small_heal];
+    Deck: [10x strike];
 }
 
 Stage stage_beginner{
@@ -86,12 +87,16 @@ Effect attack_elite{
     Deal 15 damage instantly;
 }
 
+Effect attack_boss{
+    Deal 25 damage instantly;
+}
+
 Effect curse{
     Outgoing damage is 0.75x;
     Incoming damage is 1.2x;
 }
 
-Effect strike{
+Effect effect_strike{
     Deal 8 damage instantly;
 }
 
@@ -110,7 +115,7 @@ Effect effect_poison{
 Card strike{
     Rarity: rarity_common;
     ValidTargets: [enemy];
-    Apply: [strike_effect];
+    Apply: [effect_strike];
 }
 
 Card heal{
@@ -120,7 +125,6 @@ Card heal{
 }
 
 Card poison{
-    Rarity: rarity_common;
     Rarity: rarity_common;
     ValidTargets: [player];
     Apply: [2x effect_poison];

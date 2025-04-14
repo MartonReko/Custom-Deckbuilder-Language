@@ -30,6 +30,8 @@ class Program
         if (!exceptionHandler.IsValid())
         {
             System.Console.WriteLine("Exceptions found :(");
+        }else{
+            System.Console.WriteLine("No exception found :)");
         }
     }
 

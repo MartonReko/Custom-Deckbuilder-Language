@@ -45,16 +45,22 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
     private void LogCharacter()
     {
         string effects = "";
+        string deck = "";
         if (oH.Character != null)
         {
             foreach (var effect in oH.Character.EffectEveryTurn)
             {
                 effects += $"{effect.Name} ";
             }
+            foreach (var card in oH.Character.Deck)
+            {
+                deck += $"{card.Value}x {card.Key.Name} ";
+            }
         }
         _logger.LogDebug(@"Character ""{c}"" properties:
     Health: {health}
-    EffectEveryTurn: {effects}", oH.Character?.Name, oH.Character?.Health, effects);
+    EffectEveryTurn: {effects}
+    Deck: {deck}", oH.Character?.Name, oH.Character?.Health, effects, deck);
     }
     private void LogCards()
     {
@@ -521,6 +527,25 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
                 oH.Character?.EffectEveryTurn.Add(curEffect);
             }
         }
+        return result;
+    }
+
+    public override object VisitCharDeck([NotNull] CDLParser.CharDeckContext context)
+    {
+        var result = base.VisitCharDeck(context);
+
+        foreach(ListHelper item in LocalListContent){
+            if (!em.CheckVarType(item.name, em.Ts.CARD))
+            {
+                ExceptionHandler.AddException(context, $"{item.name} does not exist or has invalid type, must be card");
+            }
+            else
+            {
+                Card curCard = oH.Cards.First(x => x.Name == item.name);
+                oH.Character?.Deck.Add(curCard, item.num);
+            }
+        }
+
         return result;
     }
 
