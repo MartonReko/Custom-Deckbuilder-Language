@@ -4,16 +4,15 @@ Game{
     stage_beginner,
     stage_advanced
     ];
-    Player: ThePlayer;
+    Player: Bob;
 }
-
-Character The_Player{
-    Health: 100;
-    EffectEveryTurn: [miniscule_healing];
+Character Bob{
+    Health: 75;
+    EffectEveryTurn: [small_heal];
 }
 
 Stage stage_beginner{
-    Length: 5;
+    Length: 3;
     Max-width: 3;
     Min-width: 1;
     FillWith: [node_easy];
@@ -32,12 +31,10 @@ Stage stage_advanced{
 
 Node node_easy{
     Enemies: [
-    2x enemy_easy,
-    1x enemy_hard or
-    4x enemy_easy
+    2x enemy_easy
     ];
     Rewards: [
-		3x rarity_common with chance 80% or
+		3x rarity_common with chance 80%,
 		2x rarity_rare with chance 20%
     ];
 }
@@ -53,11 +50,10 @@ Node node_elite{
 
 Node node_boss{
     Enemies: [
-    1x enemy_boss or
-    2x enemy_elite
+    1x enemy_boss
     ];
     Rewards: [
-        6x rarity_rare with chance 100%
+        3x rarity_rare with chance 100%
     ];
 }
 
@@ -90,43 +86,41 @@ Effect attack_elite{
 }
 
 Effect curse{
-    Outgoing damage is damage * 0.9;
-    Incoming damage is damage * 1.2;
+    Outgoing damage is 0.75x;
+    Incoming damage is 1.2x;
 }
 
-Effect strike_effect(int amount){
-    Deal amount damage instantly;
+Effect strike{
+    Deal 8 damage instantly;
 }
 
-// TODO
-Effect effect_heal(int amount){
-    Deal (-1 * amount) damage instantly;
+Effect small_heal{
+    Deal -5 damage instantly;
 }
 
-Effect effect_poison(int var1, int var2){
-    Deal amount damage end of turn;
+Effect effect_heal{
+    Deal -10 damage instantly;
+}
+
+Effect effect_poison{
+    Deal 3 damage end of turn;
 }
 
 Card strike{
     Rarity: rarity_common;
     ValidTargets: [enemy];
-    Apply: [strike_effect(7)];
+    Apply: [strike_effect];
 }
 
 Card heal{
     Rarity: rarity_rare;
     ValidTargets: [player];
-    Apply: [effect_heal(12)];
+    Apply: [effect_heal];
 }
 
 Card poison{
     Rarity: rarity_common;
+    Rarity: rarity_common;
     ValidTargets: [player];
-    Apply: [2x effect_poison(2)];
+    Apply: [2x effect_poison];
 }
-
-int testInt = 5;
-string testString = "asd";
-double testDouble = 1.2;
-bool testBoolean = false;
-//bool testBoolean2 = "false";

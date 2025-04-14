@@ -328,6 +328,13 @@ public interface ICDLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitCharEffects([NotNull] CDLParser.CharEffectsContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>charDeck</c>
+	/// labeled alternative in <see cref="CDLParser.charProperties"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitCharDeck([NotNull] CDLParser.CharDeckContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="CDLParser.enemyDefinition"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

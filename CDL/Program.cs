@@ -9,7 +9,7 @@ class Program
     public static CDLExceptionHandler exceptionHandler = new();
     static void Main(string[] args)
     {
-        var ast = ReadAST("examples/ex_long_errors.cdl");
+        var ast = ReadAST("examples/example.cdl");
         if (!exceptionHandler.IsValid())
         {
             System.Console.WriteLine("Could not parse grammar, exiting...");
@@ -25,7 +25,7 @@ class Program
         visitorVars.Visit(ast);
         VisBlocks visitorBlocks = new(envM, exceptionHandler, oh);
         visitorBlocks.Visit(ast);
-        oh.IsValid();
+        oh.CheckObjectsValidity();
         if (!exceptionHandler.IsValid())
         {
             System.Console.WriteLine("Exceptions found :(");

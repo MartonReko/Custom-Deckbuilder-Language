@@ -34,13 +34,8 @@ mulDivOp: MUL | DIV;
 expressionOp: PLUS | MINUS | MUL | DIV;
 primary: parenthesizedExpression | literalExpression;
 parenthesizedExpression: LPAREN expression RPAREN;
-literalExpression:
-	INT
-	| DOUBLE
-	| STRING
-	| boolean
-	| varName;
-	//| DAMAGE;
+literalExpression: INT | DOUBLE | STRING | boolean | varName;
+//| DAMAGE;
 
 list: LBRACKET (listItem (COMMA listItem)*)? RBRACKET;
 listItem:
@@ -81,7 +76,8 @@ nodeProperties:
 charSetup: CHARACTER varName LCURLY charProperties+ RCURLY;
 charProperties:
 	HEALTH CLN number EOS			# charHealth
-	| EFFECTEVERYTURN CLN list EOS	# charEffects;
+	| EFFECTEVERYTURN CLN list EOS	# charEffects
+	| DECK CLN list EOS				# charDeck;
 
 enemyDefinition: ENEMY varName LCURLY enemyProperties+ RCURLY;
 enemyProperties:
@@ -95,7 +91,7 @@ passiveEffect:
 	direction = (OUTGOING | INCOMING) DAMAGE IS expressionContainer X EOS # damageModEffect;
 activeEffect:
 	(DEAL) expressionContainer DAMAGE effectActivationOpt EOS	# damageDealEffect
-	| APPLY list FOR number TURNS TO effectTarget EOS	# applierEffect;
+	| APPLY list FOR number TURNS TO effectTarget EOS			# applierEffect;
 //| APPLY list FOR number TURNS EOS					# applierEffect;
 effectActivationOpt: INSTANTLY | ENDOFTURN;
 effectTarget: ENEMIES | TARGET | PLAYER;
@@ -151,6 +147,7 @@ NAME: 'Name';
 PLAYERSELECT: 'Player';
 ENEMY: 'Enemy';
 ENEMYLC: 'enemy';
+DECK: 'Deck';
 
 X: 'x';
 MUL: '*';
