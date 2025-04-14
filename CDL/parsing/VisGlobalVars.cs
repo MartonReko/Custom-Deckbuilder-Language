@@ -1,11 +1,10 @@
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using CDL.exceptions;
-using CDL.game;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 
-namespace CDL;
+namespace CDL.parsing;
 
 public class VisGlobalVars(EnvManager em, CDLExceptionHandler exceptionHandler, ObjectsHelper oHelper) : CDLBaseVisitor<object>
 {

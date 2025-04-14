@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from /home/tuna/Documents/Onlab/Test/CDL/CDL.g4 by ANTLR 4.13.1
+// Generated from /home/tuna/Documents/Onlab/Test/CDL/parsing/CDL.g4 by ANTLR 4.13.1
 
 // Unreachable code detected
 #pragma warning disable 0162

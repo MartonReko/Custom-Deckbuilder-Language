@@ -1,6 +1,6 @@
 using System.Reflection.Metadata.Ecma335;
 
-namespace CDL;
+namespace CDL.parsing;
 
 public class TypeSystem
 {

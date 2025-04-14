@@ -14,7 +14,7 @@ using NLog.Extensions.Logging;
 using NLog.LayoutRenderers;
 using NLog.Targets;
 
-namespace CDL;
+namespace CDL.parsing;
 
 public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, ObjectsHelper oH) : CDLBaseVisitor<object>
 {

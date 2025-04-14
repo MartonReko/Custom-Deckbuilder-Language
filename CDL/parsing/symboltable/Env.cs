@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace CDL;
+namespace CDL.parsing;
 
 public class Env
 {

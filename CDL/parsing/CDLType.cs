@@ -1,4 +1,4 @@
-namespace CDL;
+namespace CDL.parsing;
 
 public class CDLType(string name)
 {

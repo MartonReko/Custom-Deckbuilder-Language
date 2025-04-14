@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 
-namespace CDL;
+namespace CDL.parsing;
 
 // Currently has no use since props have no parameters
 public class FnSymbol : Symbol

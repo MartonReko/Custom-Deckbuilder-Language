@@ -6,6 +6,7 @@ Game{
     ];
     Player: Bob;
 }
+
 Character Bob{
     Health: 75;
     EffectEveryTurn: [small_heal];

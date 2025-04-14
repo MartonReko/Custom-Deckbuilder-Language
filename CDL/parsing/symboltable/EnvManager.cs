@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 
 
-namespace CDL;
+namespace CDL.parsing;
 
 public class EnvManager()
 {

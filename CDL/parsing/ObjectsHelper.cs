@@ -1,7 +1,7 @@
 using CDL.exceptions;
 using CDL.game;
 
-namespace CDL;
+namespace CDL.parsing;
 
 public class ObjectsHelper(EnvManager em, CDLExceptionHandler exceptionHandler)
 {
