@@ -11,3 +11,6 @@ public class Enemy(string name) : Entity
 public enum EnemyTarget{
     PLAYER
 }
+
+// TODO
+// Enemywrapper
