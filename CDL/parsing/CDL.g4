@@ -10,7 +10,6 @@ configBlock:
 	| nodeDefinition
 	| charSetup
 	| enemyDefinition
-	| attackDefinition
 	| effectDefinition
 	| cardDefinition;
 
@@ -43,12 +42,10 @@ listItem:
 	varRef									# singleListItem
 	| INT X varRef							# numberedListItem
 	| INT X varRef WITHCHANCE INT PERCENT	# chanceListItem
-	| attackTarget							# attackTargetListItem
-//	| (INT X)? varRef enemyTarget			# attackListItem
+	| (INT X)? varRef enemyTarget			# attackListItem
 	| targetItem							# targetListItem;
 targetItem: ENEMIES | ENEMYLC | PLAYER;
-//enemyTarget: PLAYER;
-attackTarget: SELF | PLAYER;
+enemyTarget: PLAYER | SELF;
 
 paramsDef:
 	LPAREN typeNameVarName (COMMA typeNameVarName)? RPAREN;
@@ -87,11 +84,6 @@ enemyProperties:
 	HEALTH CLN number EOS	# enemyHealth
 	| ACTIONS CLN list EOS	# enemyActions;
 
-attackDefinition:
-	ATTACK varName LCURLY attackProperties+ RCURLY;
-attackProperties:
-	APPLY CLN list EOS		# attackEffects
-	| VALIDTARGETS CLN list	# attackTargets;
 
 effectDefinition:
 	EFFECT varName paramsDef? LCURLY effectType+ RCURLY;
@@ -112,7 +104,6 @@ cardProperty:
 
 //Lexer
 
-ATTACK: 'Attack';
 CHARACTER: 'Character';
 HEALTH: 'Health';
 EFFECTEVERYTURN: 'EffectEveryTurn';

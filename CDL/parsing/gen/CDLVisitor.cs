@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from /home/tuna/Documents/Onlab/Test/CDL/parsing/CDL.g4 by ANTLR 4.13.1
+// Generated from /home/tuna/Documents/Custom-Deckbuilder-Language/CDL/parsing/CDL.g4 by ANTLR 4.13.1
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -175,12 +175,12 @@ public interface ICDLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitChanceListItem([NotNull] CDLParser.ChanceListItemContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>attackTargetListItem</c>
+	/// Visit a parse tree produced by the <c>attackListItem</c>
 	/// labeled alternative in <see cref="CDLParser.listItem"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitAttackTargetListItem([NotNull] CDLParser.AttackTargetListItemContext context);
+	Result VisitAttackListItem([NotNull] CDLParser.AttackListItemContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>targetListItem</c>
 	/// labeled alternative in <see cref="CDLParser.listItem"/>.
@@ -195,11 +195,11 @@ public interface ICDLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitTargetItem([NotNull] CDLParser.TargetItemContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CDLParser.attackTarget"/>.
+	/// Visit a parse tree produced by <see cref="CDLParser.enemyTarget"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitAttackTarget([NotNull] CDLParser.AttackTargetContext context);
+	Result VisitEnemyTarget([NotNull] CDLParser.EnemyTargetContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="CDLParser.paramsDef"/>.
 	/// </summary>
@@ -354,26 +354,6 @@ public interface ICDLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitEnemyActions([NotNull] CDLParser.EnemyActionsContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="CDLParser.attackDefinition"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitAttackDefinition([NotNull] CDLParser.AttackDefinitionContext context);
-	/// <summary>
-	/// Visit a parse tree produced by the <c>attackEffects</c>
-	/// labeled alternative in <see cref="CDLParser.attackProperties"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitAttackEffects([NotNull] CDLParser.AttackEffectsContext context);
-	/// <summary>
-	/// Visit a parse tree produced by the <c>attackTargets</c>
-	/// labeled alternative in <see cref="CDLParser.attackProperties"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitAttackTargets([NotNull] CDLParser.AttackTargetsContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="CDLParser.effectDefinition"/>.
 	/// </summary>

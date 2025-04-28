@@ -151,10 +151,4 @@ public class VisGlobalVars(EnvManager em, CDLExceptionHandler exceptionHandler, 
         _logger.LogDebug("Effect definition visited, enviroment:\n{env}", em.Env.ToString());
         return result;
     }
-    public override object VisitAttackDefinition([NotNull] CDLParser.AttackDefinitionContext context)
-    {
-        if (AddSymbolToTable(context.GetChild(0).GetText(), context.varName()))
-            oHelper.Cards.Add(new game.Card(context.varName().GetText()));
-        return base.VisitAttackDefinition(context);
-    }
 }

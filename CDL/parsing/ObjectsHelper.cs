@@ -1,6 +1,5 @@
 using CDL.exceptions;
 using CDL.game;
-using CDL.gameModel;
 
 namespace CDL.parsing;
 
@@ -13,7 +12,6 @@ public class ObjectsHelper(EnvManager em, CDLExceptionHandler exceptionHandler)
     public List<Stage> Stages { get; set; } = [];
     public List<Node> Nodes { get; set; } = [];
     public List<Enemy> Enemies { get; set; } = [];
-    public List<Attack> Attacks { get; set; } = [];
     public List<Effect> Effects { get; set; } = [];
     public List<Card> Cards { get; set; } = [];
 

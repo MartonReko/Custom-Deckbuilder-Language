@@ -1,18 +1,11 @@
-using System.ComponentModel.DataAnnotations;
 using System.Data;
-using System.IO.Pipelines;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
+using System.Reflection.Metadata.Ecma335;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using CDL.exceptions;
 using CDL.game;
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualBasic;
 using NLog.Extensions.Logging;
-using NLog.LayoutRenderers;
-using NLog.Targets;
 
 namespace CDL.parsing;
 
@@ -211,7 +204,6 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
         LocalListContent.Add(new ListHelper(varName, num, chance));
         return base.VisitChanceListItem(context);
     }
-    /*
     public override object VisitAttackListItem([NotNull] CDLParser.AttackListItemContext context)
     {
         string varName = context.varRef().varName().GetText();
@@ -221,26 +213,16 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
             num = int.Parse(context.INT().GetText());
         }
         string targetString = context.enemyTarget().GetText();
-        switch (targetString)
-        {
-            case "player":
+        
+        if(context.enemyTarget().SELF != null)
+                LocalEnemyAttackList.Add((num, varName, EnemyTarget.SELF));
+        else if(context.enemyTarget().PLAYER != null)
                 LocalEnemyAttackList.Add((num, varName, EnemyTarget.PLAYER));
-                break;
-            default:
+        else
                 _logger.LogError("Unable to parse target {t}", targetString);
-                break;
-        }
+
+        
         return base.VisitAttackListItem(context);
-    }
-    */
-
-    public override object VisitAttackTargetListItem([NotNull] CDLParser.AttackTargetListItemContext context)
-    {
-        string varName = context.attackTarget().GetText();
-        LocalListContent.Add(new ListHelper(varName));
-
-
-        return base.VisitAttackTargetListItem(context);
     }
 
     public override object VisitTargetItem([NotNull] CDLParser.TargetItemContext context)
@@ -660,14 +642,6 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
             }
         }
         return result;
-    }
-
-    // Visitors for attackDefinition
-
-    public override object VisitAttackDefinition([NotNull] CDLParser.AttackDefinitionContext context)
-    {
-
-        return base.VisitAttackDefinition(context);
     }
 
     // Visitors for cardDefinition

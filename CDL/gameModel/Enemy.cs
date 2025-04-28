@@ -5,11 +5,11 @@ namespace CDL.game;
 public class Enemy(string name) : Entity
 {
     public readonly string Name = name;
-    public List<(Effect, EnemyTarget, int)> Actions { get; set; } = [];
+    public List<(Effect effect, EnemyTarget target, int num)> Actions { get; set; } = [];
 }
 
 public enum EnemyTarget{
-    PLAYER
+    PLAYER, SELF
 }
 
 // TODO

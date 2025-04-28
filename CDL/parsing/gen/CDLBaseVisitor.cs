@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from /home/tuna/Documents/Onlab/Test/CDL/parsing/CDL.g4 by ANTLR 4.13.1
+// Generated from /home/tuna/Documents/Custom-Deckbuilder-Language/CDL/parsing/CDL.g4 by ANTLR 4.13.1
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -270,7 +270,7 @@ public partial class CDLBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// <return>The visitor result.</return>
 	public virtual Result VisitChanceListItem([NotNull] CDLParser.ChanceListItemContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by the <c>attackTargetListItem</c>
+	/// Visit a parse tree produced by the <c>attackListItem</c>
 	/// labeled alternative in <see cref="CDLParser.listItem"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
@@ -279,7 +279,7 @@ public partial class CDLBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitAttackTargetListItem([NotNull] CDLParser.AttackTargetListItemContext context) { return VisitChildren(context); }
+	public virtual Result VisitAttackListItem([NotNull] CDLParser.AttackListItemContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by the <c>targetListItem</c>
 	/// labeled alternative in <see cref="CDLParser.listItem"/>.
@@ -302,7 +302,7 @@ public partial class CDLBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// <return>The visitor result.</return>
 	public virtual Result VisitTargetItem([NotNull] CDLParser.TargetItemContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CDLParser.attackTarget"/>.
+	/// Visit a parse tree produced by <see cref="CDLParser.enemyTarget"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -310,7 +310,7 @@ public partial class CDLBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitAttackTarget([NotNull] CDLParser.AttackTargetContext context) { return VisitChildren(context); }
+	public virtual Result VisitEnemyTarget([NotNull] CDLParser.EnemyTargetContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="CDLParser.paramsDef"/>.
 	/// <para>
@@ -557,38 +557,6 @@ public partial class CDLBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	public virtual Result VisitEnemyActions([NotNull] CDLParser.EnemyActionsContext context) { return VisitChildren(context); }
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="CDLParser.attackDefinition"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitAttackDefinition([NotNull] CDLParser.AttackDefinitionContext context) { return VisitChildren(context); }
-	/// <summary>
-	/// Visit a parse tree produced by the <c>attackEffects</c>
-	/// labeled alternative in <see cref="CDLParser.attackProperties"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitAttackEffects([NotNull] CDLParser.AttackEffectsContext context) { return VisitChildren(context); }
-	/// <summary>
-	/// Visit a parse tree produced by the <c>attackTargets</c>
-	/// labeled alternative in <see cref="CDLParser.attackProperties"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitAttackTargets([NotNull] CDLParser.AttackTargetsContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="CDLParser.effectDefinition"/>.
 	/// <para>
