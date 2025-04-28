@@ -211,6 +211,7 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
         LocalListContent.Add(new ListHelper(varName, num, chance));
         return base.VisitChanceListItem(context);
     }
+    /*
     public override object VisitAttackListItem([NotNull] CDLParser.AttackListItemContext context)
     {
         string varName = context.varRef().varName().GetText();
@@ -230,6 +231,16 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
                 break;
         }
         return base.VisitAttackListItem(context);
+    }
+    */
+
+    public override object VisitAttackTargetListItem([NotNull] CDLParser.AttackTargetListItemContext context)
+    {
+        string varName = context.attackTarget().GetText();
+        LocalListContent.Add(new ListHelper(varName));
+
+
+        return base.VisitAttackTargetListItem(context);
     }
 
     public override object VisitTargetItem([NotNull] CDLParser.TargetItemContext context)
@@ -534,7 +545,8 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
     {
         var result = base.VisitCharDeck(context);
 
-        foreach(ListHelper item in LocalListContent){
+        foreach (ListHelper item in LocalListContent)
+        {
             if (!em.CheckVarType(item.name, em.Ts.CARD))
             {
                 ExceptionHandler.AddException(context, $"{item.name} does not exist or has invalid type, must be card");
@@ -648,6 +660,14 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
             }
         }
         return result;
+    }
+
+    // Visitors for attackDefinition
+
+    public override object VisitAttackDefinition([NotNull] CDLParser.AttackDefinitionContext context)
+    {
+
+        return base.VisitAttackDefinition(context);
     }
 
     // Visitors for cardDefinition

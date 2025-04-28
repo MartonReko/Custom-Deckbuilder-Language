@@ -112,6 +112,11 @@ Effect effect_poison{
     Deal 3 damage end of turn;
 }
 
+Attack testAttack{
+    Apply: [effect_strike]
+    ValidTargets: [self, player]
+}
+
 Card strike{
     Rarity: rarity_common;
     ValidTargets: [enemy];
