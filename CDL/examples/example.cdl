@@ -13,6 +13,10 @@ Character Bob{
     Deck: [10x strike];
 }
 
+Effect small_heal{
+    Deal -1 damage instantly;
+}
+
 Stage stage_beginner{
     Length: 3;
     Max-width: 3;
@@ -61,51 +65,39 @@ Node node_boss{
 
 Enemy enemy_easy{
     Health: 10;
-    Actions: [attack_basic player];
+    Actions: [basicAttack player];
 }
 
 Enemy enemy_hard{
     Health: 30;
-    Actions: [attack_basic player];
+    Actions: [basicAttack player];
 }
 
 Enemy enemy_elite{
     Health: 50;
-    Actions: [attack_elite player, curse player];
+    Actions: [basicAttack player,statusAttack player];
 }
 
 Enemy enemy_boss{
     Health: 100;
-    Actions: [attack_boss player, 2x curse player];
+    Actions: [basicAttack player,3x statusAttack player];
+}
+
+EnemyAction basicAttack{
+    Apply: [2x attack_basic, effect_poison];
+}
+
+EnemyAction statusAttack{
+    Apply: [curse, effect_poison];
 }
 
 Effect attack_basic{
     Deal 5 damage instantly;
 }
 
-Effect attack_elite{
-    Deal 15 damage instantly;
-}
-
-Effect attack_boss{
-    Deal 25 damage instantly;
-}
-
 Effect curse{
     Outgoing damage is 0.75x;
     Incoming damage is 1.2x;
-}
-
-Effect effect_strike{
-    Deal 8 damage instantly;
-}
-
-Effect small_heal{
-    Deal -5 damage instantly;
-}
-
-Effect effect_heal{
-    Deal -10 damage instantly;
 }
 
 Effect effect_poison{
@@ -115,13 +107,13 @@ Effect effect_poison{
 Card strike{
     Rarity: rarity_common;
     ValidTargets: [enemy];
-    Apply: [effect_strike];
+    Apply: [attack_basic];
 }
 
 Card heal{
     Rarity: rarity_rare;
     ValidTargets: [player];
-    Apply: [effect_heal];
+    Apply: [small_heal];
 }
 
 Card poison{

@@ -1,7 +1,8 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
-using CDL.exceptions;
-using CDL.parsing;
+using CDL.Exceptions;
+using CDL.Parsing;
+using CDL.Parsing.Symboltable;
 namespace CDL;
 
 
