@@ -23,7 +23,7 @@ public class TypeSystem
         this.ENEMY = new CDLType("Enemy");
         this.EFFECT = new CDLType("Effect");
         this.CARD = new CDLType("Card");
-        this.ATTACK = new CDLType("Attack");
+        this.ENEMYACTION = new CDLType("EnemyAction");
 
         this.ERROR.Parents.Add(this.STRING);
         this.ERROR.Parents.Add(this.DOUBLE);
@@ -36,6 +36,7 @@ public class TypeSystem
         this.ERROR.Parents.Add(this.ENEMY);
         this.ERROR.Parents.Add(this.EFFECT);
         this.ERROR.Parents.Add(this.CARD);
+        this.ENEMYACTION.Parents.Add(this.ENEMYACTION);
 
         this.DOUBLE.Parents.Add(this.INT);
 
@@ -51,6 +52,7 @@ public class TypeSystem
         types[this.ENEMY.Name] = this.ENEMY;
         types[this.EFFECT.Name] = this.EFFECT;
         types[this.CARD.Name] = this.CARD;
+        types[this.ENEMYACTION.Name] = this.ENEMYACTION;
     }
 
     public CDLType BOOLEAN { get; private set; }
@@ -65,7 +67,7 @@ public class TypeSystem
     public CDLType ENEMY { get; private set; }
     public CDLType EFFECT { get; private set; }
     public CDLType CARD { get; private set; }
-    public CDLType ATTACK {get; private set;}
+    public CDLType ENEMYACTION {get; private set;}
 
     public CDLType this[string name]
     {

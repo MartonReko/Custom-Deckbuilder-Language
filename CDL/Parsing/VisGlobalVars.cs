@@ -129,6 +129,12 @@ public class VisGlobalVars(EnvManager em, CDLExceptionHandler exceptionHandler, 
             oHelper.Enemies.Add(new Enemy(context.varName().GetText()));
         return base.VisitEnemyDefinition(context);
     }
+    public override object VisitEnemyActionDefinition([NotNull] CDLParser.EnemyActionDefinitionContext context)
+    {
+        if (AddSymbolToTable(context.GetChild(0).GetText(), context.varName()))
+            oHelper.EnemyActions.Add(new EnemyAction(context.varName().GetText()));
+        return base.VisitEnemyActionDefinition(context);
+    }
     public override object VisitCardDefinition([NotNull] CDLParser.CardDefinitionContext context)
     {
         if (AddSymbolToTable(context.GetChild(0).GetText(), context.varName()))

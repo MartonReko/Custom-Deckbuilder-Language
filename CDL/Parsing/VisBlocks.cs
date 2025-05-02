@@ -68,6 +68,17 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
             _logger.LogDebug("Card \"{c}\" properties:\n\tRarity: {r}\n\tValidTargets: {t}\n\tApplies: {a}", card.Name, card.Rarity, targets, effects);
         }
     }
+    private void LogEnemyActions()
+    {
+        foreach (var ea in oH.EnemyActions)
+        {
+            string effects = "";
+            foreach ((Effect effect, int cnt) in ea.EffectsApplied)
+                effects += $"{cnt}x\t{effect.Name} ";
+
+            _logger.LogDebug("EnemyAction \"{c}\" properties:\n\tApplies: {a}", ea.Name, effects);
+        }
+    }
     private void LogEffects()
     {
         string effects = "";
@@ -138,18 +149,18 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
     }
     private void LogEnemies()
     {
-        string attacks = "";
+        string actions = "";
 
         foreach (var item in oH.Enemies)
         {
-            attacks = "";
-            foreach ((Effect effect, EnemyTarget target, int num) in item.Actions)
+            actions = "";
+            foreach ((EnemyAction ea, EnemyTarget target, int num) in item.Actions)
             {
-                attacks += $"{num}x {effect.Name} to {target.ToString()} ";
+                actions += $"{num}x {ea.Name} to {target.ToString()} ";
             }
             _logger.LogDebug(@"Enemy ""{c}"" properties:
     Health: {health}
-    Attacks: {attacks}", item.Name, item.Health, attacks);
+    Actions: {acts}", item.Name, item.Health, actions);
         }
     }
     public override object VisitParamsDef([NotNull] CDLParser.ParamsDefContext context)
@@ -212,15 +223,15 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
             num = int.Parse(context.INT().GetText());
         }
         string targetString = context.enemyTarget().GetText();
-        
-        if(context.enemyTarget().SELF != null)
-                LocalEnemyAttackList.Add((num, varName, EnemyTarget.SELF));
-        else if(context.enemyTarget().PLAYER != null)
-                LocalEnemyAttackList.Add((num, varName, EnemyTarget.PLAYER));
-        else
-                _logger.LogError("Unable to parse target {t}", targetString);
 
-        
+        if (context.enemyTarget().SELF != null)
+            LocalEnemyAttackList.Add((num, varName, EnemyTarget.SELF));
+        else if (context.enemyTarget().PLAYER != null)
+            LocalEnemyAttackList.Add((num, varName, EnemyTarget.PLAYER));
+        else
+            _logger.LogError("Unable to parse target {t}", targetString);
+
+
         return base.VisitAttackListItem(context);
     }
 
@@ -255,6 +266,7 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
         LogEnemies();
         LogEffects();
         LogCards();
+        LogEnemyActions();
 
         return result;
     }
@@ -567,23 +579,49 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
     public override object VisitEnemyActions([NotNull] CDLParser.EnemyActionsContext context)
     {
         var result = base.VisitEnemyActions(context);
-        foreach (var item in LocalEnemyAttackList)
+        foreach (var (num, varName, target) in LocalEnemyAttackList)
         {
-            if (!em.CheckVarType(item.varName, em.Ts.EFFECT))
+            if (!em.CheckVarType(varName, em.Ts.ENEMYACTION))
             {
-                ExceptionHandler.AddException(context, $"{item.varName} does not exist or has invalid type, must be effect");
+                ExceptionHandler.AddException(context, $"{varName} does not exist or has invalid type, must be of enemy action type");
             }
             else
             {
-                Effect curEffect = oH.Effects.First(x => x.Name == item.varName);
-                currentEnemy?.Actions.Add((curEffect, item.target, item.num));
+                EnemyAction curAction = oH.EnemyActions.First(x => x.Name == varName);
+                currentEnemy?.Actions.Add((curAction, target, num));
+            }
+        }
+        return result;
+    }
+
+    // Visitors for enemyAction
+
+    private EnemyAction? currentEAction;
+    public override object VisitEnemyActionDefinition([NotNull] CDLParser.EnemyActionDefinitionContext context)
+    {
+        currentEAction = oH.EnemyActions.First(x => x.Name == context.varName().GetText());
+        return base.VisitEnemyActionDefinition(context);
+    }
+
+    public override object VisitEnemyActionEffects([NotNull] CDLParser.EnemyActionEffectsContext context)
+    {
+        var result = base.VisitEnemyActionEffects(context);
+        foreach (var item in LocalListContent)
+        {
+            if (!em.CheckVarType(item.name, em.Ts.EFFECT))
+            {
+                ExceptionHandler.AddException(context, $"{item.name} has invalid type, must be effect, or does not exist");
+            }
+            else
+            {
+                Effect effect = oH.Effects.First(x => x.Name == item.name);
+                currentEAction?.EffectsApplied.Add((effect, item.num));
             }
         }
         return result;
     }
 
     // Visitors for effectDefinition
-
 
     private Effect? currentEffect;
     public override object VisitEffectDefinition([NotNull] CDLParser.EffectDefinitionContext context)
@@ -686,9 +724,7 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
             else
             {
                 Effect effect = oH.Effects.First(x => x.Name == item.name);
-                // TODO -1 check probably not needed anymore
-                int num = (item.num == -1) ? 1 : item.num;
-                currentCard?.EffectsApplied.Add((effect, num));
+                currentCard?.EffectsApplied.Add((effect, item.num));
             }
         }
         return result;

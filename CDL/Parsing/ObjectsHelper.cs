@@ -15,6 +15,7 @@ public class ObjectsHelper(EnvManager em, CDLExceptionHandler exceptionHandler)
     public List<Enemy> Enemies { get; set; } = [];
     public List<Effect> Effects { get; set; } = [];
     public List<Card> Cards { get; set; } = [];
+    public List<EnemyAction> EnemyActions { get; set; } = [];
 
     public void CheckObjectsValidity()
     {
