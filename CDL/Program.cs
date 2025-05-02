@@ -11,7 +11,8 @@ class Program
     public static CDLExceptionHandler exceptionHandler = new();
     static void Main(string[] args)
     {
-        var ast = ReadAST("examples/example.cdl");
+        string fileLocation = "examples/example.cdl";
+        var ast = ReadAST(fileLocation);
         if (!exceptionHandler.IsValid())
         {
             System.Console.WriteLine("Could not parse grammar, exiting...");
