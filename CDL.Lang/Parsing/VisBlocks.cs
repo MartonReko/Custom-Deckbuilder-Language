@@ -17,6 +17,8 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
     private List<ListHelper> LocalListContent { get; set; } = [];
     private List<(int num, string varName, EnemyTarget target)> LocalEnemyAttackList { get; set; } = [];
     private HashSet<TargetTypes> LocalCardTargetList { get; set; } = [];
+    // TODO
+    // Possibly unfinished
     private readonly struct ExpressionHelper(CDLType type, string value)
     {
         public readonly CDLType type = type;
@@ -84,12 +86,7 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
         string effects = "";
         foreach (var item in oH.Effects)
         {
-            effects = "";
-            foreach (var effect in item.EffectsApplied)
-            {
-                effects += $"{effect.num}x {effect.effect.Name} to {effect.target}";
-            }
-            _logger.LogDebug("Effect \"{c}\" properties:\n\tInDmgMod: {t}\n\tOutDmgMod: {a}\n\tDamageDealt: {dmg}\n\tEffects applied: {effects}", item.Name, item.InDmgMod, item.OutDmgMod, item.DamageDealt, effects);
+            _logger.LogDebug("Effect \"{c}\" properties:\n\tInDmgMod: {t}\n\tOutDmgMod: {a}\n\tDamageDealt: {dmg}", item.Name, item.InDmgMod, item.OutDmgMod, item.DamageDealt);
         }
     }
     private void LogNodes()
@@ -163,6 +160,8 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
     Actions: {acts}", item.Name, item.Health, actions);
         }
     }
+    // TODO
+    // Parameters are currently not implemented
     public override object VisitParamsDef([NotNull] CDLParser.ParamsDefContext context)
     {
         foreach (var item in context.typeNameVarName())
@@ -421,7 +420,6 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
     public override object VisitStageMustContain([NotNull] CDLParser.StageMustContainContext context)
     {
         var result = base.VisitStageMustContain(context);
-        // TODO also use LocalListContent for other places instead of casting...
         foreach (var item in LocalListContent)
         {
             if (em.CheckVarType(item.name, em.Ts.NODE))
@@ -637,10 +635,16 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
         var result = base.VisitDamageModEffect(context);
         if (currentEffect != null)
         {
-
-            // TODO direction
-            double.TryParse(localExpressions.Pop().value, out double value);
-            currentEffect.InDmgMod = value;
+            if(context.INCOMING != null)
+            {
+                double.TryParse(localExpressions.Pop().value, out double value);
+                currentEffect.InDmgMod = value;
+            }
+            else
+            {
+                double.TryParse(localExpressions.Pop().value, out double value);
+                currentEffect.OutDmgMod = value;
+            }
         }
         return result;
     }
@@ -649,37 +653,10 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
     {
         var result = base.VisitDamageDealEffect(context);
         double value = double.Parse(localExpressions.Pop().value);
-        // TODO
-        //currentEffect!.DamageDealt = 1;
         if (currentEffect != null) currentEffect.DamageDealt = value;
         return result;
     }
 
-    public override object VisitApplierEffect([NotNull] CDLParser.ApplierEffectContext context)
-    {
-        var result = base.VisitApplierEffect(context);
-        foreach (var item in LocalListContent)
-        {
-            if (!em.CheckVarType(item.name, em.Ts.EFFECT))
-            {
-                ExceptionHandler.AddException(context, $"{item.name} has invalid type, must be effect, or does not exist");
-            }
-            else
-            {
-                if (Enum.TryParse(typeof(EffectTarget), context.effectTarget().GetText().ToUpper(), out object? target))
-                {
-                    EffectTarget effectTarget = (EffectTarget)target;
-                    Effect effect = oH.Effects.First(x => x.Name == item.name);
-                    currentEffect?.EffectsApplied.Add((effect, item.num, effectTarget));
-                }
-                else
-                {
-                    ExceptionHandler.AddException(context, $"Unable to parse effect target {context.effectTarget().GetText()}");
-                }
-            }
-        }
-        return result;
-    }
 
     // Visitors for cardDefinition
 
