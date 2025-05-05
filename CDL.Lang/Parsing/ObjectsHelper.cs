@@ -115,6 +115,15 @@ public class ObjectsHelper(EnvManager em, CDLExceptionHandler exceptionHandler)
             }
         }
 
+        //Checks for effects
+        foreach (Effect e in Effects)
+        {
+            if(e.EffectType == EffectType.MOD && e.DamageDealt != 0)
+            {
+                exceptionHandler.AddException($"{e.Name}: Effects must either be passive or active, not mixed");
+            }
+        }
+
 
     }
 }

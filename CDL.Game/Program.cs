@@ -35,7 +35,7 @@ namespace CDL.Game
             var app = builder.Build();
 
             var gameService = app.Services.GetService<GameService>();
-            //gameService.Start();
+            gameService.Initialize();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

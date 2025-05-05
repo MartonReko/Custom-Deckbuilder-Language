@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from /home/tuna/Documents/Onlab/Test/CDL/Parsing/CDL.g4 by ANTLR 4.13.1
+// Generated from c:/Users/Tuna/Documents/Custom-Deckbuilder-Language/CDL.Lang/Parsing/CDL.g4 by ANTLR 4.13.1
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -400,13 +400,6 @@ public interface ICDLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitDamageDealEffect([NotNull] CDLParser.DamageDealEffectContext context);
-	/// <summary>
-	/// Visit a parse tree produced by the <c>applierEffect</c>
-	/// labeled alternative in <see cref="CDLParser.activeEffect"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitApplierEffect([NotNull] CDLParser.ApplierEffectContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="CDLParser.effectActivationOpt"/>.
 	/// </summary>

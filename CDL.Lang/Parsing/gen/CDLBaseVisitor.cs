@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from /home/tuna/Documents/Onlab/Test/CDL/Parsing/CDL.g4 by ANTLR 4.13.1
+// Generated from c:/Users/Tuna/Documents/Custom-Deckbuilder-Language/CDL.Lang/Parsing/CDL.g4 by ANTLR 4.13.1
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -631,17 +631,6 @@ public partial class CDLBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	public virtual Result VisitDamageDealEffect([NotNull] CDLParser.DamageDealEffectContext context) { return VisitChildren(context); }
-	/// <summary>
-	/// Visit a parse tree produced by the <c>applierEffect</c>
-	/// labeled alternative in <see cref="CDLParser.activeEffect"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitApplierEffect([NotNull] CDLParser.ApplierEffectContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="CDLParser.effectActivationOpt"/>.
 	/// <para>

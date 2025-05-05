@@ -654,9 +654,17 @@ public class VisBlocks(EnvManager em, CDLExceptionHandler exceptionHandler, Obje
         var result = base.VisitDamageDealEffect(context);
         double value = double.Parse(localExpressions.Pop().value);
         if (currentEffect != null) currentEffect.DamageDealt = value;
-        return result;
+        if(context.effectActivationOpt().INSTANTLY != null)
+        {
+            currentEffect!.EffectType = EffectType.INSTANT;
+        }else if (context.effectActivationOpt().ENDOFTURN != null)
+        {
+            currentEffect!.EffectType = EffectType.TURNEND;
+        }
+            return result;
     }
 
+    
 
     // Visitors for cardDefinition
 

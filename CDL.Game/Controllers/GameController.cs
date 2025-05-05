@@ -28,10 +28,10 @@ namespace CDL.Game.Controllers
             return Ok(new { message = "Data received successfully!", receivedData = model});
         }
 
-        [HttpGet(Name = "GetState")]
-        public string Get()
+        [HttpGet(Name = "GetPlayerState")]
+        public GameService Get()
         {
-            return _gameService.GetValue();
+            return _gameService;
             /*
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {

@@ -97,7 +97,7 @@ effectType: passiveEffect | activeEffect;
 passiveEffect:
 	direction = (OUTGOING | INCOMING) DAMAGE IS expressionContainer X EOS # damageModEffect;
 activeEffect:
-	(DEAL) expressionContainer DAMAGE effectActivationOpt EOS	# damageDealEffect
+	(DEAL) expressionContainer DAMAGE effectActivationOpt EOS	# damageDealEffect;
 effectActivationOpt: INSTANTLY | ENDOFTURN;
 effectTarget: ENEMIES | TARGET | PLAYER;
 cardDefinition: CARD varName LCURLY cardProperty+ RCURLY;
