@@ -1,12 +1,9 @@
-﻿using CDL.Lang.Parsing;
+﻿using CDL.Lang.GameModel;
+using CDL.Lang.Parsing;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CDL.Game.Controllers
 {
-    public class TestModel
-    {
-        public string Name { get; set; }
-    }
     [ApiController]
     [Route("[controller]")]
     public class TestController : ControllerBase
@@ -17,21 +14,40 @@ namespace CDL.Game.Controllers
             _gameService = gameService;
         }
 
-        [HttpPost]
-        public IActionResult Receive([FromBody] TestModel model)
+        [HttpPost("MoveToNode")]
+        public IActionResult Receive([FromBody] MoveResponse response)
         {
-            if (model == null)
+            if (response == null)
             {
                 return BadRequest("Invalid received");
             }
-
-            return Ok(new { message = "Data received successfully!", receivedData = model});
+            _gameService.Move(_gameService.GetMoves()[response.Index]);
+            return Ok(new { message = "Data received successfully!", receivedData = response});
         }
 
-        [HttpGet(Name = "GetPlayerState")]
-        public GameService Get()
+        [HttpGet("GameState")]
+        public GameServiceDto Get()
         {
-            return _gameService;
+            GameServiceDto response = new GameServiceDto();
+
+            response.PlayerState = _gameService.PlayerState;
+
+            foreach(var item in _gameService.GameMap.CurrentStage.NodesByLevel)
+            {
+                List<string> nodeNames = [];
+                foreach (Node node in item.Value)
+                {
+                    nodeNames.Add(node.Name);
+                }
+
+                response.Map.NodesByLevel.Add(nodeNames);
+            }
+
+            //response.CurrentNode.Name = _gameService.GameMap.CurrentNode?.Name ?? "";
+            response.CurrentNode =  new GameNodeDto();
+            response.CurrentNode.Name = _gameService.GameMap.CurrentNode?.Name ?? "";
+
+            return response;
             /*
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {

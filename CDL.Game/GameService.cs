@@ -13,7 +13,7 @@ namespace CDL.Game
         // Block actions upon death
         public PlayerStates PlayerState { get; private set; }
         private ObjectsHelper GameObjects { get; } = gameObjects;
-        private GameMap? GameMap { get; set; } 
+        public GameMap? GameMap { get; private set; } 
         public GameNode? CurrentGameNode { get; private set; }
         public List<Card> Rewards { get; private set; } = [];
         private readonly Random random = new();
@@ -44,6 +44,7 @@ namespace CDL.Game
             {
                 GameNode gameNode = new(node);
                 PlayerState = PlayerStates.COMBAT;
+                CurrentGameNode = gameNode;
                 (string rarity, int num) = CurrentGameNode.GetRewardRarityAndNumber();
                 Rewards = GetPossibleRewards(rarity,num);
                 return true;

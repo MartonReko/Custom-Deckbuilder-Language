@@ -10,7 +10,7 @@ namespace CDL.Game
         public int StageCounter { get; private set; } = 0;
         public GameStage CurrentStage { get; private set; }
         public int LevelCounter { get; private set; } = 0;
-        public Node CurrentNode { get; private set; }
+        public Node? CurrentNode { get; private set; } = null;
         public GameMap(GameSetup game, List<Stage> stages, List<Node> Nodes)
         {
             GameProps = game;
