@@ -43,20 +43,10 @@ namespace CDL.Game.Controllers
                 response.Map.NodesByLevel.Add(nodeNames);
             }
 
-            //response.CurrentNode.Name = _gameService.GameMap.CurrentNode?.Name ?? "";
             response.CurrentNode =  new GameNodeDto();
             response.CurrentNode.Name = _gameService.GameMap.CurrentNode?.Name ?? "";
 
             return response;
-            /*
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
-            */
         }
     }
 }

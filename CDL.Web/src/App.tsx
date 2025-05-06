@@ -58,7 +58,7 @@ function App() {
               <br></br>
               CurrentNode: {gameState.currentNode.name || "Empty"}
               <br></br>
-              Map:
+              StageMap:
               {gameState.map.nodesByLevel.map((nodes, idx) => (
                   <p>
                       Level { idx}

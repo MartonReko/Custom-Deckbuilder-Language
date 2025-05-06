@@ -20,7 +20,7 @@ Effect small_heal{
 Stage stage_beginner{
     Length: 3;
     Max-width: 3;
-    Min-width: 1;
+    Min-width: 3;
     FillWith: [node_easy];
     MustContain: [1x node_elite];
     EndsWith: node_boss;
