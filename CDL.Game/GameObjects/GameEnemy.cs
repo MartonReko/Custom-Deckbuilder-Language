@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.Contracts;
 using CDL.Lang.GameModel;
 
-namespace CDL.Game
+namespace CDL.Game.GameObjects
 {
     public class GameEnemy
     {
