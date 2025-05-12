@@ -17,7 +17,7 @@ namespace CDL.Game
         public GameNode? CurrentGameNode { get; private set; }
         public List<Card> Rewards { get; private set; } = [];
         private readonly Random random = new();
-        public void DeadPlayerDamage(int num)
+        public void DealPlayerDamage(int num)
         {
             GameObjects.Character.Health -= num;
             if(GameObjects.Character.Health < 0)
@@ -57,7 +57,7 @@ namespace CDL.Game
         {
             PlayerEndTurn();
             if (PlayerState == PlayerStates.DEATH) return;
-            //CurrentGameNode.EndTurn();
+
             if (CurrentGameNode.Cleared())
             {
                 PlayerState = PlayerStates.REWARD;
@@ -78,12 +78,14 @@ namespace CDL.Game
             else
             {
                 PlayerState = PlayerStates.COMBAT;
+                EnemyTurnCounter = 0;
             }
         }
 
         public (EnemyAction EnemyAction, EnemyTarget target, int num) NextEnemyTurn()
         {
             var result = CurrentGameNode.EnemyTurn(EnemyTurnCounter, GameObjects.Character);
+            // Reset to 0 on enemies turn end
             EnemyTurnCounter++;
             if(EnemyTurnCounter >= CurrentGameNode.Enemies.Count)
             {
@@ -126,12 +128,12 @@ namespace CDL.Game
                     Card cardToAdd = possibleCards[random.Next(0, possibleCards.Count)];
                     cardsChosen.Add(cardToAdd);
                     // TODO
-                    // Might not work
+                    // Check if this works
                     possibleCards.Remove(cardToAdd);
                 }
                 else
                 {
-                    // Maybe there arent enough unique cards for a rarity
+                    // Maybe there arent enough unique cards for a rarity, then duplicate last one
                     cardsChosen.Add(cardsChosen.Last());
                 }
             }
@@ -177,7 +179,7 @@ namespace CDL.Game
             {
                 if (item.Key.EffectType == EffectType.TURNEND)
                 {
-                    DeadPlayerDamage((int)Math.Round(item.Key.DamageDealt));
+                    DealPlayerDamage((int)Math.Round(item.Key.DamageDealt));
                     character.CurrentEffects[item.Key] = item.Value - 1;
                     if(character.CurrentEffects[item.Key] == 0)
                     {
@@ -220,7 +222,7 @@ namespace CDL.Game
             }
             if(effect.EffectType == EffectType.INSTANT)
             {
-                DeadPlayerDamage((int)Math.Round(effect.DamageDealt));
+                DealPlayerDamage((int)Math.Round(effect.DamageDealt));
             }
         }
     }

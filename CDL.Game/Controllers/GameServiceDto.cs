@@ -8,6 +8,6 @@
             Map = new GameMapDto();
         }
         public GameMapDto Map { get; set; }
-        public GameNodeDto CurrentNode { get; set; }
+        public GameNodeDto? CurrentNode { get; set; }
     }
 }

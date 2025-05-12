@@ -47,7 +47,10 @@ function App() {
         fetchState();
     }, [gameState,reload])
 
-    if (!gameState) return <p>Loading...</p>
+    if (!gameState) {
+        fetchState();
+        return <p>Loading...</p>
+    }
     async function moveAndUpdate(idx:number) {
         moveToNode(idx); setReload(prev => prev + 1)
     }

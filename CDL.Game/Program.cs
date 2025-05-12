@@ -12,6 +12,7 @@ namespace CDL.Game
 
             if (objectsHelper == null)
             {
+                // Input processing failed
                 return;
             }
 
@@ -35,7 +36,7 @@ namespace CDL.Game
             var app = builder.Build();
 
             var gameService = app.Services.GetService<GameService>();
-            gameService.Initialize();
+            gameService!.Initialize();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -50,8 +51,6 @@ namespace CDL.Game
             app.UseAuthorization();
 
             app.MapControllers();
-
-            app.MapGet("/game/state", () => "asd");
 
             app.Run();
         }
