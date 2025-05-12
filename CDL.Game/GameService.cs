@@ -1,4 +1,5 @@
-﻿using CDL.Lang.GameModel;
+﻿using CDL.Game.GameObjects;
+using CDL.Lang.GameModel;
 using CDL.Lang.Parsing;
 
 namespace CDL.Game
@@ -15,11 +16,13 @@ namespace CDL.Game
         private ObjectsHelper GameObjects { get; } = gameObjects;
         public GameMap? GameMap { get; private set; } 
         public GameNode? CurrentGameNode { get; private set; }
-        public List<Card> Rewards { get; private set; } = [];
+        public List<GameCard> Rewards { get; } = [];
+        public List<GameCard> Deck { get; } = [];
+
         private readonly Random random = new();
         public void DealPlayerDamage(int num)
         {
-            GameObjects.Character.Health -= num;
+            GameObjects!.Character!.Health -= num;
             if(GameObjects.Character.Health < 0)
             {
                 PlayerState = PlayerStates.DEATH;
@@ -30,7 +33,14 @@ namespace CDL.Game
         {
             GameMap = new GameMap(GameObjects!.Game!, GameObjects.Stages, GameObjects.Nodes);
             GameMap.LoadNextStage();
+            CreateDeck();
             PlayerState = PlayerStates.MAPMOVE;
+        }
+        private void CreateDeck()
+        {
+            foreach ((Card card, int num) in GameObjects!.Character!.Deck) {
+                Deck.Add(new GameCard(card));
+            }
         }
 
         public List<Node> GetMoves()
@@ -46,7 +56,7 @@ namespace CDL.Game
                 PlayerState = PlayerStates.COMBAT;
                 CurrentGameNode = gameNode;
                 (string rarity, int num) = CurrentGameNode.GetRewardRarityAndNumber();
-                Rewards = GetPossibleRewards(rarity,num);
+                GenerateRewards(rarity,num);
                 return true;
             }else {
                 return false;
@@ -110,7 +120,7 @@ namespace CDL.Game
         }
         // TODO
         // Could probably create a dictionary for rarities
-        private List<Card> GetPossibleRewards(string rarity, int cnt)
+        private void GenerateRewards(string rarity, int cnt)
         {
             List<Card> possibleCards = [];
             foreach(Card card in GameObjects.Cards)
@@ -120,13 +130,13 @@ namespace CDL.Game
                     possibleCards.Add(card);
                 }
             }
-            List<Card> cardsChosen = [];
+            List<GameCard> cardsChosen = [];
             for (int i = 0; i < cnt; i++)
             {
                 if(possibleCards.Count != 0)
                 {
                     Card cardToAdd = possibleCards[random.Next(0, possibleCards.Count)];
-                    cardsChosen.Add(cardToAdd);
+                    Rewards.Add(new GameCard(cardToAdd));
                     // TODO
                     // Check if this works
                     possibleCards.Remove(cardToAdd);
@@ -134,34 +144,27 @@ namespace CDL.Game
                 else
                 {
                     // Maybe there arent enough unique cards for a rarity, then duplicate last one
-                    cardsChosen.Add(cardsChosen.Last());
+                    Rewards.Add(cardsChosen.Last());
                 }
             }
-            return possibleCards;
         }
-        public void ChooseReward(int idx)
+        public void ChooseReward(Guid Id)
         {
             // TODO
             // Nicer handling of wrong state
             if (PlayerState != PlayerStates.REWARD) return;
-            Card chosen = Rewards[idx];
-            if(GameObjects.Character.Deck.TryGetValue(chosen, out int cnt))
-            {
-                GameObjects.Character.Deck[chosen] = cnt + 1;
-            }
-            else
-            {
-                GameObjects.Character.Deck.Add(chosen,1);
-            }
+            // TODO
+            // Card not found error
+            GameCard chosen = Rewards.Where(x=>x.Id.Equals(Id)).First();
+            Deck.Add(chosen);
             PlayerState = PlayerStates.MAPMOVE;
         }
 
-        public void PlayCard(Card card)
+        public void PlayCard(GameCard card)
         {
-            
             if (PlayerState != PlayerStates.COMBAT)
             {
-                foreach((Effect effect, int cnt) in card.EffectsApplied)
+                foreach((Effect effect, int cnt) in card.ModelCard.EffectsApplied)
                 {
                     PlayerApplyEffect(effect, cnt);
                 }

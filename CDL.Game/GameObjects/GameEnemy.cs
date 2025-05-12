@@ -5,30 +5,30 @@ namespace CDL.Game.GameObjects
 {
     public class GameEnemy
     {
-        public readonly Enemy _modelEnemy;
+        public readonly Enemy ModelEnemy;
         private int AttackCounter = 0;
         public int Health { get; private set; }
         public Dictionary<Effect, int> CurrentEffects { get; private set; } = [];
        
         public GameEnemy(Enemy enemy)
         {
-            _modelEnemy = enemy;
-           Health =_modelEnemy.Health; 
+            ModelEnemy = enemy;
+           Health =ModelEnemy.Health; 
         }
 
         // Return info that can be used to actually show stuff in the GUI
         public (EnemyAction EnemyAction, EnemyTarget target, int num) Attack(GameCharacter player)
         {
-            int nextAttack = AttackCounter % _modelEnemy.Actions.Count;
+            int nextAttack = AttackCounter % ModelEnemy.Actions.Count;
             AttackCounter++;
-            if (_modelEnemy.Actions[nextAttack].target == EnemyTarget.PLAYER)
+            if (ModelEnemy.Actions[nextAttack].target == EnemyTarget.PLAYER)
             {
-                ApplyAction(player, _modelEnemy.Actions[nextAttack].EnemyAction);
-                return _modelEnemy.Actions[nextAttack];
+                ApplyAction(player, ModelEnemy.Actions[nextAttack].EnemyAction);
+                return ModelEnemy.Actions[nextAttack];
             }else
             {
-                ApplyAction(_modelEnemy.Actions[nextAttack].EnemyAction);
-                return _modelEnemy.Actions[nextAttack];
+                ApplyAction(ModelEnemy.Actions[nextAttack].EnemyAction);
+                return ModelEnemy.Actions[nextAttack];
             }
         }
 
