@@ -1,4 +1,5 @@
-﻿using CDL.Game.GameObjects;
+﻿using System.Reflection.Emit;
+using CDL.Game.GameObjects;
 using CDL.Lang.GameModel;
 using CDL.Lang.Parsing;
 
@@ -8,11 +9,16 @@ namespace CDL.Game
     {
         public enum PlayerStates
         {
-            COMBAT, MAPMOVE, DEATH, REWARD, ENEMYTURN, WIN
+            COMBAT, MAPMOVE, DEATH, REWARD, WIN
+        }
+        public enum CombatStates
+        {
+            PLAYER, ENEMY
         }
         // TODO
         // Block actions upon death
         public PlayerStates PlayerState { get; private set; }
+        public CombatStates CombatState { get; private set; }
         private ObjectsHelper GameObjects { get; } = gameObjects;
         public GameMap? GameMap { get; private set; } 
         public GameNode? CurrentGameNode { get; private set; }
@@ -54,6 +60,7 @@ namespace CDL.Game
             {
                 GameNode gameNode = new(node);
                 PlayerState = PlayerStates.COMBAT;
+                CombatState = CombatStates.PLAYER;
                 CurrentGameNode = gameNode;
                 (string rarity, int num) = CurrentGameNode.GetRewardRarityAndNumber();
                 GenerateRewards(rarity,num);
@@ -74,8 +81,8 @@ namespace CDL.Game
             }
             else
             {
-                PlayerState = PlayerStates.ENEMYTURN;
                 EnemyTurnCounter = 0;
+                CombatState = CombatStates.ENEMY;
             }
         }
         public void EndEnemiesTurn()
@@ -91,7 +98,7 @@ namespace CDL.Game
             }
             else
             {
-                PlayerState = PlayerStates.COMBAT;
+                CombatState = CombatStates.PLAYER;
                 EnemyTurnCounter = 0;
             }
         }
