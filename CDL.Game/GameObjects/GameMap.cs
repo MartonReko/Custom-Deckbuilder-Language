@@ -27,7 +27,15 @@ namespace CDL.Game.GameObjects
         }
         public List<Node> GetPossibleSteps()
         {
+            if(LevelCounter == CurrentStage.NodesByLevel.Count)
+            {
+                LoadNextStage();
+            }
             return CurrentStage.NodesByLevel[LevelCounter];
+        }
+        public bool IsLast()
+        {
+            return (StageCounter == GameProps.Stages.Count && LevelCounter == CurrentStage.NodesByLevel.Count);
         }
         public bool MoveTo(Node node)
         {

@@ -1,4 +1,5 @@
-﻿using CDL.Lang.GameModel;
+﻿using CDL.Game.DTOs;
+using CDL.Lang.GameModel;
 using CDL.Lang.Parsing;
 using Microsoft.AspNetCore.Mvc;
 

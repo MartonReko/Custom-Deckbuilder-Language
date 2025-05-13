@@ -8,7 +8,7 @@ namespace CDL.Game
     {
         public enum PlayerStates
         {
-            COMBAT, MAPMOVE, DEATH, REWARD, ENEMYTURN
+            COMBAT, MAPMOVE, DEATH, REWARD, ENEMYTURN, WIN
         }
         // TODO
         // Block actions upon death
@@ -83,6 +83,10 @@ namespace CDL.Game
             CurrentGameNode.EndTurn();
             if (CurrentGameNode.Cleared())
             {
+                if (GameMap.IsLast())
+                {
+                    PlayerState = PlayerStates.WIN;
+                }
                 PlayerState = PlayerStates.REWARD;
             }
             else

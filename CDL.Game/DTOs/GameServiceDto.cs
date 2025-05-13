@@ -1,6 +1,6 @@
-﻿namespace CDL.Game.Controllers
+﻿namespace CDL.Game.DTOs
 {
-    public class GameServiceDto
+    public class GameServiceDto : IGameDto
     {
         public GameService.PlayerStates PlayerState { get; set; }
         public GameServiceDto()

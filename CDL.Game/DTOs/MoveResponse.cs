@@ -1,4 +1,4 @@
-﻿namespace CDL.Game.Controllers
+﻿namespace CDL.Game.DTOs
 {
     public class MoveResponse
     {

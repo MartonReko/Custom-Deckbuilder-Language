@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using CDL.Lang.GameModel;
 
-namespace CDL.Game
+namespace CDL.Game.GameObjects
 {
     public class GameStage(Stage model)
     {
@@ -27,7 +27,8 @@ namespace CDL.Game
             // And randomly fill with nodes that are required
             while(nodesUnordered.Count > 0)
             {
-                for (int i = 0; i < ModelStage.StageLength; i++)
+                // Length - 1 so there is space for boss node
+                for (int i = 0; i < ModelStage.StageLength - 1; i++)
                 {
                     if (!NodesByLevel.TryGetValue(i, out List<Node> val))
                     {
@@ -59,7 +60,7 @@ namespace CDL.Game
             }
             
             // Finally fill with nodes given in FillWith property
-            for (int i = 0;i < ModelStage.StageLength; i++)
+            for (int i = 0;i < ModelStage.StageLength - 1; i++)
             {
                 // max : 3 min : 1 cnt : 2 
                 if(NodesByLevel[i].Count < ModelStage.StageWidthMax)
@@ -76,6 +77,9 @@ namespace CDL.Game
                     }
                 }
             }
+
+            // Also add last node to the end
+            NodesByLevel.Add(NodesByLevel.Last().Key + 1,[ModelStage.EndsWith]);
             
         }
     }
