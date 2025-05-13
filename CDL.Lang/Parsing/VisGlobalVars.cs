@@ -120,7 +120,7 @@ public class VisGlobalVars(EnvManager em, CDLExceptionHandler exceptionHandler, 
     public override object VisitCharSetup([NotNull] CDLParser.CharSetupContext context)
     {
         if (AddSymbolToTable(context.GetChild(0).GetText(), context.varName()))
-            oHelper.Character = new GameCharacter(context.varName().GetText());
+            oHelper.Character = new ModelCharacter(context.varName().GetText());
         return base.VisitCharSetup(context);
     }
     public override object VisitEnemyDefinition([NotNull] CDLParser.EnemyDefinitionContext context)

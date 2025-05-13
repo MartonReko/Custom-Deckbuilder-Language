@@ -1,6 +1,6 @@
 namespace CDL.Lang.GameModel;
 
-public class GameCharacter(string name) : Entity
+public class ModelCharacter(string name) : Entity
 {
     public readonly string Name = name;
     public List<Effect> EffectEveryTurn { get; set; } = [];

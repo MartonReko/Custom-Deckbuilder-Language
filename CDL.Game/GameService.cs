@@ -19,17 +19,18 @@ namespace CDL.Game
         // Block actions upon death
         public PlayerStates PlayerState { get; private set; }
         public CombatStates CombatState { get; private set; }
-        private ObjectsHelper GameObjects { get; } = gameObjects;
+        public GameCharacter Player { get; private set; }
+        public ObjectsHelper GameObjects { get; } = gameObjects;
         public GameMap? GameMap { get; private set; } 
         public GameNode? CurrentGameNode { get; private set; }
         public List<GameCard> Rewards { get; } = [];
         public List<GameCard> Deck { get; } = [];
 
         private readonly Random random = new();
-        public void DealPlayerDamage(int num)
+        public void DealPlayerDamage(double num)
         {
-            GameObjects!.Character!.Health -= num;
-            if(GameObjects.Character.Health < 0)
+            Player.Damage(num);
+            if(Player.Health < 0)
             {
                 PlayerState = PlayerStates.DEATH;
             }
@@ -112,6 +113,10 @@ namespace CDL.Game
             {
                 EndEnemiesTurn();
             }
+            if(Player.Health < 0)
+            {
+                PlayerState = PlayerStates.DEATH;
+            }
             return result;
         }
 
@@ -188,7 +193,7 @@ namespace CDL.Game
         public void PlayerEndTurn()
         {
             List<Effect> toRemove = [];
-            GameCharacter character = GameObjects.Character!;
+            ModelCharacter character = GameObjects.Character!;
             foreach (var item in character.CurrentEffects)
             {
                 if (item.Key.EffectType == EffectType.TURNEND)

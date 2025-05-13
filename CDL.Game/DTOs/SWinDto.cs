@@ -2,6 +2,6 @@
 {
     public class SWinDto : IGameDto
     {
-        public GameService.PlayerStates PlayerState { get; set; }
+        public string PlayerState { get; set; }
     }
 }

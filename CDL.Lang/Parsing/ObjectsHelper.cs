@@ -9,7 +9,7 @@ public class ObjectsHelper(EnvManager em, CDLExceptionHandler exceptionHandler)
 
     // All game objects are stored in these lists
     public GameSetup? Game { get; set; }
-    public GameCharacter? Character { get; set; }
+    public ModelCharacter? Character { get; set; }
     public List<Stage> Stages { get; set; } = [];
     public List<Node> Nodes { get; set; } = [];
     public List<Enemy> Enemies { get; set; } = [];

@@ -2,6 +2,12 @@
 {
     public class SMapMoveDto : IGameDto
     {
-        public GameService.PlayerStates PlayerState { get; set; }
+        public string PlayerState { get; set; }
+        public GameMapDto Map { get; set; }
+        public SMapMoveDto(string playerState, GameMapDto map)
+        {
+            PlayerState = playerState;
+            Map = map;
+        }
     }
 }

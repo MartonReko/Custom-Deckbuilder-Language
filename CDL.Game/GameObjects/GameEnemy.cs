@@ -23,7 +23,8 @@ namespace CDL.Game.GameObjects
             AttackCounter++;
             if (ModelEnemy.Actions[nextAttack].target == EnemyTarget.PLAYER)
             {
-                ApplyAction(player, ModelEnemy.Actions[nextAttack].EnemyAction);
+                //ApplyAction(player, ModelEnemy.Actions[nextAttack].EnemyAction);
+                player.ApplyAction(ModelEnemy.Actions[nextAttack].EnemyAction);
                 return ModelEnemy.Actions[nextAttack];
             }else
             {
@@ -32,7 +33,7 @@ namespace CDL.Game.GameObjects
             }
         }
 
-        private void ApplyAction(GameCharacter player, EnemyAction ea)
+        private void ApplyAction(ModelCharacter player, EnemyAction ea)
         {
             foreach ((Effect effect, int cnt) in ea.EffectsApplied)
             {
