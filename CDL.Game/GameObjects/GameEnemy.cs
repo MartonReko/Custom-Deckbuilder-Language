@@ -9,11 +9,11 @@ namespace CDL.Game.GameObjects
         public int Health { get; private set; }
         private int AttackCounter = 0;
         public Dictionary<Effect, int> CurrentEffects { get; private set; } = [];
-       
+
         public GameEnemy(Enemy enemy)
         {
             ModelEnemy = enemy;
-           Health =ModelEnemy.Health; 
+            Health = ModelEnemy.Health;
         }
 
         // Return info that can be used to actually show stuff in the GUI
@@ -26,7 +26,8 @@ namespace CDL.Game.GameObjects
                 //ApplyAction(player, ModelEnemy.Actions[nextAttack].EnemyAction);
                 player.ApplyAction(ModelEnemy.Actions[nextAttack].EnemyAction);
                 return ModelEnemy.Actions[nextAttack];
-            }else
+            }
+            else
             {
                 ApplyAction(ModelEnemy.Actions[nextAttack].EnemyAction);
                 return ModelEnemy.Actions[nextAttack];
@@ -37,7 +38,7 @@ namespace CDL.Game.GameObjects
         {
             foreach ((Effect effect, int cnt) in ea.EffectsApplied)
             {
-                if(effect.EffectType == EffectType.MOD || effect.EffectType == EffectType.TURNEND)
+                if (effect.EffectType == EffectType.MOD || effect.EffectType == EffectType.TURNEND)
                 {
                     if (player.CurrentEffects.ContainsKey(effect))
                     {
@@ -49,7 +50,7 @@ namespace CDL.Game.GameObjects
                         player.CurrentEffects.Add(effect, cnt);
                     }
                 }
-                if(effect.EffectType == EffectType.INSTANT)
+                if (effect.EffectType == EffectType.INSTANT)
                 {
                     player.Health += (int)Math.Round(effect.DamageDealt);
                 }
@@ -65,7 +66,7 @@ namespace CDL.Game.GameObjects
 
         public void ApplyEffect(Effect effect, int cnt)
         {
-            if(effect.EffectType == EffectType.MOD || effect.EffectType == EffectType.TURNEND)
+            if (effect.EffectType == EffectType.MOD || effect.EffectType == EffectType.TURNEND)
             {
                 if (CurrentEffects.ContainsKey(effect))
                 {
@@ -77,7 +78,7 @@ namespace CDL.Game.GameObjects
                     CurrentEffects.Add(effect, cnt);
                 }
             }
-            if(effect.EffectType == EffectType.INSTANT)
+            if (effect.EffectType == EffectType.INSTANT)
             {
                 Health += (int)Math.Round(effect.DamageDealt);
             }
@@ -93,7 +94,7 @@ namespace CDL.Game.GameObjects
                 {
                     Health += (int)Math.Round(item.Key.DamageDealt);
                     CurrentEffects[item.Key] = item.Value - 1;
-                    if(CurrentEffects[item.Key] == 0)
+                    if (CurrentEffects[item.Key] == 0)
                     {
                         toRemove.Add(item.Key);
                     }
@@ -101,7 +102,7 @@ namespace CDL.Game.GameObjects
                 if (item.Key.EffectType == EffectType.MOD)
                 {
                     CurrentEffects[item.Key] = item.Value - 1;
-                    if(CurrentEffects[item.Key] == 0)
+                    if (CurrentEffects[item.Key] == 0)
                     {
                         toRemove.Add(item.Key);
                     }

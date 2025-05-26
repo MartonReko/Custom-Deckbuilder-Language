@@ -467,7 +467,7 @@ public class VisBlocks(EnvManager envManager, CDLExceptionHandler exceptionHandl
 
     // Visitors for nodeDefinition
 
-    private Node? currentNode;
+    private Node currentNode = null!;
     public override object VisitNodeDefinition([NotNull] CDLParser.NodeDefinitionContext context)
     {
         string nodeName = context.varName().GetText();
@@ -498,14 +498,13 @@ public class VisBlocks(EnvManager envManager, CDLExceptionHandler exceptionHandl
         var result = base.VisitNodeRewards(context);
         foreach (var item in LocalListContent)
         {
-            if (!envManager.CheckType(item.Name, envManager.Ts.RARITY))
+            if (envManager.CheckType(item.Name, envManager.Ts.RARITY))
             {
-                BadTypeError(context, item.Name, envManager.Ts.RARITY);
-                // exceptionHandler.AddException(context, $"{item.name} has invalid type, must be string, or does not exist");
+                currentNode.RarityNumChance.Add(item.Name, (item.Num, item.Chance));
             }
             else
             {
-                currentNode?.RarityNumChance.Add(item.Name, (item.Num, item.Chance));
+                BadTypeError(context, item.Name, envManager.Ts.RARITY);
             }
         }
         return result;
@@ -587,7 +586,10 @@ public class VisBlocks(EnvManager envManager, CDLExceptionHandler exceptionHandl
             {
                 exceptionHandler.AddException($"Invalid value: {health}, enemy health must be at least 1");
             }
-            currentEnemy.Health = health;
+            else
+            {
+                currentEnemy.Health = health;
+            }
         }
         else
         {
