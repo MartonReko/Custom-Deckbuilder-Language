@@ -1,123 +1,154 @@
 Game{
     Name: My_Wonderful_Game;
     Stages: [
-    stage_beginner,
-    stage_advanced
+    beginnerStage,
+    advancedStage
     ];
-    Player: Bob;
+    Player: MyCharacter;
 }
 
-Character Bob{
+Character MyCharacter{
     Health: 75;
-    EffectEveryTurn: [small_heal];
+    EffectEveryTurn: [smallHeal];
     Deck: [10x strike];
 }
 
-Effect small_heal{
+Effect smallHeal{
     Deal -1 damage instantly;
 }
 
-Stage stage_beginner{
-    Length: 20;
+Stage beginnerStage{
+    Length: 10;
+    Length: 10;
     Max-width: 5;
     Min-width: 2;
-    FillWith: [node_easy];
-    MustContain: [1x node_elite];
-    EndsWith: node_boss;
+    FillWith: [easyNode];
+    MustContain: [1x eliteNode, 2x normalNode];
+    EndsWith: bossNode;
 }
 
-Stage stage_advanced{
+Node eliteNode{
+    Enemies: [1x  eliteEnemy];
+    Rewards: [3x rare with chance 100%];
+}
+
+Stage advancedStage{
     Length: 5;
     Max-width: 3;
     Min-width: 1;
-    FillWith: [node_easy,node_elite];
-    MustContain: [3x node_elite];
-    EndsWith: node_boss;
+    FillWith: [easyNode,eliteNode];
+    MustContain: [3x eliteNode];
+    EndsWith: bossNode;
 }
 
-Node node_easy{
+Node easyNode{
     Enemies: [
-    2x enemy_easy
+    2x easyEnemy
     ];
     Rewards: [
-		3x rarity_common with chance 80%,
-		2x rarity_rare with chance 20%
+		3x common with chance 80%,
+		2x rare with chance 20%
     ];
 }
-
-Node node_elite{
+Node normalNode{
     Enemies: [
-    1x  enemy_elite
+    3x easyEnemy
     ];
     Rewards: [
-        3x rarity_rare with chance 100%
+		3x common with chance 50%,
+		2x rare with chance 50%
     ];
 }
 
-Node node_boss{
+
+
+Node bossNode{
     Enemies: [
-    1x enemy_boss
+    1x bossEnemy
     ];
     Rewards: [
-        3x rarity_rare with chance 100%
+        3x rare with chance 100%
     ];
 }
 
-Enemy enemy_easy{
+Enemy easyEnemy{
     Health: 10;
-    Actions: [basicAttack player];
+    Actions: [basicEnemyAttack player];
 }
 
 Enemy enemy_hard{
     Health: 30;
-    Actions: [basicAttack player];
+    Actions: [basicEnemyAttack player];
 }
 
-Enemy enemy_elite{
+Enemy eliteEnemy{
     Health: 50;
-    Actions: [basicAttack player,statusAttack player];
+    Actions: [basicEnemyAttack player,statusAttack player];
 }
 
-Enemy enemy_boss{
+
+Enemy bossEnemy{
     Health: 100;
-    Actions: [basicAttack player,3x statusAttack player];
+    Actions: [bossAttack player, 2x statusAttack player, bossBuff self];
 }
-
-EnemyAction basicAttack{
-    Apply: [2x attack_basic, effect_poison];
+EnemyAction bossAttack{
+    Apply: [bossDamageEffect, poisonEffect];
 }
-
 EnemyAction statusAttack{
-    Apply: [curse, effect_poison];
+    Apply: [curseEffect, poisonEffect];
+}
+EnemyAction bossBuff{
+    Apply: [bossBuffEffect];
+}
+Effect bossDamageEffect{
+    Deal 20 damage instantly;
+}
+Effect bossBuffEffect{
+    Outgoing damage is 1.25x;
+    Incoming damage is 0.75x;
 }
 
-Effect attack_basic{
-    Deal 5 damage instantly;
+EnemyAction basicEnemyAttack{
+    Apply: [2x basicAttack, poisonEffect];
 }
 
-Effect curse{
+
+
+
+Effect curseEffect{
     Outgoing damage is 0.75x;
     Incoming damage is 1.2x;
 }
-
-Effect effect_poison{
+Card superCard{
+    Rarity: rare;
+    ValidTargets: [enemy];
+    Apply: [10x basicAttack, 5x weakness, 2x poisonEffect];
+}
+Effect poisonEffect{
     Deal 3 damage end of turn;
 }
-
-Card strike{
-    Rarity: rarity_common;
-    ValidTargets: [enemy];
-    Apply: [attack_basic];
+Effect basicAttack{
+    Deal baseDamage * 2 damage instantly;
+}
+Effect weakness{
+    Outgoing damage is 0.75x;
 }
 
+int baseDamage = 5;
+
+Card strike{
+    Rarity: common;
+    ValidTargets: [enemy];
+    Apply: [basicAttack];
+}
 Card heal{
-    Rarity: rarity_rare;
+    Rarity: rare;
     ValidTargets: [player];
-    Apply: [small_heal];
+    Apply: [smallHeal];
 }
 
 Card poison{
-    Rarity: rarity_common;
-    ValidTargets: [player];
-    Apply: [2x effect_poison];
+    Rarity: common;
+    ValidTargets: [player, enemy];
+    Apply: [2x poisonEffect, weakness];
 }

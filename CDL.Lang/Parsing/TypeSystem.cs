@@ -23,6 +23,7 @@ public class TypeSystem
         ENEMY = new CDLType("Enemy");
         EFFECT = new CDLType("Effect");
         CARD = new CDLType("Card");
+        RARITY = new CDLType("Rarity");
         ENEMYACTION = new CDLType("EnemyAction");
 
         ERROR.Parents.Add(STRING);
@@ -36,6 +37,7 @@ public class TypeSystem
         ERROR.Parents.Add(ENEMY);
         ERROR.Parents.Add(EFFECT);
         ERROR.Parents.Add(CARD);
+        ERROR.Parents.Add(RARITY);
         ENEMYACTION.Parents.Add(ENEMYACTION);
 
         DOUBLE.Parents.Add(INT);
@@ -52,6 +54,7 @@ public class TypeSystem
         types[ENEMY.Name] = ENEMY;
         types[EFFECT.Name] = EFFECT;
         types[CARD.Name] = CARD;
+        types[RARITY.Name] = RARITY;
         types[ENEMYACTION.Name] = ENEMYACTION;
     }
 
@@ -67,7 +70,8 @@ public class TypeSystem
     public CDLType ENEMY { get; private set; }
     public CDLType EFFECT { get; private set; }
     public CDLType CARD { get; private set; }
-    public CDLType ENEMYACTION {get; private set;}
+    public CDLType RARITY { get; private set; }
+    public CDLType ENEMYACTION { get; private set; }
 
     public CDLType this[string name]
     {

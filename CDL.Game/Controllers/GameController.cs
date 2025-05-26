@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CDL.Game.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("[controller]/Test")]
     public class GameController : ControllerBase
     {
         private readonly GameService _gameService;
@@ -28,9 +28,10 @@ namespace CDL.Game.Controllers
             _gameService.Move(_gameService.GetMoves()[response.Index]);
             return Ok(new { message = "Data received successfully!", receivedData = response});
         }
-        [HttpGet("GameState")]
+        [HttpGet("GetState")]
         public IGameDto? GetState()
         {
+            /*
             switch (_gameService.PlayerState)
             {
                 case GameService.PlayerStates.MAPMOVE:
@@ -40,16 +41,14 @@ namespace CDL.Game.Controllers
                         GetGameMap()
                     );
                 case GameService.PlayerStates.COMBAT:
-                    /*
                     return new SCombatDto(
                         _gameService.PlayerState.ToString(),
                         _gameService.CombatState.ToString(),
                         GetPlayerInfo()
                         GetEnemiesInfo()
                     );
-                    */
             }
-
+            */
             return null;
         }
         private GameMapDto GetGameMap() {
@@ -102,28 +101,28 @@ namespace CDL.Game.Controllers
 
             return playerInfo;
         }
-        //[HttpGet("GameState")]
-        //public GameServiceDto Get()
-        //{
-        //    GameServiceDto response = new GameServiceDto();
+        [HttpGet("GameState")]
+        public GameServiceDto Get()
+        {
+            GameServiceDto response = new GameServiceDto();
 
-        //    response.PlayerState = _gameService.PlayerState;
+            response.PlayerState = _gameService.PlayerState;
 
-        //    foreach(var item in _gameService.GameMap.CurrentStage.NodesByLevel)
-        //    {
-        //        List<string> nodeNames = [];
-        //        foreach (Node node in item.Value)
-        //        {
-        //            nodeNames.Add(node.Name);
-        //        }
+            foreach(var item in _gameService.GameMap.CurrentStage.NodesByLevel)
+            {
+                List<string> nodeNames = [];
+                foreach (Node node in item.Value)
+                {
+                    nodeNames.Add(node.Name);
+                }
 
-        //        response.Map.NodesByLevel.Add(nodeNames);
-        //    }
+                response.Map.NodesByLevel.Add(nodeNames);
+            }
 
-        //    response.CurrentNode =  new GameNodeDto();
-        //    response.CurrentNode.Name = _gameService.GameMap.CurrentNode?.Name ?? "";
+            response.CurrentNode =  new GameNodeDto();
+            response.CurrentNode.Name = _gameService.GameMap.CurrentNode?.Name ?? "";
 
-        //    return response;
-        //}
+            return response;
+        }
     }
 }

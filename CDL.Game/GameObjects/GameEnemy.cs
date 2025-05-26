@@ -6,8 +6,8 @@ namespace CDL.Game.GameObjects
     public class GameEnemy
     {
         public readonly Enemy ModelEnemy;
-        private int AttackCounter = 0;
         public int Health { get; private set; }
+        private int AttackCounter = 0;
         public Dictionary<Effect, int> CurrentEffects { get; private set; } = [];
        
         public GameEnemy(Enemy enemy)

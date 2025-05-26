@@ -1,11 +1,12 @@
 using Antlr4.Runtime;
+using CDL.Lang.Exceptions;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 
 
 namespace CDL.Lang.Parsing.Symboltable;
 
-public class EnvManager()
+public class EnvManager(CDLExceptionHandler exceptionHandler)
 {
 
     private readonly ILogger<EnvManager> _logger = LoggerFactory.Create(builder => builder.AddNLog()).CreateLogger<EnvManager>();
@@ -13,20 +14,26 @@ public class EnvManager()
     public TypeSystem Ts { get; set; } = new();
     public static string GetPos(ParserRuleContext context)
     {
-        return $"line #{context.Start.Line}, column #{context.Start.Column}";
+        //return $"line #{context.Start.Line}, column #{context.Start.Column}";
+        return $"Line #{context.Start.Line}";
     }
-    public static (int,int) GetPosLineCol(ParserRuleContext context){
-        return (context.Start.Line,context.Start.Column);
+    public static (int, int) GetPosLineCol(ParserRuleContext context)
+    {
+        return (context.Start.Line, context.Start.Column);
     }
-    public void AddVariableToScope(ParserRuleContext ctx, Symbol symbol)
+    public bool AddVariableToScope(ParserRuleContext ctx, Symbol symbol)
     {
         try
         {
             Env[symbol.Name] = symbol;
+            return true;
         }
         catch
         {
-            _logger.LogError("Error at {pos}: variable {symName} is already in scope", GetPos(ctx), symbol.Name);
+            if (symbol.Type != Ts.RARITY)
+                //_logger.LogError("Error at {pos}: multiple definitions for {symName}", GetPos(ctx), symbol.Name);
+                exceptionHandler.AddException(ctx, symbol.Name);
+            return false;
         }
     }
     public void AddFnToScope(ParserRuleContext ctx, FnSymbol symbol)
@@ -44,18 +51,21 @@ public class EnvManager()
     {
         var symbol = Env[varName];
         if (symbol != null) return symbol;
-        _logger.LogError("Error at {pos}: name {varName} does not exist", GetPos(context), varName);
+
+        //_logger.LogError("Error at {pos}: name {varName} does not exist", GetPos(context), varName);
         return null;
     }
-    public bool IsVariableOnScope( string varName)
+    public bool IsVariableOnScope(string varName)
     {
         var symbol = Env[varName];
         return symbol != null;
         //_logger.LogError("Error at {pos}: name {varName} does not exist", GetPos(context), varName);
     }
-    public bool CheckVarType(string varName, CDLType type){
+    public bool CheckType(string varName, CDLType type)
+    {
         var symbol = Env[varName];
-        if(symbol == null){
+        if (symbol == null)
+        {
             return false;
         }
         return symbol.Type == type;

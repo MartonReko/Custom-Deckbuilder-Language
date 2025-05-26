@@ -106,7 +106,7 @@ namespace CDL.Game
 
         public (EnemyAction EnemyAction, EnemyTarget target, int num) NextEnemyTurn()
         {
-            var result = CurrentGameNode.EnemyTurn(EnemyTurnCounter, GameObjects.Character);
+            var result = CurrentGameNode.EnemyTurn(EnemyTurnCounter, Player);
             // Reset to 0 on enemies turn end
             EnemyTurnCounter++;
             if(EnemyTurnCounter >= CurrentGameNode.Enemies.Count)

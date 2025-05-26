@@ -111,6 +111,9 @@ cardProperty:
 CHARACTER: 'Character';
 HEALTH: 'Health';
 EFFECTEVERYTURN: 'EffectEveryTurn';
+DECK: 'Deck';
+EOS: ';';
+
 WITHCHANCE: 'with chance';
 OR: 'or';
 ACTIONS: 'Actions';
@@ -152,7 +155,9 @@ NAME: 'Name';
 PLAYERSELECT: 'Player';
 ENEMY: 'Enemy';
 ENEMYLC: 'enemy';
-DECK: 'Deck';
+
+
+
 ENEMYACTION: 'EnemyAction';
 
 X: 'x';
@@ -185,5 +190,5 @@ INT: MINUS? [0-9]+;
 DOUBLE: MINUS? [0-9]+ (.[0-9]+)?;
 ID: [a-zA-Z][a-zA-Z0-9_]*;
 WS: (' ' | '\t' | '\n' | '\r') -> skip;
-EOS: ';';
+
 COMMENT: '//' ~[\r\n]* -> skip;

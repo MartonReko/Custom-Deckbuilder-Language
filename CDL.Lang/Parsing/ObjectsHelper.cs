@@ -17,9 +17,11 @@ public class ObjectsHelper(EnvManager em, CDLExceptionHandler exceptionHandler)
     public List<Card> Cards { get; set; } = [];
     public List<EnemyAction> EnemyActions { get; set; } = [];
 
+    /// <summary>
+    /// Checks for things that cannot be checked while parsing, like existence of objects
+    /// </summary>
     public void CheckObjectsValidity()
     {
-
         // Checks for Game
         if (Game == null)
         {
@@ -50,25 +52,25 @@ public class ObjectsHelper(EnvManager em, CDLExceptionHandler exceptionHandler)
         {
             foreach (Stage s in Stages)
             {
-                if (s.StageLength < 1)
+                if (s.StageLength == null)
                 {
-                    exceptionHandler.AddException($"Invalid length for stage {s.Name}");
+                    exceptionHandler.AddException($"Stage {s.Name} is missing length definition");
                 }
-                if (s.StageWidthMin < 1)
+                if (s.StageWidthMin == null)
                 {
-                    exceptionHandler.AddException($"Invalid min width for stage {s.Name}");
+                    exceptionHandler.AddException($"Stage {s.Name} is missing min width definition");
                 }
-                if (s.StageWidthMax < 1)
+                if (s.StageWidthMax == null)
                 {
-                    exceptionHandler.AddException($"Invalid max width for stage {s.Name}");
+                    exceptionHandler.AddException($"Stage {s.Name} is missing max width definition");
                 }
                 if (s.FillWith.Count == 0)
                 {
-                    exceptionHandler.AddException($"Fill with must not be empty for stage {s.Name}");
+                    exceptionHandler.AddException($"Stage {s.Name} has empty fill list");
                 }
                 if (s.EndsWith == null)
                 {
-                    exceptionHandler.AddException($"No end node defined for stage {s.Name}");
+                    exceptionHandler.AddException($"Stage {s.Name} is missing end node definition");
                 }
             }
         }
@@ -109,16 +111,17 @@ public class ObjectsHelper(EnvManager em, CDLExceptionHandler exceptionHandler)
         //Checks for enemies        
         foreach (Enemy e in Enemies)
         {
-            if (e.Health < 1)
+            // Default value for health is 0
+            if (e.Health == 0)
             {
-                exceptionHandler.AddException($"Invalid value for health for enemy {e.Name}");
+                exceptionHandler.AddException($"Enemy {e.Name} has no value set for health");
             }
         }
 
         //Checks for effects
         foreach (Effect e in Effects)
         {
-            if(e.EffectType == EffectType.MOD && e.DamageDealt != 0)
+            if (e.EffectType == EffectType.MOD && e.DamageDealt != 0)
             {
                 exceptionHandler.AddException($"{e.Name}: Effects must either be passive or active, not mixed");
             }

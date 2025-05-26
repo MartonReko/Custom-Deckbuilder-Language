@@ -14,7 +14,8 @@ public class CDLException
         Line = line;
         Column = column;
         Message = message;
-        _logger.LogError("{line}:{column} : {exception}",line,column,message);
+        _logger.LogError("Line #{line}: {exception}",line,message);
+        //_logger.LogError("{line}:{column} : {exception}",line,column,message);
     }
     public CDLException(string message)
     {

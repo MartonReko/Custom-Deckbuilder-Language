@@ -22,10 +22,15 @@ public class LanguageProcessor
             }
             return null;
         }
-        EnvManager envM = new();
+        EnvManager envM = new(exceptionHandler);
         ObjectsHelper oh = new(envM, exceptionHandler);
         VisGlobalVars visitorVars = new(envM, exceptionHandler, oh);
         visitorVars.Visit(ast);
+        if (!exceptionHandler.IsValid())
+        {
+            Console.WriteLine("Exceptions found :(");
+            return null;
+        }
         VisBlocks visitorBlocks = new(envM, exceptionHandler, oh);
         visitorBlocks.Visit(ast);
         oh.CheckObjectsValidity();
@@ -36,7 +41,6 @@ public class LanguageProcessor
         }
         else
         {
-            Console.WriteLine("No exception found :)");
             return oh;
         }
     }

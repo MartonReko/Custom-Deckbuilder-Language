@@ -21,9 +21,10 @@ public class FnSymbol : Symbol
     }
     public override string ToString()
     {
+        return $"{Name} : {Type.Name}";
         if (Properties == null)
         {
-            return $"{Name}() : {Type.Name}";
+            return $"{Name} : {Type.Name}";
         }
         else
         {

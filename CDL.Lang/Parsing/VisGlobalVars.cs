@@ -16,8 +16,8 @@ public class VisGlobalVars(EnvManager em, CDLExceptionHandler exceptionHandler, 
     {
         var type = em.Ts[typeName];
         var symbol = new Symbol(varNameContext.GetText(), type);
-        em.AddVariableToScope(varNameContext, symbol);
-        return type != em.Ts.ERROR;
+        bool addedSuccessfully = em.AddVariableToScope(varNameContext, symbol);
+        return ((type != em.Ts.ERROR) && addedSuccessfully);
     }
     private readonly List<CDLType> localProps = [];
     private FnSymbol? currentFn;
@@ -25,7 +25,7 @@ public class VisGlobalVars(EnvManager em, CDLExceptionHandler exceptionHandler, 
     public override object VisitProgram([NotNull] CDLParser.ProgramContext context)
     {
         var result = base.VisitProgram(context);
-        _logger.LogInformation("Final result of first visitor:\n{env}", em.Env.ToString());
+        _logger.LogDebug("Final result of first visitor:\n{env}", em.Env.ToString());
         return result;
     }
     public override object VisitConfigBlock([NotNull] CDLParser.ConfigBlockContext context)
@@ -57,7 +57,7 @@ public class VisGlobalVars(EnvManager em, CDLExceptionHandler exceptionHandler, 
                 }
                 else
                 {
-                    var symbol = new Symbol(context.varName().GetText(), type);
+                    var symbol = new Symbol(context.varName().GetText(), type, context.literalExpression().GetText());
                     em.AddVariableToScope(context.varName(), symbol);
                 }
             }
@@ -66,6 +66,7 @@ public class VisGlobalVars(EnvManager em, CDLExceptionHandler exceptionHandler, 
         _logger.LogDebug("Var declaration visited, enviroment:\n{env}", em.Env.ToString());
         return base.VisitVariableDeclaration(context);
     }
+
     public override object VisitParamsDef([NotNull] CDLParser.ParamsDefContext context)
     {
         foreach (var item in context.typeNameVarName())
@@ -91,7 +92,7 @@ public class VisGlobalVars(EnvManager em, CDLExceptionHandler exceptionHandler, 
     // Rarity names are parsed as strings, later nodes can refer to cards by it
     public override object VisitRarityName([NotNull] CDLParser.RarityNameContext context)
     {
-        var type = em.Ts["string"];
+        var type = em.Ts.RARITY;
         if (type == em.Ts.ERROR)
         {
 

@@ -46,7 +46,6 @@ function App() {
     useEffect(() => {
         fetchState();
     }, [gameState,reload])
-
     if (!gameState) {
         fetchState();
         return <p>Loading...</p>

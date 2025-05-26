@@ -10,6 +10,12 @@ public class Symbol
         Name = name;
         Type = type;
     }
+    public Symbol(string name, CDLType type, string value)
+    {
+        Name = name;
+        Type = type;
+        Value = value;
+    }
 
     public override string ToString()
     {

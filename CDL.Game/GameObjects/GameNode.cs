@@ -38,7 +38,7 @@ namespace CDL.Game.GameObjects
                 // Instead of removal use a status
             }
         }
-        public (EnemyAction EnemyAction, EnemyTarget target, int num) EnemyTurn(int idx,ModelCharacter player)
+        public (EnemyAction EnemyAction, EnemyTarget target, int num) EnemyTurn(int idx,GameCharacter player)
         {
             return Enemies[idx].Attack(player);
         }

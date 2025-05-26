@@ -1,0 +1,160 @@
+Game{
+    Name: My_Wonderful_Game;
+    Stages: [
+    beginnerStage,
+    stage_advanced
+    ];
+    Player: MyCharacter;
+}
+
+Character MyCharacter{
+    Health: 100;
+    EffectEveryTurn: [smallHeal];
+    Deck: [10x strike, 5x shield, 2x bash];
+}
+
+Card bash{
+    Rarity: common;
+    ValidTargets: [enemy];
+    Apply: [bashEffect];
+}
+Card shield{
+    Rarity: common;
+    ValidTargets: [player];
+    Apply: [shieldEffect];
+}
+
+Effect bashEffect{
+    Incoming damage is 1.5x;
+}
+Effect shieldEffect{
+    Incoming damage is 0.3x;
+}
+
+Effect smallHeal{
+    Deal -1 damage instantly;
+}
+
+Stage beginnerStage{
+    Length: 10;
+    Max-width: 5;
+    Min-width: 2;
+    FillWith: [easyNode];
+    MustContain: [1x eliteNode];
+    EndsWith: bossNode;
+}
+
+Node eliteNode{
+    Enemies: [1x eliteEnemy];
+    Rewards: [3x rare with chance 100%];
+}
+Stage testStage{
+    Length: -1;
+    Min-width: 1;
+    FillWith: [testCard];
+    MustContain: [3x eliteNode];
+    EndsWith: bossNode;
+}
+
+Node eliteNode{
+    Enemies: [1x  eliteEnemy];
+    Rewards: [
+        3x rare with chance 100%
+    ];
+
+}
+Card testCard{
+    Rarity: rare;
+}
+
+Enemy eliteEnemy{
+    Health: 999;
+}
+
+Stage stage_advanced{
+    Length: 5;
+    Max-width: 3;
+    Min-width: 1;
+    FillWith: [easyNode,eliteNode];
+    MustContain: [3x eliteNode];
+    EndsWith: bossNode;
+}
+
+Node easyNode{
+    Enemies: [
+    2x enemy_easy
+    ];
+    Rewards: [
+		3x common with chance 80%,
+		2x rare with chance 20%
+    ];
+}
+
+
+Node bossNode{
+    Enemies: [
+    1x enemy_boss
+    ];
+    Rewards: [
+        3x rare with chance 100%
+    ];
+}
+
+Enemy enemy_easy{
+    Health: 10;
+    Actions: [basicAttack player];
+}
+
+Enemy enemy_hard{
+    Health: 30;
+    Actions: [basicAttack player];
+}
+
+Enemy eliteEnemy{
+    Health: 50;
+    Actions: [basicAttack player,statusAttack player];
+}
+
+Enemy enemy_boss{
+    Health: 100;
+    Actions: [basicAttack player,3x statusAttack player];
+}
+
+EnemyAction basicAttack{
+    Apply: [2x attack_basic, effect_poison];
+}
+
+EnemyAction statusAttack{
+    Apply: [curse, effect_poison];
+}
+
+Effect attack_basic{
+    Deal 5 damage instantly;
+}
+
+Effect curse{
+    Outgoing damage is 0.75x;
+    Incoming damage is 1.2x;
+}
+
+Effect effect_poison{
+    Deal 3 damage end of turn;
+}
+
+Card strike{
+    Rarity: common;
+    ValidTargets: [enemy];
+    Apply: [attack_basic];
+}
+
+Card heal{
+    Rarity: rare;
+    ValidTargets: [player];
+    Apply: [smallHeal];
+}
+
+Card poison{
+    Rarity: common;
+    ValidTargets: [player];
+    Apply: [2x effect_poison];
+}
