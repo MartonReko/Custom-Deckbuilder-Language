@@ -1,3 +1,5 @@
+using Scalar.AspNetCore;
+
 using CDL.Lang;
 using CDL.Lang.Parsing;
 
@@ -8,7 +10,7 @@ namespace CDL.Game
         public static void Main(string[] args)
         {
             LanguageProcessor lp = new();
-            ObjectsHelper? objectsHelper = lp.ProcessText(Path.Combine(Environment.CurrentDirectory, @"Examples\", "example.cdl"));
+            ObjectsHelper? objectsHelper = lp.ProcessText(Path.Combine(Environment.CurrentDirectory, @"Examples", "example.cdl"));
 
             if (objectsHelper == null)
             {
@@ -18,7 +20,7 @@ namespace CDL.Game
 
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddSingleton<GameService>(x =>new GameService(objectsHelper));
+            builder.Services.AddSingleton<GameService>(x => new GameService(objectsHelper));
 
             // Add services to the container.
             builder.Services.AddControllers();
@@ -42,6 +44,7 @@ namespace CDL.Game
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
+                app.MapScalarApiReference();
             }
 
             app.UseCors("AllowSpecificOrigin");
@@ -51,6 +54,8 @@ namespace CDL.Game
             app.UseAuthorization();
 
             app.MapControllers();
+
+            app.MapGet("/", () => "Hello world!");
 
             app.Run();
         }

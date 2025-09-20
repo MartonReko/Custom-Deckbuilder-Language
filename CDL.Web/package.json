@@ -7,9 +7,11 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "gen": "openapi-generator-cli generate -i ../CDL.Game/obj/CDL.Game.json -g typescript-axios -o generated-sources/openapi --additional-properties=ngVersion=6.1.7,npmName=restClient,supportsES6=true,npmVersion=6.9.0,withInterfaces=true"
   },
   "dependencies": {
+    "@openapitools/openapi-generator-cli": "^2.23.4",
     "axios": "^1.9.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
