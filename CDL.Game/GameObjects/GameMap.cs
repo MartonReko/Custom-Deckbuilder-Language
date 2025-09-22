@@ -2,7 +2,7 @@
 
 namespace CDL.Game.GameObjects
 {
-    public class GameMap
+    public class GameMap : GameEntity
     {
         private readonly GameSetup GameProps;
         private readonly List<Stage> StagesProps;
@@ -11,6 +11,7 @@ namespace CDL.Game.GameObjects
         public GameStage CurrentStage { get; private set; }
         public int LevelCounter { get; private set; } = 0;
         public Node? CurrentNode { get; private set; } = null;
+
         public GameMap(GameSetup game, List<Stage> stages, List<Node> Nodes)
         {
             GameProps = game;
@@ -27,7 +28,7 @@ namespace CDL.Game.GameObjects
         }
         public List<Node> GetPossibleSteps()
         {
-            if(LevelCounter == CurrentStage.NodesByLevel.Count)
+            if (LevelCounter == CurrentStage.NodesByLevel.Count)
             {
                 LoadNextStage();
             }
@@ -35,7 +36,7 @@ namespace CDL.Game.GameObjects
         }
         public bool IsLast()
         {
-            return (StageCounter == GameProps.Stages.Count && LevelCounter == CurrentStage.NodesByLevel.Count);
+            return StageCounter == GameProps.Stages.Count && LevelCounter == CurrentStage.NodesByLevel.Count;
         }
         public bool MoveTo(Node node)
         {
@@ -47,7 +48,7 @@ namespace CDL.Game.GameObjects
             }
             else
             {
-                // TODO error cant move there
+                // TODO: error cant move there
                 return false;
             }
         }

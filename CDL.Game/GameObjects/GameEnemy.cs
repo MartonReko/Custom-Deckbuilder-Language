@@ -1,9 +1,8 @@
-﻿using System.Diagnostics.Contracts;
-using CDL.Lang.GameModel;
+﻿using CDL.Lang.GameModel;
 
 namespace CDL.Game.GameObjects
 {
-    public class GameEnemy
+    public class GameEnemy : GameEntity
     {
         public readonly Enemy ModelEnemy;
         public int Health { get; private set; }
@@ -40,9 +39,8 @@ namespace CDL.Game.GameObjects
             {
                 if (effect.EffectType == EffectType.MOD || effect.EffectType == EffectType.TURNEND)
                 {
-                    if (player.CurrentEffects.ContainsKey(effect))
+                    if (player.CurrentEffects.TryGetValue(effect, out int oldCnt))
                     {
-                        int oldCnt = player.CurrentEffects[effect];
                         player.CurrentEffects[effect] = cnt + oldCnt;
                     }
                     else
@@ -68,9 +66,8 @@ namespace CDL.Game.GameObjects
         {
             if (effect.EffectType == EffectType.MOD || effect.EffectType == EffectType.TURNEND)
             {
-                if (CurrentEffects.ContainsKey(effect))
+                if (CurrentEffects.TryGetValue(effect, out int oldCnt))
                 {
-                    int oldCnt = CurrentEffects[effect];
                     CurrentEffects[effect] = cnt + oldCnt;
                 }
                 else

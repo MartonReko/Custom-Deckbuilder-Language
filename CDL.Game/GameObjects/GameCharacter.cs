@@ -2,17 +2,12 @@
 
 namespace CDL.Game.GameObjects
 {
-    public class GameCharacter
+    public class GameCharacter(ModelCharacter modelCharacter) : GameEntity
     {
-        private readonly ModelCharacter ModelCharacter;
-        public int Health { get; private set; } = 0;
+        private readonly ModelCharacter ModelCharacter = modelCharacter;
+        public int Health { get; private set; } = modelCharacter.Health;
         public Dictionary<Effect, int> CurrentEffects { get; private set; } = [];
 
-        public GameCharacter(ModelCharacter modelCharacter)
-        {
-            ModelCharacter = modelCharacter;
-            Health = modelCharacter.Health;
-        }
         public void Damage(double value)
         {
             double damage = value;
@@ -26,11 +21,10 @@ namespace CDL.Game.GameObjects
         {
             foreach ((Effect effect, int cnt) in ea.EffectsApplied)
             {
-                if(effect.EffectType == EffectType.MOD || effect.EffectType == EffectType.TURNEND)
+                if (effect.EffectType == EffectType.MOD || effect.EffectType == EffectType.TURNEND)
                 {
-                    if (CurrentEffects.ContainsKey(effect))
+                    if (CurrentEffects.TryGetValue(effect, out int oldCnt))
                     {
-                        int oldCnt = CurrentEffects[effect];
                         CurrentEffects[effect] = cnt + oldCnt;
                     }
                     else
@@ -38,7 +32,7 @@ namespace CDL.Game.GameObjects
                         CurrentEffects.Add(effect, cnt);
                     }
                 }
-                if(effect.EffectType == EffectType.INSTANT)
+                if (effect.EffectType == EffectType.INSTANT)
                 {
                     Damage(effect.DamageDealt);
                 }
