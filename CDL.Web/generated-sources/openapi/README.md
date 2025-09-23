@@ -52,18 +52,13 @@ All URIs are relative to *http://localhost*
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
 *CDLGameApi* | [**rootGet**](docs/CDLGameApi.md#rootget) | **GET** / | 
-*GameApi* | [**gameTestGameStateGet**](docs/GameApi.md#gametestgamestateget) | **GET** /Game/Test/GameState | 
-*GameApi* | [**gameTestGetStateGet**](docs/GameApi.md#gametestgetstateget) | **GET** /Game/Test/GetState | 
-*GameApi* | [**gameTestMoveToNodePost**](docs/GameApi.md#gametestmovetonodepost) | **POST** /Game/Test/MoveToNode | 
+*GameApi* | [**getGameState**](docs/GameApi.md#getgamestate) | **GET** /Game | 
+*GameApi* | [**readCDL**](docs/GameApi.md#readcdl) | **POST** /Game | 
 
 
 ### Documentation For Models
 
- - [GameMapDto](docs/GameMapDto.md)
- - [GameNodeDto](docs/GameNodeDto.md)
- - [GameServiceDto](docs/GameServiceDto.md)
- - [IGameDto](docs/IGameDto.md)
- - [MoveResponse](docs/MoveResponse.md)
+ - [StatusDto](docs/StatusDto.md)
 
 
 <a id="documentation-for-authorization"></a>

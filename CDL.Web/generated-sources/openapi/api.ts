@@ -26,79 +26,27 @@ import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerM
 /**
  * 
  * @export
- * @interface GameMapDto
+ * @interface StatusDto
  */
-export interface GameMapDto {
-    /**
-     * 
-     * @type {Array<Array<string>>}
-     * @memberof GameMapDto
-     */
-    'nodesByLevel'?: Array<Array<string>>;
-}
-/**
- * 
- * @export
- * @interface GameNodeDto
- */
-export interface GameNodeDto {
+export interface StatusDto {
     /**
      * 
      * @type {string}
-     * @memberof GameNodeDto
+     * @memberof StatusDto
      */
     'name'?: string;
-}
-/**
- * 
- * @export
- * @interface GameServiceDto
- */
-export interface GameServiceDto {
     /**
      * 
      * @type {number}
-     * @memberof GameServiceDto
+     * @memberof StatusDto
      */
-    'playerState'?: number;
-    /**
-     * 
-     * @type {GameMapDto}
-     * @memberof GameServiceDto
-     */
-    'map'?: GameMapDto;
-    /**
-     * 
-     * @type {GameNodeDto}
-     * @memberof GameServiceDto
-     */
-    'currentNode'?: GameNodeDto | null;
-}
-/**
- * 
- * @export
- * @interface IGameDto
- */
-export interface IGameDto {
+    'health'?: number;
     /**
      * 
      * @type {string}
-     * @memberof IGameDto
+     * @memberof StatusDto
      */
-    'playerState'?: string;
-}
-/**
- * 
- * @export
- * @interface MoveResponse
- */
-export interface MoveResponse {
-    /**
-     * 
-     * @type {number}
-     * @memberof MoveResponse
-     */
-    'index'?: number;
+    'currentNode'?: string;
 }
 
 /**
@@ -225,8 +173,8 @@ export const GameApiAxiosParamCreator = function (configuration?: Configuration)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        gameTestGameStateGet: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/Game/Test/GameState`;
+        getGameState: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/Game`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -254,40 +202,8 @@ export const GameApiAxiosParamCreator = function (configuration?: Configuration)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        gameTestGetStateGet: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/Game/Test/GetState`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {MoveResponse} moveResponse 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        gameTestMoveToNodePost: async (moveResponse: MoveResponse, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'moveResponse' is not null or undefined
-            assertParamExists('gameTestMoveToNodePost', 'moveResponse', moveResponse)
-            const localVarPath = `/Game/Test/MoveToNode`;
+        readCDL: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/Game`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -301,12 +217,9 @@ export const GameApiAxiosParamCreator = function (configuration?: Configuration)
 
 
     
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(moveResponse, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -328,10 +241,10 @@ export const GameApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async gameTestGameStateGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GameServiceDto>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.gameTestGameStateGet(options);
+        async getGameState(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StatusDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getGameState(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['GameApi.gameTestGameStateGet']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['GameApi.getGameState']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -339,22 +252,10 @@ export const GameApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async gameTestGetStateGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<IGameDto>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.gameTestGetStateGet(options);
+        async readCDL(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.readCDL(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['GameApi.gameTestGetStateGet']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {MoveResponse} moveResponse 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async gameTestMoveToNodePost(moveResponse: MoveResponse, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.gameTestMoveToNodePost(moveResponse, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['GameApi.gameTestMoveToNodePost']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['GameApi.readCDL']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -372,25 +273,16 @@ export const GameApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        gameTestGameStateGet(options?: RawAxiosRequestConfig): AxiosPromise<GameServiceDto> {
-            return localVarFp.gameTestGameStateGet(options).then((request) => request(axios, basePath));
+        getGameState(options?: RawAxiosRequestConfig): AxiosPromise<StatusDto> {
+            return localVarFp.getGameState(options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        gameTestGetStateGet(options?: RawAxiosRequestConfig): AxiosPromise<IGameDto> {
-            return localVarFp.gameTestGetStateGet(options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {MoveResponse} moveResponse 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        gameTestMoveToNodePost(moveResponse: MoveResponse, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.gameTestMoveToNodePost(moveResponse, options).then((request) => request(axios, basePath));
+        readCDL(options?: RawAxiosRequestConfig): AxiosPromise<string> {
+            return localVarFp.readCDL(options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -407,7 +299,7 @@ export interface GameApiInterface {
      * @throws {RequiredError}
      * @memberof GameApiInterface
      */
-    gameTestGameStateGet(options?: RawAxiosRequestConfig): AxiosPromise<GameServiceDto>;
+    getGameState(options?: RawAxiosRequestConfig): AxiosPromise<StatusDto>;
 
     /**
      * 
@@ -415,16 +307,7 @@ export interface GameApiInterface {
      * @throws {RequiredError}
      * @memberof GameApiInterface
      */
-    gameTestGetStateGet(options?: RawAxiosRequestConfig): AxiosPromise<IGameDto>;
-
-    /**
-     * 
-     * @param {MoveResponse} moveResponse 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof GameApiInterface
-     */
-    gameTestMoveToNodePost(moveResponse: MoveResponse, options?: RawAxiosRequestConfig): AxiosPromise<void>;
+    readCDL(options?: RawAxiosRequestConfig): AxiosPromise<string>;
 
 }
 
@@ -441,8 +324,8 @@ export class GameApi extends BaseAPI implements GameApiInterface {
      * @throws {RequiredError}
      * @memberof GameApi
      */
-    public gameTestGameStateGet(options?: RawAxiosRequestConfig) {
-        return GameApiFp(this.configuration).gameTestGameStateGet(options).then((request) => request(this.axios, this.basePath));
+    public getGameState(options?: RawAxiosRequestConfig) {
+        return GameApiFp(this.configuration).getGameState(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -451,19 +334,8 @@ export class GameApi extends BaseAPI implements GameApiInterface {
      * @throws {RequiredError}
      * @memberof GameApi
      */
-    public gameTestGetStateGet(options?: RawAxiosRequestConfig) {
-        return GameApiFp(this.configuration).gameTestGetStateGet(options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {MoveResponse} moveResponse 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof GameApi
-     */
-    public gameTestMoveToNodePost(moveResponse: MoveResponse, options?: RawAxiosRequestConfig) {
-        return GameApiFp(this.configuration).gameTestMoveToNodePost(moveResponse, options).then((request) => request(this.axios, this.basePath));
+    public readCDL(options?: RawAxiosRequestConfig) {
+        return GameApiFp(this.configuration).readCDL(options).then((request) => request(this.axios, this.basePath));
     }
 }
 

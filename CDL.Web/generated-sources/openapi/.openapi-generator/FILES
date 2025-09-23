@@ -1,6 +1,5 @@
 .gitignore
 .npmignore
-.openapi-generator-ignore
 README.md
 api.ts
 base.ts
@@ -8,11 +7,7 @@ common.ts
 configuration.ts
 docs/CDLGameApi.md
 docs/GameApi.md
-docs/GameMapDto.md
-docs/GameNodeDto.md
-docs/GameServiceDto.md
-docs/IGameDto.md
-docs/MoveResponse.md
+docs/StatusDto.md
 git_push.sh
 index.ts
 package.json

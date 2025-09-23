@@ -45,9 +45,9 @@ public class LanguageProcessor
         }
     }
 
-    private CDLParser.ProgramContext ReadAST(string fileName)
+    private CDLParser.ProgramContext ReadAST(string code)
     {
-        var code = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, fileName));
+        //var code = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, fileName));
         var inputStream = new AntlrInputStream(code);
         var lexer = new CDLLexer(inputStream);
         lexer.RemoveErrorListeners();

@@ -4,8 +4,9 @@ namespace CDL.Game.GameObjects
 {
     public class GameCharacter(ModelCharacter modelCharacter) : GameEntity
     {
-        private readonly ModelCharacter ModelCharacter = modelCharacter;
+        //private readonly ModelCharacter ModelCharacter = modelCharacter;
         public int Health { get; private set; } = modelCharacter.Health;
+        public string Name { get; private set; } = modelCharacter.Name;
         public Dictionary<Effect, int> CurrentEffects { get; private set; } = [];
 
         public void Damage(double value)

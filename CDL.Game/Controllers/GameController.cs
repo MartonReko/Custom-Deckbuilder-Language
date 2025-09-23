@@ -1,128 +1,68 @@
 ﻿using CDL.Game.DTOs;
-using CDL.Game.GameObjects;
-using CDL.Lang.GameModel;
-using CDL.Lang.Parsing;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CDL.Game.Controllers
 {
     [ApiController]
-    [Route("[controller]/Test")]
-    public class GameController : ControllerBase
+    [Route("[controller]")]
+    public class GameController(GameServiceManager gameServiceManager) : ControllerBase
     {
-        private readonly GameService _gameService;
+        private readonly GameServiceManager _gameServiceManager = gameServiceManager;
 
-        public GameController(GameService gameService) {
-            _gameService = gameService;
-        }
-
-        [HttpPost("MoveToNode")]
-        public IActionResult Receive([FromBody] MoveResponse response)
+        [HttpGet(Name = "GetGameState")]
+        public ActionResult<StatusDto> Get()
         {
-            if (response == null)
+            try
             {
-                return BadRequest("Invalid received");
-            }
-            // TODO
-            // Should also move to using IDs here
-            _gameService.Move(_gameService.GetMoves()[response.Index]);
-            return Ok(new { message = "Data received successfully!", receivedData = response});
-        }
-        [HttpGet("GetState")]
-        public IGameDto? GetState()
-        {
-            /*
-            switch (_gameService.PlayerState)
-            {
-                case GameService.PlayerStates.MAPMOVE:
-                    return new SMapMoveDto
-                    (
-                        _gameService.PlayerState.ToString(),
-                        GetGameMap()
-                    );
-                case GameService.PlayerStates.COMBAT:
-                    return new SCombatDto(
-                        _gameService.PlayerState.ToString(),
-                        _gameService.CombatState.ToString(),
-                        GetPlayerInfo()
-                        GetEnemiesInfo()
-                    );
-            }
-            */
-            return null;
-        }
-        private GameMapDto GetGameMap() {
-            GameMapDto gameMap = new();
-            foreach(var item in _gameService.GameMap.CurrentStage.NodesByLevel)
-            {
-                List<string> nodeNames = [];
-                foreach (Node node in item.Value)
+                GameService gs = _gameServiceManager.GetService();
+                StatusDto response = new()
                 {
-                    nodeNames.Add(node.Name);
+                    Name = gs.Player.Name,
+                    Health = gs.Player.Health,
+                };
+                if (gs.CurrentGameNode != null)
+                {
+                    response.CurrentNode = gs.CurrentGameNode.Id;
                 }
 
-                gameMap.NodesByLevel.Add(nodeNames);
+                return response;
             }
-            return gameMap;
+            catch (Exception e)
+            {
+
+                return BadRequest(e.Message);
+            }
         }
-        private PlayerDto GetPlayerInfo()
+
+        [HttpPost(Name = "ReadCDL")]
+        [Consumes("text/plain")]
+        [Produces("text/plain")]
+        public async Task<ActionResult<string>> ParseCDL()
         {
-            PlayerDto playerInfo = new PlayerDto
+            using var reader = new StreamReader(Request.Body);
+            string content = await reader.ReadToEndAsync();
+            try
             {
-                Health = _gameService.Player.Health
-            };
-
-            foreach(GameCard card in _gameService.Deck)
-            {
-                List<string> targets = [];
-                foreach(var target in card.ModelCard.ValidTargets)
-                {
-                    targets.Add(target.ToString()); 
-                }
-                List<EffectDto> effects = new List<EffectDto>();
-                /*
-                foreach((Effect effect, int num) in card.ModelCard.EffectsApplied)
-                {
-                    effects.Add(new EffectDto
-                    (
-                        effect.    
-                    ));
-                }
-                playerInfo.Deck.Add(new CardDto
-                {
-                    Id = card.Id,
-                    Name = card.ModelCard.Name,
-                    Rarity = card.ModelCard.Rarity,
-                    ValidTargets = targets,
-
-                });
-                */
+                _gameServiceManager.Initialize(content);
+                return Ok("GameService initialized successfully.");
             }
-
-            return playerInfo;
-        }
-        [HttpGet("GameState")]
-        public GameServiceDto Get()
-        {
-            GameServiceDto response = new GameServiceDto();
-
-            response.PlayerState = _gameService.PlayerState;
-
-            foreach(var item in _gameService.GameMap.CurrentStage.NodesByLevel)
+            catch (Exception e)
             {
-                List<string> nodeNames = [];
-                foreach (Node node in item.Value)
-                {
-                    nodeNames.Add(node.Name);
-                }
-
-                response.Map.NodesByLevel.Add(nodeNames);
+                return BadRequest(e.Message);
             }
-
-            response.CurrentNode =  new GameNodeDto();
-            response.CurrentNode.Name = _gameService.GameMap.CurrentNode?.Name ?? "";
-
-            return response;
         }
+
+
+        // TODO: Fix logic in GameService first
+        //        public class MoveDto
+        //        {
+        //            public Guid NodeId { get; set; }
+        //        }
+        //        [HttpPost(Name = "MoveToNode")]
+        //        public ActionResult<MoveDto> MoveToNode([FromBody] Guid NodeId)
+        //        {
+        //            //_gameServiceManager.GetService().MoveById(NodeId)
+        //            return Ok("Successfully moved");
+        //        }
     }
 }

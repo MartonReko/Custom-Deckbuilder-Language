@@ -1,4 +1,5 @@
 ﻿using System.Reflection.Emit;
+using System.Runtime.InteropServices;
 using CDL.Game.GameObjects;
 using CDL.Lang.GameModel;
 using CDL.Lang.Parsing;
@@ -19,9 +20,9 @@ namespace CDL.Game
         // Block actions upon death
         public PlayerStates PlayerState { get; private set; }
         public CombatStates CombatState { get; private set; }
-        public GameCharacter Player { get; private set; }
+        public GameCharacter Player { get; private set; } = new(gameObjects.Character);
         public ObjectsHelper GameObjects { get; } = gameObjects;
-        public GameMap? GameMap { get; private set; } 
+        public GameMap? GameMap { get; private set; }
         public GameNode? CurrentGameNode { get; private set; }
         public List<GameCard> Rewards { get; } = [];
         public List<GameCard> Deck { get; } = [];
@@ -30,7 +31,7 @@ namespace CDL.Game
         public void DealPlayerDamage(double num)
         {
             Player.Damage(num);
-            if(Player.Health < 0)
+            if (Player.Health < 0)
             {
                 PlayerState = PlayerStates.DEATH;
             }
@@ -42,10 +43,14 @@ namespace CDL.Game
             GameMap.LoadNextStage();
             CreateDeck();
             PlayerState = PlayerStates.MAPMOVE;
+            // TODO: Temporary "fix" because map creation is messed up :(
+            Move(GameMap.CurrentStage.NodesByLevel[0].First());
+            Console.WriteLine("Inited");
         }
         private void CreateDeck()
         {
-            foreach ((Card card, int num) in GameObjects!.Character!.Deck) {
+            foreach ((Card card, int num) in GameObjects!.Character!.Deck)
+            {
                 Deck.Add(new GameCard(card));
             }
         }
@@ -64,9 +69,11 @@ namespace CDL.Game
                 CombatState = CombatStates.PLAYER;
                 CurrentGameNode = gameNode;
                 (string rarity, int num) = CurrentGameNode.GetRewardRarityAndNumber();
-                GenerateRewards(rarity,num);
+                GenerateRewards(rarity, num);
                 return true;
-            }else {
+            }
+            else
+            {
                 return false;
             }
         }
@@ -109,11 +116,11 @@ namespace CDL.Game
             var result = CurrentGameNode.EnemyTurn(EnemyTurnCounter, Player);
             // Reset to 0 on enemies turn end
             EnemyTurnCounter++;
-            if(EnemyTurnCounter >= CurrentGameNode.Enemies.Count)
+            if (EnemyTurnCounter >= CurrentGameNode.Enemies.Count)
             {
                 EndEnemiesTurn();
             }
-            if(Player.Health < 0)
+            if (Player.Health < 0)
             {
                 PlayerState = PlayerStates.DEATH;
             }
@@ -129,7 +136,7 @@ namespace CDL.Game
                 return;
             }
             CurrentGameNode.AttackEnemy(card, enemy);
-            if(CurrentGameNode.Enemies.Count == 0)
+            if (CurrentGameNode.Enemies.Count == 0)
             {
                 PlayerState = PlayerStates.REWARD;
             }
@@ -139,9 +146,9 @@ namespace CDL.Game
         private void GenerateRewards(string rarity, int cnt)
         {
             List<Card> possibleCards = [];
-            foreach(Card card in GameObjects.Cards)
+            foreach (Card card in GameObjects.Cards)
             {
-                if(card.Rarity == rarity)
+                if (card.Rarity == rarity)
                 {
                     possibleCards.Add(card);
                 }
@@ -149,7 +156,7 @@ namespace CDL.Game
             List<GameCard> cardsChosen = [];
             for (int i = 0; i < cnt; i++)
             {
-                if(possibleCards.Count != 0)
+                if (possibleCards.Count != 0)
                 {
                     Card cardToAdd = possibleCards[random.Next(0, possibleCards.Count)];
                     Rewards.Add(new GameCard(cardToAdd));
@@ -171,7 +178,7 @@ namespace CDL.Game
             if (PlayerState != PlayerStates.REWARD) return;
             // TODO
             // Card not found error
-            GameCard chosen = Rewards.Where(x=>x.Id.Equals(Id)).First();
+            GameCard chosen = Rewards.Where(x => x.Id.Equals(Id)).First();
             Deck.Add(chosen);
             PlayerState = PlayerStates.MAPMOVE;
         }
@@ -180,7 +187,7 @@ namespace CDL.Game
         {
             if (PlayerState != PlayerStates.COMBAT)
             {
-                foreach((Effect effect, int cnt) in card.ModelCard.EffectsApplied)
+                foreach ((Effect effect, int cnt) in card.ModelCard.EffectsApplied)
                 {
                     PlayerApplyEffect(effect, cnt);
                 }
@@ -200,7 +207,7 @@ namespace CDL.Game
                 {
                     DealPlayerDamage((int)Math.Round(item.Key.DamageDealt));
                     character.CurrentEffects[item.Key] = item.Value - 1;
-                    if(character.CurrentEffects[item.Key] == 0)
+                    if (character.CurrentEffects[item.Key] == 0)
                     {
                         toRemove.Add(item.Key);
                     }
@@ -208,7 +215,7 @@ namespace CDL.Game
                 if (item.Key.EffectType == EffectType.MOD)
                 {
                     character.CurrentEffects[item.Key] = item.Value - 1;
-                    if(character.CurrentEffects[item.Key] == 0)
+                    if (character.CurrentEffects[item.Key] == 0)
                     {
                         toRemove.Add(item.Key);
                     }
@@ -220,7 +227,7 @@ namespace CDL.Game
             }
 
             // Maybe unnecessary
-            if(character.Health <= 0)
+            if (character.Health <= 0)
             {
                 PlayerState = PlayerStates.DEATH;
             }
@@ -228,7 +235,7 @@ namespace CDL.Game
         // Also reused code from GameEnemy
         public void PlayerApplyEffect(Effect effect, int cnt)
         {
-            if(effect.EffectType == EffectType.MOD || effect.EffectType == EffectType.TURNEND)
+            if (effect.EffectType == EffectType.MOD || effect.EffectType == EffectType.TURNEND)
             {
                 if (GameObjects.Character.CurrentEffects.TryGetValue(effect, out int oldCnt))
                 {
@@ -239,7 +246,7 @@ namespace CDL.Game
                     GameObjects.Character.CurrentEffects.Add(effect, cnt);
                 }
             }
-            if(effect.EffectType == EffectType.INSTANT)
+            if (effect.EffectType == EffectType.INSTANT)
             {
                 DealPlayerDamage((int)Math.Round(effect.DamageDealt));
             }
