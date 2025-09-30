@@ -9,7 +9,9 @@ namespace CDL.Game.GameObjects
         public GameNode(Node node)
         {
             ModelNode = node;
-            CreateEnemies();
+            // Console.WriteLine($"Node {node.Name} created with id {this.Id}");
+            // TODO: OnEnter function
+            // CreateEnemies();
         }
         private void CreateEnemies()
         {

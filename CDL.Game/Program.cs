@@ -9,18 +9,8 @@ namespace CDL.Game
     {
         public static void Main(string[] args)
         {
-            //            LanguageProcessor lp = new();
-            //            ObjectsHelper? objectsHelper = lp.ProcessText(Path.Combine(Environment.CurrentDirectory, @"Examples", "example.cdl"));
-            //
-            //            if (objectsHelper == null)
-            //            {
-            //                // Input processing failed
-            //                return;
-            //            }
-
             var builder = WebApplication.CreateBuilder(args);
 
-            //            builder.Services.AddSingleton<GameService>(x => new GameService(objectsHelper));
             builder.Services.AddSingleton<GameServiceManager>(x => new());
 
             // Add services to the container.
@@ -37,11 +27,6 @@ namespace CDL.Game
             });
 
             var app = builder.Build();
-
-            // TODO: Init through front-end
-            //
-            //            var gameService = app.Services.GetService<GameService>();
-            //            gameService!.Initialize();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

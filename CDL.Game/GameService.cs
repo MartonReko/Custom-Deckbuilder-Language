@@ -1,5 +1,4 @@
-﻿using System.Reflection.Emit;
-using System.Runtime.InteropServices;
+﻿using System.Text.Json.Serialization;
 using CDL.Game.GameObjects;
 using CDL.Lang.GameModel;
 using CDL.Lang.Parsing;
@@ -8,9 +7,10 @@ namespace CDL.Game
 {
     public class GameService(ObjectsHelper gameObjects)
     {
+        [JsonConverter(typeof(JsonStringEnumConverter<PlayerStates>))]
         public enum PlayerStates
         {
-            COMBAT, MAPMOVE, DEATH, REWARD, WIN
+            COMBAT, MAP, DEATH, REWARD, WIN
         }
         public enum CombatStates
         {
@@ -42,9 +42,14 @@ namespace CDL.Game
             GameMap = new GameMap(GameObjects!.Game!, GameObjects.Stages, GameObjects.Nodes);
             GameMap.LoadNextStage();
             CreateDeck();
-            PlayerState = PlayerStates.MAPMOVE;
+            PlayerState = PlayerStates.MAP;
             // TODO: Temporary "fix" because map creation is messed up :(
-            Move(GameMap.CurrentStage.NodesByLevel[0].First());
+            // Console.WriteLine(GameMap.CurrentStage.GameNodesByLevel.ToString());
+            Move(GameMap.CurrentStage.GameNodesByLevel[0].First());
+            foreach (var thing in GameMap.CurrentStage.GameNodesByLevel)
+            {
+                Console.WriteLine($"{thing.Key} : {thing.Value.FirstOrDefault().ModelNode.Name}");
+            }
             Console.WriteLine("Inited");
         }
         private void CreateDeck()
@@ -55,21 +60,24 @@ namespace CDL.Game
             }
         }
 
-        public List<Node> GetMoves()
+        public List<GameNode> GetMoves()
         {
             return GameMap.GetPossibleSteps();
         }
 
-        public bool Move(Node node)
+        public bool Move(GameNode node)
         {
-            if (PlayerState == PlayerStates.MAPMOVE && GameMap.MoveTo(node))
+            if (PlayerState == PlayerStates.MAP && GameMap.MoveTo(node))
             {
-                GameNode gameNode = new(node);
+                //GameNode gameNode = new(node);
                 PlayerState = PlayerStates.COMBAT;
                 CombatState = CombatStates.PLAYER;
-                CurrentGameNode = gameNode;
-                (string rarity, int num) = CurrentGameNode.GetRewardRarityAndNumber();
-                GenerateRewards(rarity, num);
+                CurrentGameNode = node;
+
+                // TODO:
+                // Causes sequence contains no elements exception
+                //(string rarity, int num) = CurrentGameNode.GetRewardRarityAndNumber();
+                //GenerateRewards(rarity, num);
                 return true;
             }
             else
@@ -180,7 +188,7 @@ namespace CDL.Game
             // Card not found error
             GameCard chosen = Rewards.Where(x => x.Id.Equals(Id)).First();
             Deck.Add(chosen);
-            PlayerState = PlayerStates.MAPMOVE;
+            PlayerState = PlayerStates.MAP;
         }
 
         public void PlayCard(GameCard card)

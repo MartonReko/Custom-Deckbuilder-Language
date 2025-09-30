@@ -10,7 +10,7 @@ namespace CDL.Game.GameObjects
         public int StageCounter { get; private set; } = 0;
         public GameStage CurrentStage { get; private set; }
         public int LevelCounter { get; private set; } = 0;
-        public Node? CurrentNode { get; private set; } = null;
+        public GameNode? CurrentNode { get; private set; } = null;
 
         public GameMap(GameSetup game, List<Stage> stages, List<Node> Nodes)
         {
@@ -26,21 +26,21 @@ namespace CDL.Game.GameObjects
             StageCounter++;
             LevelCounter = 0;
         }
-        public List<Node> GetPossibleSteps()
+        public List<GameNode> GetPossibleSteps()
         {
-            if (LevelCounter == CurrentStage.NodesByLevel.Count)
+            if (LevelCounter == CurrentStage.GameNodesByLevel.Count)
             {
                 LoadNextStage();
             }
-            return CurrentStage.NodesByLevel[LevelCounter];
+            return CurrentStage.GameNodesByLevel[LevelCounter];
         }
         public bool IsLast()
         {
-            return StageCounter == GameProps.Stages.Count && LevelCounter == CurrentStage.NodesByLevel.Count;
+            return StageCounter == GameProps.Stages.Count && LevelCounter == CurrentStage.GameNodesByLevel.Count;
         }
-        public bool MoveTo(Node node)
+        public bool MoveTo(GameNode node)
         {
-            if (CurrentStage.NodesByLevel[LevelCounter].Contains(node))
+            if (CurrentStage.GameNodesByLevel[LevelCounter].Contains(node))
             {
                 LevelCounter++;
                 CurrentNode = node;

@@ -26,6 +26,61 @@ import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerM
 /**
  * 
  * @export
+ * @interface MapDto
+ */
+export interface MapDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof MapDto
+     */
+    'stageName': string;
+    /**
+     * 
+     * @type {Array<NodeDto>}
+     * @memberof MapDto
+     */
+    'nodes': Array<NodeDto>;
+}
+/**
+ * 
+ * @export
+ * @interface NodeDto
+ */
+export interface NodeDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof NodeDto
+     */
+    'name': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof NodeDto
+     */
+    'level': number;
+}
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const PlayerStates = {
+    Combat: 'COMBAT',
+    Map: 'MAP',
+    Death: 'DEATH',
+    Reward: 'REWARD',
+    Win: 'WIN'
+} as const;
+
+export type PlayerStates = typeof PlayerStates[keyof typeof PlayerStates];
+
+
+/**
+ * 
+ * @export
  * @interface StatusDto
  */
 export interface StatusDto {
@@ -34,20 +89,28 @@ export interface StatusDto {
      * @type {string}
      * @memberof StatusDto
      */
-    'name'?: string;
+    'name': string;
     /**
      * 
      * @type {number}
      * @memberof StatusDto
      */
-    'health'?: number;
+    'health': number;
     /**
      * 
      * @type {string}
      * @memberof StatusDto
      */
-    'currentNode'?: string;
+    'currentNode': string;
+    /**
+     * 
+     * @type {PlayerStates}
+     * @memberof StatusDto
+     */
+    'currentState': PlayerStates;
 }
+
+
 
 /**
  * CDLGameApi - axios parameter creator
@@ -174,7 +237,36 @@ export const GameApiAxiosParamCreator = function (configuration?: Configuration)
          * @throws {RequiredError}
          */
         getGameState: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/Game`;
+            const localVarPath = `/Game/status`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        map: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/Game/map`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -252,6 +344,17 @@ export const GameApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
+        async map(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MapDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.map(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GameApi.map']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
         async readCDL(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.readCDL(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
@@ -275,6 +378,14 @@ export const GameApiFactory = function (configuration?: Configuration, basePath?
          */
         getGameState(options?: RawAxiosRequestConfig): AxiosPromise<StatusDto> {
             return localVarFp.getGameState(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        map(options?: RawAxiosRequestConfig): AxiosPromise<MapDto> {
+            return localVarFp.map(options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -307,6 +418,14 @@ export interface GameApiInterface {
      * @throws {RequiredError}
      * @memberof GameApiInterface
      */
+    map(options?: RawAxiosRequestConfig): AxiosPromise<MapDto>;
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GameApiInterface
+     */
     readCDL(options?: RawAxiosRequestConfig): AxiosPromise<string>;
 
 }
@@ -326,6 +445,16 @@ export class GameApi extends BaseAPI implements GameApiInterface {
      */
     public getGameState(options?: RawAxiosRequestConfig) {
         return GameApiFp(this.configuration).getGameState(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GameApi
+     */
+    public map(options?: RawAxiosRequestConfig) {
+        return GameApiFp(this.configuration).map(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

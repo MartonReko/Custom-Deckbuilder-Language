@@ -1,9 +1,11 @@
-﻿namespace CDL.Game.DTOs
+﻿using System.Text.Json.Serialization;
+
+namespace CDL.Game.DTOs
 {
-    public class StatusDto
-    {
-        public string Name { get; set; } = "";
-        public int Health { get; set; }
-        public Guid CurrentNode { get; set; }
-    }
+    public record StatusDto(
+        string Name,
+        int Health,
+        Guid CurrentNode,
+        GameService.PlayerStates CurrentState
+    );
 }

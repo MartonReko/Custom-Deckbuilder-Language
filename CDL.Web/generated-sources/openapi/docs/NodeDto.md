@@ -1,4 +1,4 @@
-# StatusDto
+# NodeDto
 
 
 ## Properties
@@ -6,20 +6,16 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **name** | **string** |  | [default to undefined]
-**health** | **number** |  | [default to undefined]
-**currentNode** | **string** |  | [default to undefined]
-**currentState** | [**PlayerStates**](PlayerStates.md) |  | [default to undefined]
+**level** | **number** |  | [default to undefined]
 
 ## Example
 
 ```typescript
-import { StatusDto } from 'restClient';
+import { NodeDto } from 'restClient';
 
-const instance: StatusDto = {
+const instance: NodeDto = {
     name,
-    health,
-    currentNode,
-    currentState,
+    level,
 };
 ```
 

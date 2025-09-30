@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import { GameApi, StatusDto } from "../generated-sources/openapi";
+import { GameApi, MapDto, StatusDto } from "../generated-sources/openapi";
 
 
 export function Game({ api }: { api: GameApi }) {
     const [status, setStatus] = useState<StatusDto>();
+    //const [mapDisplayHelper, setMapDisplayHelper] = useState<Number>(-1);
+    const [map, setMap] = useState<MapDto>();
     const [ok, setOk] = useState(false);
     const [msg, setMsg] = useState("");
     useEffect(() => {
@@ -19,7 +21,21 @@ export function Game({ api }: { api: GameApi }) {
             setMsg(e.response.data)
             setOk(false);
         });
+        api.map().then(response => {
+            setMap(response.data);
+            setOk(true);
+        }).catch((e) => {
+            setMsg(e.response.data)
+            setOk(false);
+        });
     }, []);
+
+    let mapDisplayHelper: Number = -1;
+
+    function updateDH(num: Number) {
+        mapDisplayHelper = num
+    };
+
     return (
         <>
             <h1>
@@ -33,6 +49,19 @@ export function Game({ api }: { api: GameApi }) {
                 {status?.health}
                 <br />
                 {status?.currentNode}
+                <br />
+                {status?.currentState}
+                <br />
+                {map?.stageName}
+                {map?.nodes.map((x) => <>
+                    {x.level === mapDisplayHelper ? (<>
+                        {` - ${x.name}`}
+                    </>) : (<>
+                        <br />
+                        {`${x.level} - ${x.name}`}
+                        {updateDH(x.level)}
+                    </>)}
+                </>)}
             </label>
             }
         </>

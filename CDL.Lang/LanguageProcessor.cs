@@ -9,7 +9,7 @@ namespace CDL.Lang;
 
 public class LanguageProcessor
 {
-    private CDLExceptionHandler exceptionHandler = new();
+    public readonly CDLExceptionHandler exceptionHandler = new();
     public ObjectsHelper? ProcessText(string file)
     {
         var ast = ReadAST(file);

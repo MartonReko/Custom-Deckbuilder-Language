@@ -7,6 +7,9 @@ common.ts
 configuration.ts
 docs/CDLGameApi.md
 docs/GameApi.md
+docs/MapDto.md
+docs/NodeDto.md
+docs/PlayerStates.md
 docs/StatusDto.md
 git_push.sh
 index.ts
