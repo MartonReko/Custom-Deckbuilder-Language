@@ -174,7 +174,6 @@ export function Editor({ api }: { api: GameApi }) {
             console.error(e);
             setResponse(e.response.data)
         });
-        //    window.location.reload();
     }
 
     return (

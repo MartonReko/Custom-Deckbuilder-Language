@@ -45,7 +45,7 @@ namespace CDL.Game
             PlayerState = PlayerStates.MAP;
             // TODO: Temporary "fix" because map creation is messed up :(
             // Console.WriteLine(GameMap.CurrentStage.GameNodesByLevel.ToString());
-            Move(GameMap.CurrentStage.GameNodesByLevel[0].First());
+            Move(GameMap.CurrentStage.GameNodesByLevel[0].First().Id);
             foreach (var thing in GameMap.CurrentStage.GameNodesByLevel)
             {
                 Console.WriteLine($"{thing.Key} : {thing.Value.FirstOrDefault().ModelNode.Name}");
@@ -60,13 +60,28 @@ namespace CDL.Game
             }
         }
 
+        // WARN: Forgot i had this function...
         public List<GameNode> GetMoves()
         {
             return GameMap.GetPossibleSteps();
         }
 
-        public bool Move(GameNode node)
+        // TODO: Probably implement checks for movement validity here?
+        // TODO: Should I use Guid or GameNode?
+        public bool Move(Guid nodeId)
         {
+            // WARN: Really have to fix all these null warnings
+            if (!GameMap!.CurrentStage.GameNodesByLevel.TryGetValue(GameMap.LevelCounter, out List<GameNode>? nodes))
+            {
+                // Throw error....
+                return false;
+            }
+            GameNode? node = nodes.FirstOrDefault(x => x.Id.Equals(nodeId));
+            if (node == null)
+            {
+                //TODO: Need to do some logging and returning error messages
+                return false;
+            }
             if (PlayerState == PlayerStates.MAP && GameMap.MoveTo(node))
             {
                 //GameNode gameNode = new(node);
@@ -84,6 +99,7 @@ namespace CDL.Game
             {
                 return false;
             }
+
         }
         private int EnemyTurnCounter;
         public void EndTurn()

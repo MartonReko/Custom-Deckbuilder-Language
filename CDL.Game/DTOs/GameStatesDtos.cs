@@ -6,6 +6,7 @@ namespace CDL.Game.DTOs
             );
 
     public record NodeDto(
+            Guid Id,
             string Name,
             int Level
             );

@@ -9,6 +9,10 @@ export function Game({ api }: { api: GameApi }) {
     const [ok, setOk] = useState(false);
     const [msg, setMsg] = useState("");
     useEffect(() => {
+        getAndUpdateState();
+    }, []);
+
+    function getAndUpdateState() {
         api.getGameState().then(response => {
             const test = response.data;
             console.log(test.currentNode);
@@ -28,13 +32,16 @@ export function Game({ api }: { api: GameApi }) {
             setMsg(e.response.data)
             setOk(false);
         });
-    }, []);
-
+    }
     let mapDisplayHelper: Number = -1;
 
     function updateDH(num: Number) {
         mapDisplayHelper = num
     };
+
+    function move(id: string) {
+        api.move(id).then((result) => { console.log(result.data); getAndUpdateState(); }).catch((e) => { console.log(e.response.data) });
+    }
 
     return (
         <>
@@ -55,10 +62,10 @@ export function Game({ api }: { api: GameApi }) {
                 {map?.stageName}
                 {map?.nodes.map((x) => <>
                     {x.level === mapDisplayHelper ? (<>
-                        {` - ${x.name}`}
+                        <button className="btn" onClick={() => move(x.id)}>{` - ${x.name}`}</button>
                     </>) : (<>
                         <br />
-                        {`${x.level} - ${x.name}`}
+                        <button className="btn" onClick={() => move(x.id)}>{`${x.level} - ${x.name}`}</button>
                         {updateDH(x.level)}
                     </>)}
                 </>)}

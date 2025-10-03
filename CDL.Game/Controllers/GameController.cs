@@ -37,7 +37,7 @@ namespace CDL.Game.Controllers
                 GameService gs = _gameServiceManager.GetService();
                 MapDto response = new(
                         StageName: gs.GameMap.CurrentStage.ModelStage.Name,
-                        Nodes: [.. gs.GameMap.CurrentStage.GameNodesByLevel.SelectMany(x => x.Value.Select(y => new NodeDto(Name: y.ModelNode.Name, Level: x.Key)).ToList())]
+                        Nodes: [.. gs.GameMap.CurrentStage.GameNodesByLevel.SelectMany(x => x.Value.Select(y => new NodeDto(Id: y.Id, Name: y.ModelNode.Name, Level: x.Key)).ToList())]
                         );
                 return response;
             }
@@ -47,7 +47,7 @@ namespace CDL.Game.Controllers
             }
         }
 
-        [HttpPost(Name = "ReadCDL")]
+        [HttpPost(template: "readcdl", Name = "ReadCDL")]
         [Consumes("text/plain")]
         [Produces("text/plain")]
         public async Task<ActionResult<string>> ParseCDL()
@@ -66,16 +66,17 @@ namespace CDL.Game.Controllers
         }
 
 
-        // TODO: Fix logic in GameService first
-        //        public class MoveDto
-        //        {
-        //            public Guid NodeId { get; set; }
-        //        }
-        //        [HttpPost(Name = "MoveToNode")]
-        //        public ActionResult<MoveDto> MoveToNode([FromBody] Guid NodeId)
-        //        {
-        //            //_gameServiceManager.GetService().MoveById(NodeId)
-        //            return Ok("Successfully moved");
-        //        }
+        public class MoveDto
+        {
+            public Guid NodeId { get; set; }
+        }
+        [HttpPost(template: "move", Name = "Move")]
+        public ActionResult<MoveDto> MoveToNode([FromBody] Guid NodeId)
+        {
+            if (_gameServiceManager.GetService().Move(NodeId))
+                return Ok("Successfully moved");
+            else
+                return BadRequest("Not so successfully moved");
+        }
     }
 }

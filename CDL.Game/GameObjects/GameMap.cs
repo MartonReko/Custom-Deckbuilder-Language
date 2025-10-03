@@ -17,6 +17,11 @@ namespace CDL.Game.GameObjects
             GameProps = game;
             StagesProps = stages;
             NodesProps = Nodes;
+
+            CurrentStage = new GameStage(GameProps.Stages[StageCounter]);
+            CurrentStage.Init();
+            StageCounter++;
+            LevelCounter = 0;
         }
 
         public void LoadNextStage()
@@ -26,6 +31,7 @@ namespace CDL.Game.GameObjects
             StageCounter++;
             LevelCounter = 0;
         }
+
         public List<GameNode> GetPossibleSteps()
         {
             if (LevelCounter == CurrentStage.GameNodesByLevel.Count)

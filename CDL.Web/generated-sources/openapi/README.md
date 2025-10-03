@@ -54,12 +54,14 @@ Class | Method | HTTP request | Description
 *CDLGameApi* | [**rootGet**](docs/CDLGameApi.md#rootget) | **GET** / | 
 *GameApi* | [**getGameState**](docs/GameApi.md#getgamestate) | **GET** /Game/status | 
 *GameApi* | [**map**](docs/GameApi.md#map) | **GET** /Game/map | 
-*GameApi* | [**readCDL**](docs/GameApi.md#readcdl) | **POST** /Game | 
+*GameApi* | [**move**](docs/GameApi.md#move) | **POST** /Game/move | 
+*GameApi* | [**readCDL**](docs/GameApi.md#readcdl) | **POST** /Game/readcdl | 
 
 
 ### Documentation For Models
 
  - [MapDto](docs/MapDto.md)
+ - [MoveDto](docs/MoveDto.md)
  - [NodeDto](docs/NodeDto.md)
  - [PlayerStates](docs/PlayerStates.md)
  - [StatusDto](docs/StatusDto.md)
