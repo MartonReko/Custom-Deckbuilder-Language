@@ -57,6 +57,7 @@ Class | Method | HTTP request | Description
 *GameApi* | [**map**](docs/GameApi.md#map) | **GET** /Game/map | 
 *GameApi* | [**move**](docs/GameApi.md#move) | **POST** /Game/move | 
 *GameApi* | [**readCDL**](docs/GameApi.md#readcdl) | **POST** /Game/readcdl | 
+*GameApi* | [**reset**](docs/GameApi.md#reset) | **POST** /Game/reset | 
 
 
 ### Documentation For Models

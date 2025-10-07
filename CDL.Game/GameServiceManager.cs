@@ -7,6 +7,13 @@ namespace CDL.Game
     public class GameServiceManager
     {
         private GameService? _gameService;
+        private string storeddlCode = "";
+
+        public void Reset()
+        {
+            _gameService = null;
+            Initialize(storeddlCode);
+        }
 
         public bool Initialize(string CdlCode)
         {
@@ -25,6 +32,7 @@ namespace CDL.Game
             else
             {
                 _gameService = new(objectsHelper);
+                storeddlCode = CdlCode;
                 //_gameService.Initialize();
                 return true;
             }

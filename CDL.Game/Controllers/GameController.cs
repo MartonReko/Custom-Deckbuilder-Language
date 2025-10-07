@@ -71,15 +71,15 @@ namespace CDL.Game.Controllers
         {
             using var reader = new StreamReader(Request.Body);
             string content = await reader.ReadToEndAsync();
-            //             try
-            //             {
-            _gameServiceManager.Initialize(content);
-            return Ok("GameService initialized successfully.");
-            //             }
-            //             catch (Exception e)
-            //             {
-            //                 return BadRequest(e.Message);
-            //             }
+            try
+            {
+                _gameServiceManager.Initialize(content);
+                return Ok("GameService initialized successfully.");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
 
@@ -94,6 +94,14 @@ namespace CDL.Game.Controllers
                 return Ok("Successfully moved");
             else
                 return BadRequest("Not so successfully moved");
+        }
+
+        [HttpPost(template: "reset", Name = "Reset")]
+        public IActionResult Reset()
+        {
+            if (_gameServiceManager.GetService() != null)
+                _gameServiceManager.Reset();
+            return Ok();
         }
     }
 }

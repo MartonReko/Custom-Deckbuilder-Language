@@ -433,6 +433,35 @@ export const GameApiAxiosParamCreator = function (configuration?: Configuration)
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        reset: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/Game/reset`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -499,6 +528,17 @@ export const GameApiFp = function(configuration?: Configuration) {
             const localVarOperationServerBasePath = operationServerMap['GameApi.readCDL']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async reset(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.reset(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GameApi.reset']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
     }
 };
 
@@ -550,6 +590,14 @@ export const GameApiFactory = function (configuration?: Configuration, basePath?
         readCDL(options?: RawAxiosRequestConfig): AxiosPromise<string> {
             return localVarFp.readCDL(options).then((request) => request(axios, basePath));
         },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        reset(options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.reset(options).then((request) => request(axios, basePath));
+        },
     };
 };
 
@@ -599,6 +647,14 @@ export interface GameApiInterface {
      * @memberof GameApiInterface
      */
     readCDL(options?: RawAxiosRequestConfig): AxiosPromise<string>;
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GameApiInterface
+     */
+    reset(options?: RawAxiosRequestConfig): AxiosPromise<void>;
 
 }
 
@@ -658,6 +714,16 @@ export class GameApi extends BaseAPI implements GameApiInterface {
      */
     public readCDL(options?: RawAxiosRequestConfig) {
         return GameApiFp(this.configuration).readCDL(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GameApi
+     */
+    public reset(options?: RawAxiosRequestConfig) {
+        return GameApiFp(this.configuration).reset(options).then((request) => request(this.axios, this.basePath));
     }
 }
 

@@ -21,20 +21,20 @@ namespace CDL.Game
         public PlayerStates PlayerState { get; private set; }
         public CombatStates CombatState { get; private set; }
         public GameCharacter Player { get; private set; }
-        public ObjectsHelper GameObjects { get; }
+        public ObjectsHelper Model { get; }
         public GameMap? GameMap { get; private set; }
         public GameNode? CurrentGameNode { get; private set; }
-        public List<GameCard> Rewards { get; } = [];
+        public List<GameCard> NodeRewards { get; } = [];
         public List<GameCard> Deck { get; } = [];
 
         private readonly Random random = new();
         public GameService(ObjectsHelper gameObjects)
         {
-            GameObjects = gameObjects;
+            Model = gameObjects;
             Player = new(gameObjects.Character!);
 
 
-            GameMap = new GameMap(GameObjects!.Game!, GameObjects.Stages, GameObjects.Nodes);
+            GameMap = new GameMap(Model!.Game!, Model.Stages, Model.Nodes);
             GameMap.LoadNextStage();
             CreateDeck();
             PlayerState = PlayerStates.MAP;
@@ -49,55 +49,43 @@ namespace CDL.Game
             }
         }
 
-        //        public void Initialize()
-        //        {
-        //            GameMap = new GameMap(GameObjects!.Game!, GameObjects.Stages, GameObjects.Nodes);
-        //            GameMap.LoadNextStage();
-        //            CreateDeck();
-        //            PlayerState = PlayerStates.MAP;
-        //            //Move(GameMap.CurrentStage.GameNodesByLevel[0].First().Id);
-        //        }
+
         private void CreateDeck()
         {
-            foreach ((Card card, int num) in GameObjects!.Character!.Deck)
+            foreach ((Card card, int num) in Model!.Character!.Deck)
             {
-                Deck.Add(new GameCard(card));
+                for (int i = 0; i < num; i++)
+                {
+                    Deck.Add(new GameCard(card));
+                }
             }
         }
 
-        // WARN: Forgot i had this function...
-        public List<GameNode> GetMoves()
-        {
-            return GameMap.GetPossibleSteps();
-        }
+        //         public List<GameNode> GetMoves()
+        //         {
+        //             return GameMap.GetPossibleSteps();
+        //         }
 
-        // TODO: Probably implement checks for movement validity here?
-        // TODO: Should I use Guid or GameNode?
+        // TODO: Really have to fix all these null warnings, also implement logging or some feedback
         public bool Move(Guid nodeId)
         {
-            // WARN: Really have to fix all these null warnings
             if (!GameMap!.CurrentStage.GameNodesByLevel.TryGetValue(GameMap.LevelCounter, out List<GameNode>? nodes))
             {
-                // Throw error....
                 return false;
             }
             GameNode? node = nodes.FirstOrDefault(x => x.Id.Equals(nodeId));
             if (node == null)
             {
-                //TODO: Need to do some logging and returning error messages
                 return false;
             }
             if (PlayerState == PlayerStates.MAP && GameMap.MoveTo(node))
             {
-                //GameNode gameNode = new(node);
                 PlayerState = PlayerStates.COMBAT;
                 CombatState = CombatStates.PLAYER;
                 CurrentGameNode = node;
 
-                // TODO:
-                // Causes sequence contains no elements exception
-                //(string rarity, int num) = CurrentGameNode.GetRewardRarityAndNumber();
-                //GenerateRewards(rarity, num);
+                (string rarity, int num) = CurrentGameNode.GetRewardRarityAndNumber();
+                GenerateRewards(rarity, num);
                 return true;
             }
             else
@@ -170,33 +158,31 @@ namespace CDL.Game
                 PlayerState = PlayerStates.REWARD;
             }
         }
-        // TODO
-        // Could probably create a dictionary for rarities
+
         private void GenerateRewards(string rarity, int cnt)
         {
-            List<Card> possibleCards = [];
-            foreach (Card card in GameObjects.Cards)
+            List<Card> candidates = [.. Model.Cards.Where(x => x.Rarity.Equals(rarity))];
+
+            if (candidates.Count == 0)
             {
-                if (card.Rarity == rarity)
-                {
-                    possibleCards.Add(card);
-                }
+                throw new InvalidOperationException("Rarity not found!");
             }
-            List<GameCard> cardsChosen = [];
+
             for (int i = 0; i < cnt; i++)
             {
-                if (possibleCards.Count != 0)
+                if (candidates.Count != 0)
                 {
-                    Card cardToAdd = possibleCards[random.Next(0, possibleCards.Count)];
-                    Rewards.Add(new GameCard(cardToAdd));
-                    // TODO
+                    Card cardToAdd = candidates[random.Next(0, candidates.Count)];
+                    NodeRewards.Add(new GameCard(cardToAdd));
+                    // TODO:
                     // Check if this works
-                    possibleCards.Remove(cardToAdd);
+                    candidates.Remove(cardToAdd);
                 }
                 else
                 {
                     // Maybe there arent enough unique cards for a rarity, then duplicate last one
-                    Rewards.Add(cardsChosen.Last());
+                    // NOTE: Actually just do nothing instead :)
+                    // NodeRewards.Add(cardsChosen.Last());
                 }
             }
         }
@@ -207,7 +193,7 @@ namespace CDL.Game
             if (PlayerState != PlayerStates.REWARD) return;
             // TODO
             // Card not found error
-            GameCard chosen = Rewards.Where(x => x.Id.Equals(Id)).First();
+            GameCard chosen = NodeRewards.Where(x => x.Id.Equals(Id)).First();
             Deck.Add(chosen);
             PlayerState = PlayerStates.MAP;
         }
@@ -229,7 +215,7 @@ namespace CDL.Game
         public void PlayerEndTurn()
         {
             List<Effect> toRemove = [];
-            ModelCharacter character = GameObjects.Character!;
+            ModelCharacter character = Model.Character!;
             foreach (var item in character.CurrentEffects)
             {
                 if (item.Key.EffectType == EffectType.TURNEND)
@@ -266,13 +252,13 @@ namespace CDL.Game
         {
             if (effect.EffectType == EffectType.MOD || effect.EffectType == EffectType.TURNEND)
             {
-                if (GameObjects.Character.CurrentEffects.TryGetValue(effect, out int oldCnt))
+                if (Model.Character.CurrentEffects.TryGetValue(effect, out int oldCnt))
                 {
-                    GameObjects.Character.CurrentEffects[effect] = cnt + oldCnt;
+                    Model.Character.CurrentEffects[effect] = cnt + oldCnt;
                 }
                 else
                 {
-                    GameObjects.Character.CurrentEffects.Add(effect, cnt);
+                    Model.Character.CurrentEffects.Add(effect, cnt);
                 }
             }
             if (effect.EffectType == EffectType.INSTANT)

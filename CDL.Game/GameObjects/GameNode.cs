@@ -9,12 +9,8 @@ namespace CDL.Game.GameObjects
         public GameNode(Node node)
         {
             ModelNode = node;
-            // Console.WriteLine($"Node {node.Name} created with id {this.Id}");
-            // TODO: OnEnter function
-            // CreateEnemies();
-        }
-        private void CreateEnemies()
-        {
+
+            // Create enemies
             foreach (var enemy in ModelNode.Enemies)
             {
                 for (int i = 0; i < enemy.Value; i++)
@@ -56,17 +52,20 @@ namespace CDL.Game.GameObjects
         {
             Random r = new();
             int random = r.Next(0, 101);
-            int tmp = 100;
+            int acc = 0;
+
             foreach (var rarity in ModelNode.RarityNumChance)
             {
-                if (tmp - rarity.Value.chance <= random)
+                if (acc + rarity.Value.chance > random)
                 {
                     return (rarity.Key, rarity.Value.num);
                 }
+                acc += rarity.Value.chance;
             }
             // Default, definitely should not happen
             // TODO: error message
-            return (ModelNode.RarityNumChance.First().Key, ModelNode.RarityNumChance.First().Value.num);
+            throw new InvalidOperationException("Could not generate rewards in node");
+            // return (ModelNode.RarityNumChance.First().Key, ModelNode.RarityNumChance.First().Value.num);
         }
     }
 }

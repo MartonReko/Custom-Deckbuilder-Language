@@ -9,6 +9,7 @@ All URIs are relative to *http://localhost*
 |[**map**](#map) | **GET** /Game/map | |
 |[**move**](#move) | **POST** /Game/move | |
 |[**readCDL**](#readcdl) | **POST** /Game/readcdl | |
+|[**reset**](#reset) | **POST** /Game/reset | |
 
 # **combat**
 > CombatDto combat()
@@ -223,6 +224,49 @@ No authorization required
 
  - **Content-Type**: Not defined
  - **Accept**: text/plain
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **reset**
+> reset()
+
+
+### Example
+
+```typescript
+import {
+    GameApi,
+    Configuration
+} from 'restClient';
+
+const configuration = new Configuration();
+const apiInstance = new GameApi(configuration);
+
+const { status, data } = await apiInstance.reset();
+```
+
+### Parameters
+This endpoint does not have any parameters.
+
+
+### Return type
+
+void (empty response body)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: Not defined
 
 
 ### HTTP response details

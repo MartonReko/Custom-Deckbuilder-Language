@@ -64,11 +64,16 @@ export function Game({ api }: { api: GameApi }) {
         }
     }
 
+    function reset() {
+        api.reset().then(() => getAndUpdateState())
+    }
+
     return (
         <>
             <h1>
                 Game
-            </h1>
+                <button className="btn" onClick={() => reset()}> RESET </button>
+            </h1 >
             {ok == false ? <label>Error: {msg}</label> : <label>
                 Fetched status:
                 <br />
