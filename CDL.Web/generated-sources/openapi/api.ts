@@ -47,6 +47,12 @@ export interface EnemyDto {
      * @type {string}
      * @memberof EnemyDto
      */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof EnemyDto
+     */
     'name': string;
     /**
      * 

@@ -54,7 +54,7 @@ namespace CDL.Game.Controllers
             {
                 GameService gs = _gameServiceManager.GetService();
                 CombatDto response = new(
-                        Enemies: [.. gs.CurrentGameNode.Enemies.Select(x => new EnemyDto(x.ModelEnemy.Name, x.Health))]
+                        Enemies: [.. gs.CurrentGameNode.Enemies.Select(x => new EnemyDto(x.Id, x.ModelEnemy.Name, x.Health))]
                         );
                 return response;
             }

@@ -61,11 +61,6 @@ namespace CDL.Game
             }
         }
 
-        //         public List<GameNode> GetMoves()
-        //         {
-        //             return GameMap.GetPossibleSteps();
-        //         }
-
         // TODO: Really have to fix all these null warnings, also implement logging or some feedback
         public bool Move(Guid nodeId)
         {

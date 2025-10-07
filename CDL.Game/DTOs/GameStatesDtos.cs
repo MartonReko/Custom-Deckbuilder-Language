@@ -10,6 +10,7 @@ namespace CDL.Game.DTOs
             );
 
     public record EnemyDto(
+            Guid Id,
             string Name,
             int Health
             //Dictionary<string, int> Effects
@@ -19,5 +20,10 @@ namespace CDL.Game.DTOs
             Guid Id,
             string Name,
             int Level
+            );
+
+    public record CardDto(
+            Guid Id,
+            string Name
             );
 }

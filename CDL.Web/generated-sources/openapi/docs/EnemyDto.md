@@ -5,6 +5,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**id** | **string** |  | [default to undefined]
 **name** | **string** |  | [default to undefined]
 **health** | **number** |  | [default to undefined]
 
@@ -14,6 +15,7 @@ Name | Type | Description | Notes
 import { EnemyDto } from 'restClient';
 
 const instance: EnemyDto = {
+    id,
     name,
     health,
 };

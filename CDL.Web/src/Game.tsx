@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { GameApi, MapDto, StatusDto } from "../generated-sources/openapi";
+import { CombatDto, GameApi, MapDto, StatusDto } from "../generated-sources/openapi";
 
 
 export function Game({ api }: { api: GameApi }) {
     const [status, setStatus] = useState<StatusDto>();
     //const [mapDisplayHelper, setMapDisplayHelper] = useState<Number>(-1);
     const [map, setMap] = useState<MapDto>();
+    const [combat, setCombat] = useState<CombatDto>();
     const [ok, setOk] = useState(false);
     const [msg, setMsg] = useState("");
     useEffect(() => {
@@ -18,13 +19,6 @@ export function Game({ api }: { api: GameApi }) {
             setOk(true);
         }).catch((e) => {
             console.error("Returned with error " + e);
-            setMsg(e.response.data)
-            setOk(false);
-        });
-        api.map().then(response => {
-            setMap(response.data);
-            setOk(true);
-        }).catch((e) => {
             setMsg(e.response.data)
             setOk(false);
         });
@@ -43,21 +37,43 @@ export function Game({ api }: { api: GameApi }) {
         if (status == null) return <> Waiting for answer </>;
         switch (status?.currentState) {
             case "COMBAT":
+                api.combat().then(response => {
+                    setCombat(response.data);
+                    setOk(true);
+                }).catch((e) => {
+                    setMsg(e.response.data)
+                    setOk(false);
+                });
                 return <>
-                    You are in combat, good luck :)
+                    {combat?.enemies.map((enemy) => <div key={enemy.id}>
+                        <text>{`Id: ${enemy.id}`}</text>
+                        <br />
+                        <text>{`Name: ${enemy.name}`}</text>
+                        <br />
+                        <text>{`Health: ${enemy.health}`}</text>
+                        <br />
+                        <br />
+                    </div>)}
                 </>;
             case "MAP":
+                api.map().then(response => {
+                    setMap(response.data);
+                    setOk(true);
+                }).catch((e) => {
+                    setMsg(e.response.data)
+                    setOk(false);
+                });
                 return <>
                     {map?.stageName}
-                    {map?.nodes.map((x) => <>
+                    {map?.nodes.map((x) => <span key={x.id}>
                         {x.level === mapDisplayHelper ? (<>
-                            <button className="btn" onClick={() => move(x.id)}>{`${x.name}`}</button>
+                            <button className="btn" onClick={() => move(x.id)} >{`${x.name}`}</button>
                         </>) : (<>
                             <br />
-                            <label className="m-6">{`${x.level}`}</label><button className="btn" onClick={() => move(x.id)}>{`${x.name}`}</button>
+                            <label className="m-6">{`${x.level}`}</label><button className="btn" onClick={() => move(x.id)} >{`${x.name}`}</button>
                             {updateDH(x.level)}
                         </>)}
-                    </>)}
+                    </span>)}
                 </>;
             default:
                 return <> Oopsie! </>;
@@ -74,7 +90,7 @@ export function Game({ api }: { api: GameApi }) {
                 Game
                 <button className="btn" onClick={() => reset()}> RESET </button>
             </h1 >
-            {ok == false ? <label>Error: {msg}</label> : <label>
+            {ok === false ? <label>Error: {msg}</label> : <div>
                 Fetched status:
                 <br />
                 {status?.name}
@@ -89,7 +105,7 @@ export function Game({ api }: { api: GameApi }) {
                 <br />
                 <br />
                 {decideMode()}
-            </label>
+            </div>
             }
         </>
     )
