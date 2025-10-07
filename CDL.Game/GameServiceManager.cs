@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using CDL.Lang;
 using CDL.Lang.Parsing;
 
@@ -19,14 +20,12 @@ namespace CDL.Game
 
             if (objectsHelper == null)
             {
-                // Input processing failed
-                // throw new Exception("Could not initialize from given cdl code.");
-                return false;
+                throw new InvalidOperationException("Invalid code.");
             }
             else
             {
                 _gameService = new(objectsHelper);
-                _gameService.Initialize();
+                //_gameService.Initialize();
                 return true;
             }
         }

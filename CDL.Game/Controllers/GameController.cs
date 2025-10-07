@@ -18,7 +18,7 @@ namespace CDL.Game.Controllers
                 StatusDto response = new(
                         Name: gs.Player.Name,
                         Health: gs.Player.Health,
-                        CurrentNode: gs.CurrentGameNode.Id,
+                        CurrentNode: gs.CurrentGameNode?.Id ?? null,
                         CurrentState: gs.PlayerState
                         );
                 return response;
@@ -38,6 +38,23 @@ namespace CDL.Game.Controllers
                 MapDto response = new(
                         StageName: gs.GameMap.CurrentStage.ModelStage.Name,
                         Nodes: [.. gs.GameMap.CurrentStage.GameNodesByLevel.SelectMany(x => x.Value.Select(y => new NodeDto(Id: y.Id, Name: y.ModelNode.Name, Level: x.Key)).ToList())]
+                        );
+                return response;
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet(template: "combat", Name = "Combat")]
+        public ActionResult<CombatDto> GetCombat()
+        {
+            try
+            {
+                GameService gs = _gameServiceManager.GetService();
+                CombatDto response = new(
+                        Enemies: [.. gs.CurrentGameNode.Enemies.Select(x => new EnemyDto(x.ModelEnemy.Name, x.Health))]
                         );
                 return response;
             }

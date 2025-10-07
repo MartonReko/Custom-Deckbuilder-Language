@@ -5,7 +5,7 @@ using CDL.Lang.Parsing;
 
 namespace CDL.Game
 {
-    public class GameService(ObjectsHelper gameObjects)
+    public class GameService
     {
         [JsonConverter(typeof(JsonStringEnumConverter<PlayerStates>))]
         public enum PlayerStates
@@ -20,14 +20,26 @@ namespace CDL.Game
         // Block actions upon death
         public PlayerStates PlayerState { get; private set; }
         public CombatStates CombatState { get; private set; }
-        public GameCharacter Player { get; private set; } = new(gameObjects.Character);
-        public ObjectsHelper GameObjects { get; } = gameObjects;
+        public GameCharacter Player { get; private set; }
+        public ObjectsHelper GameObjects { get; }
         public GameMap? GameMap { get; private set; }
         public GameNode? CurrentGameNode { get; private set; }
         public List<GameCard> Rewards { get; } = [];
         public List<GameCard> Deck { get; } = [];
 
         private readonly Random random = new();
+        public GameService(ObjectsHelper gameObjects)
+        {
+            GameObjects = gameObjects;
+            Player = new(gameObjects.Character!);
+
+
+            GameMap = new GameMap(GameObjects!.Game!, GameObjects.Stages, GameObjects.Nodes);
+            GameMap.LoadNextStage();
+            CreateDeck();
+            PlayerState = PlayerStates.MAP;
+        }
+
         public void DealPlayerDamage(double num)
         {
             Player.Damage(num);
@@ -37,21 +49,14 @@ namespace CDL.Game
             }
         }
 
-        public void Initialize()
-        {
-            GameMap = new GameMap(GameObjects!.Game!, GameObjects.Stages, GameObjects.Nodes);
-            GameMap.LoadNextStage();
-            CreateDeck();
-            PlayerState = PlayerStates.MAP;
-            // TODO: Temporary "fix" because map creation is messed up :(
-            // Console.WriteLine(GameMap.CurrentStage.GameNodesByLevel.ToString());
-            Move(GameMap.CurrentStage.GameNodesByLevel[0].First().Id);
-            foreach (var thing in GameMap.CurrentStage.GameNodesByLevel)
-            {
-                Console.WriteLine($"{thing.Key} : {thing.Value.FirstOrDefault().ModelNode.Name}");
-            }
-            Console.WriteLine("Inited");
-        }
+        //        public void Initialize()
+        //        {
+        //            GameMap = new GameMap(GameObjects!.Game!, GameObjects.Stages, GameObjects.Nodes);
+        //            GameMap.LoadNextStage();
+        //            CreateDeck();
+        //            PlayerState = PlayerStates.MAP;
+        //            //Move(GameMap.CurrentStage.GameNodesByLevel[0].First().Id);
+        //        }
         private void CreateDeck()
         {
             foreach ((Card card, int num) in GameObjects!.Character!.Deck)

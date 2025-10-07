@@ -14,14 +14,10 @@ export function Game({ api }: { api: GameApi }) {
 
     function getAndUpdateState() {
         api.getGameState().then(response => {
-            const test = response.data;
-            console.log(test.currentNode);
-            console.log(test.name);
-            console.log(test.health);
             setStatus(response.data);
             setOk(true);
         }).catch((e) => {
-            console.error(e);
+            console.error("Returned with error " + e);
             setMsg(e.response.data)
             setOk(false);
         });
@@ -43,6 +39,31 @@ export function Game({ api }: { api: GameApi }) {
         api.move(id).then((result) => { console.log(result.data); getAndUpdateState(); }).catch((e) => { console.log(e.response.data) });
     }
 
+    function decideMode() {
+        if (status == null) return <> Waiting for answer </>;
+        switch (status?.currentState) {
+            case "COMBAT":
+                return <>
+                    You are in combat, good luck :)
+                </>;
+            case "MAP":
+                return <>
+                    {map?.stageName}
+                    {map?.nodes.map((x) => <>
+                        {x.level === mapDisplayHelper ? (<>
+                            <button className="btn" onClick={() => move(x.id)}>{`${x.name}`}</button>
+                        </>) : (<>
+                            <br />
+                            <label className="m-6">{`${x.level}`}</label><button className="btn" onClick={() => move(x.id)}>{`${x.name}`}</button>
+                            {updateDH(x.level)}
+                        </>)}
+                    </>)}
+                </>;
+            default:
+                return <> Oopsie! </>;
+        }
+    }
+
     return (
         <>
             <h1>
@@ -59,16 +80,10 @@ export function Game({ api }: { api: GameApi }) {
                 <br />
                 {status?.currentState}
                 <br />
-                {map?.stageName}
-                {map?.nodes.map((x) => <>
-                    {x.level === mapDisplayHelper ? (<>
-                        <button className="btn" onClick={() => move(x.id)}>{` - ${x.name}`}</button>
-                    </>) : (<>
-                        <br />
-                        <button className="btn" onClick={() => move(x.id)}>{`${x.level} - ${x.name}`}</button>
-                        {updateDH(x.level)}
-                    </>)}
-                </>)}
+                <br />
+                <br />
+                <br />
+                {decideMode()}
             </label>
             }
         </>

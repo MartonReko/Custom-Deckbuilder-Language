@@ -52,6 +52,7 @@ All URIs are relative to *http://localhost*
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
 *CDLGameApi* | [**rootGet**](docs/CDLGameApi.md#rootget) | **GET** / | 
+*GameApi* | [**combat**](docs/GameApi.md#combat) | **GET** /Game/combat | 
 *GameApi* | [**getGameState**](docs/GameApi.md#getgamestate) | **GET** /Game/status | 
 *GameApi* | [**map**](docs/GameApi.md#map) | **GET** /Game/map | 
 *GameApi* | [**move**](docs/GameApi.md#move) | **POST** /Game/move | 
@@ -60,6 +61,8 @@ Class | Method | HTTP request | Description
 
 ### Documentation For Models
 
+ - [CombatDto](docs/CombatDto.md)
+ - [EnemyDto](docs/EnemyDto.md)
  - [MapDto](docs/MapDto.md)
  - [MoveDto](docs/MoveDto.md)
  - [NodeDto](docs/NodeDto.md)
