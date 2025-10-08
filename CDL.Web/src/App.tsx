@@ -16,7 +16,7 @@ function App() {
         <QueryClientProvider client={queryClient}>
             <div className="flex h-screen">
                 <Sidebar />
-                <main className="flex-1 flex flex-col overflow-auto">
+                <main className="m-2 p-4 flex-1 flex flex-col overflow-auto">
                     <Routes>
                         <Route path="/" element={<Welcome />} />
                         <Route path="/editor" element={<Editor api={api} />} />

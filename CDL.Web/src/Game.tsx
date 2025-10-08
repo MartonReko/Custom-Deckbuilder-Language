@@ -37,17 +37,17 @@ export function Game({ api }: { api: GameApi }) {
         return <span>Error: {statusError.message}</span>
     }
 
-
-    // function move(id: string) {
-    //     api.move(id).then((result) => { console.log(result.data); }).catch((e) => { console.log(e.response.data) });
-    // }
-
     function reset() {
-        api.reset().then()
+        api.reset().then(() => queryClient.refetchQueries())
     }
 
     function showStatus() {
         return <div>
+            <h1 className="text-4xl font-extrabold m-8">
+                Game
+            </h1 >
+            <button className="btn" onClick={() => reset()}> RESET </button>
+            <br />
             <label>Player name: {status?.name}</label>
             <br />
             <label>Player health: {status?.health}</label>
@@ -87,89 +87,4 @@ export function Game({ api }: { api: GameApi }) {
         case "REWARD":
         case "WIN":
     }
-    //    return (
-    //        <>
-    //            <h1>
-    //                Game
-    //                <button className="btn" onClick={() => reset()}> RESET </button>
-    //            </h1 >
-    //            <div>
-    //                <br />
-    //            </div>
-    //        </>
-    //    )
 }
-//export function Combat({ api }: { api: GameApi }) {
-//    const { isPending, isError, data: combat, error } = useQuery({
-//        queryKey: ['combat'],
-//        queryFn: async () => { const data = await api.combat(); return data.data },
-//    })
-//
-//    if (isPending) {
-//        return <span>Loading combat...</span>
-//    }
-//    if (isError) {
-//        return <span>Error: {error.message}</span>
-//    }
-//    return <div>
-//        {combat.enemies.map((enemy) => <div key={enemy.id}>
-//            <label>{`Id: ${enemy.id}`}</label>
-//            <br />
-//            <label>{`Name: ${enemy.name}`}</label>
-//            <br />
-//            <label>{`Health: ${enemy.health}`}</label>
-//            <br />
-//            <br />
-//            <Deck api={api} />
-//        </div>)}
-//    </div>;
-//}
-//export function Map({ api }: { api: GameApi }) {
-//    const { isPending, isError, data, error } = useQuery({
-//        queryKey: ['map'],
-//        queryFn: async () => { const data = await api.map(); return data.data },
-//    })
-//
-//    if (isPending) {
-//        return <span>Loading map...</span>
-//    }
-//    if (isError) {
-//        return <span>Error: {error.message}</span>
-//    }
-//    return <div>
-//        <h2>{`Current stage: ${data.stageName}`}</h2>
-//        {data.nodes.map((node) => <div key={node.id}>
-//            <label>{`Id: ${node.id}`}</label>
-//            <br />
-//            <label>{`Name: ${node.name}`}</label>
-//            <br />
-//            <label>{`Level: ${node.level}`}</label>
-//            <br />
-//        </div>)}
-//    </div>;
-//}
-//export function Deck({ api }: { api: GameApi }) {
-//    return <>Deck will be here</>;
-//}
-//export function StatusWindow({ api }: { api: GameApi }) {
-//    const { isPending, isError, data, error } = useQuery({
-//        queryKey: ['state'],
-//        // TODO: Find a fix dor data.data :(
-//        queryFn: async () => { const data = await api.getGameState(); return data.data },
-//    })
-//
-//    if (isPending) {
-//        return <span>Loading...</span>
-//    }
-//    if (isError) {
-//        return <span>Error: {error.message}</span>
-//    }
-//    return <div>
-//        <label>Player name: {data.name}</label>
-//        <br />
-//        <label>Player health: {data.health}</label>
-//        <br />
-//        <label>Currently in {data.currentState}</label>
-//        <br />
-//    </div>;
-//}
