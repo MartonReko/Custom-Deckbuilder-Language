@@ -3,15 +3,21 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CDL.Game.Controllers
 {
+
     [ApiController]
     [Route("[controller]")]
     public class GameController(GameServiceManager gameServiceManager) : ControllerBase
     {
+        private static int statusCounter = 0;
+        private static int mapCounter = 0;
+        private static int combatCounter = 0;
         private readonly GameServiceManager _gameServiceManager = gameServiceManager;
 
         [HttpGet(template: "status", Name = "GetGameState")]
         public ActionResult<StatusDto> GetStatus()
         {
+            Console.WriteLine($"Get status was called {statusCounter} times!");
+            statusCounter++;
             try
             {
                 GameService gs = _gameServiceManager.GetService();
@@ -19,7 +25,8 @@ namespace CDL.Game.Controllers
                         Name: gs.Player.Name,
                         Health: gs.Player.Health,
                         CurrentNode: gs.CurrentGameNode?.Id ?? null,
-                        CurrentState: gs.PlayerState
+                        CurrentState: gs.PlayerState,
+                        Deck: [.. gs.Deck.Select((x) => new CardDto(x.Id, x.ModelCard.Name))]
                         );
                 return response;
             }
@@ -32,6 +39,8 @@ namespace CDL.Game.Controllers
         [HttpGet(template: "map", Name = "Map")]
         public ActionResult<MapDto> GetMap()
         {
+            Console.WriteLine($"Get status was called {mapCounter} times!");
+            mapCounter++;
             try
             {
                 GameService gs = _gameServiceManager.GetService();
@@ -50,6 +59,8 @@ namespace CDL.Game.Controllers
         [HttpGet(template: "combat", Name = "Combat")]
         public ActionResult<CombatDto> GetCombat()
         {
+            Console.WriteLine($"Get combat was called {combatCounter} times!");
+            combatCounter++;
             try
             {
                 GameService gs = _gameServiceManager.GetService();

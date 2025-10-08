@@ -62,6 +62,7 @@ Class | Method | HTTP request | Description
 
 ### Documentation For Models
 
+ - [CardDto](docs/CardDto.md)
  - [CombatDto](docs/CombatDto.md)
  - [EnemyDto](docs/EnemyDto.md)
  - [MapDto](docs/MapDto.md)

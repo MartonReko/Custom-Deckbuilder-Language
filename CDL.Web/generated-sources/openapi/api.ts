@@ -26,6 +26,25 @@ import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerM
 /**
  * 
  * @export
+ * @interface CardDto
+ */
+export interface CardDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof CardDto
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CardDto
+     */
+    'name': string;
+}
+/**
+ * 
+ * @export
  * @interface CombatDto
  */
 export interface CombatDto {
@@ -165,6 +184,12 @@ export interface StatusDto {
      * @memberof StatusDto
      */
     'currentState': PlayerStates;
+    /**
+     * 
+     * @type {Array<CardDto>}
+     * @memberof StatusDto
+     */
+    'deck': Array<CardDto>;
 }
 
 

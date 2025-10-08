@@ -9,6 +9,7 @@ Name | Type | Description | Notes
 **health** | **number** |  | [default to undefined]
 **currentNode** | **string** |  | [default to undefined]
 **currentState** | [**PlayerStates**](PlayerStates.md) |  | [default to undefined]
+**deck** | [**Array&lt;CardDto&gt;**](CardDto.md) |  | [default to undefined]
 
 ## Example
 
@@ -20,6 +21,7 @@ const instance: StatusDto = {
     health,
     currentNode,
     currentState,
+    deck,
 };
 ```
 

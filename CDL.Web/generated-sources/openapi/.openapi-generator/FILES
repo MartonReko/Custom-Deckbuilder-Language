@@ -6,6 +6,7 @@ base.ts
 common.ts
 configuration.ts
 docs/CDLGameApi.md
+docs/CardDto.md
 docs/CombatDto.md
 docs/EnemyDto.md
 docs/GameApi.md
