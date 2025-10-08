@@ -2,6 +2,7 @@ namespace CDL.Game.DTOs
 {
     public record StatusDto(
         string Name,
+        Guid PlayerId,
         int Health,
         Guid? CurrentNode,
         GameService.PlayerStates CurrentState,

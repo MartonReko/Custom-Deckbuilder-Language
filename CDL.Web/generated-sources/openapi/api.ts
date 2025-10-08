@@ -168,6 +168,12 @@ export interface StatusDto {
     'name': string;
     /**
      * 
+     * @type {string}
+     * @memberof StatusDto
+     */
+    'playerId': string;
+    /**
+     * 
      * @type {number}
      * @memberof StatusDto
      */

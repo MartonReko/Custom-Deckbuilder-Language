@@ -6,6 +6,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **name** | **string** |  | [default to undefined]
+**playerId** | **string** |  | [default to undefined]
 **health** | **number** |  | [default to undefined]
 **currentNode** | **string** |  | [default to undefined]
 **currentState** | [**PlayerStates**](PlayerStates.md) |  | [default to undefined]
@@ -18,6 +19,7 @@ import { StatusDto } from 'restClient';
 
 const instance: StatusDto = {
     name,
+    playerId,
     health,
     currentNode,
     currentState,

@@ -5,6 +5,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export function Game({ api }: { api: GameApi }) {
 
+    const [selected, setSelected] = useState('')
+
     const { isPending: statusPending, isError: statusErrored, data: status, error: statusError } = useQuery({
         queryKey: ['status'],
         queryFn: async () => { const data = await api.getGameState(); return data.data },
@@ -36,9 +38,14 @@ export function Game({ api }: { api: GameApi }) {
     if (statusErrored) {
         return <span>Error: {statusError.message}</span>
     }
-
     function reset() {
         api.reset().then(() => queryClient.refetchQueries())
+    }
+    function useCard(cardId: string, targetId: string) {
+        console.log(`Card ${cardId} was used on ${targetId}`);
+    }
+    function endTurn() {
+        //api.endTurn()
     }
 
     function showStatus() {
@@ -46,7 +53,9 @@ export function Game({ api }: { api: GameApi }) {
             <h1 className="text-4xl font-extrabold m-8">
                 Game
             </h1 >
-            <button className="btn" onClick={() => reset()}> RESET </button>
+            <button className="btn m-2" onClick={() => reset()}> RESET </button>
+            <br />
+            <button className="btn m-2" onClick={() => endTurn()}> End turn </button>
             <br />
             <label>Player name: {status?.name}</label>
             <br />
@@ -54,15 +63,30 @@ export function Game({ api }: { api: GameApi }) {
             <br />
             <label>Currently in {status?.currentState}</label>
             <br />
+            <br />
             {status?.deck.map((card) =>
-                <span>{`[${card.name} - ${card.id.substring(0, 4)}] `}</span>
+                <span className="m-2">{`[${card.name} - ${card.id.substring(0, 4)}]`}
+                    <button className="btn" onClick={() => useCard(card.id, selected)}>Use</button>
+                </span>
             )}
+            <br />
+            <br />
         </div>;
     }
     switch (status.currentState) {
         case "COMBAT":
             return <div>
                 {showStatus()}
+                <label>Target:</label>
+                <select value={selected} onChange={e => setSelected(e.target.value)}>
+                    <option value={status?.playerId}>Player</option>
+                    {combat?.enemies.map(e => <option value={e.id}>
+                        {`${e.name} - ${e.id.substring(0, 4)}`}
+                    </option>
+                    )}
+                </select>
+                <br />
+                <br />
                 {combat?.enemies.map((enemy) => <div key={enemy.id}>
                     <label>{`Id: ${enemy.id}`}</label>
                     <br />
@@ -70,8 +94,9 @@ export function Game({ api }: { api: GameApi }) {
                     <br />
                     <label>{`Health: ${enemy.health}`}</label>
                     <br />
-                </div>)}
-            </div>;
+                </div>)
+                }
+            </div >;
         case "MAP":
             return <div>
                 {showStatus()}

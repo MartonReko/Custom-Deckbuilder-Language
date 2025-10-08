@@ -23,6 +23,7 @@ namespace CDL.Game.Controllers
                 GameService gs = _gameServiceManager.GetService();
                 StatusDto response = new(
                         Name: gs.Player.Name,
+                        PlayerId: gs.Player.Id,
                         Health: gs.Player.Health,
                         CurrentNode: gs.CurrentGameNode?.Id ?? null,
                         CurrentState: gs.PlayerState,
