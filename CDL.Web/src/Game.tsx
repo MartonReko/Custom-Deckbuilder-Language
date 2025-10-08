@@ -54,9 +54,11 @@ export function Game({ api }: { api: GameApi }) {
             <br />
             <label>Currently in {status?.currentState}</label>
             <br />
+            {status?.deck.map((card) =>
+                <span>{`[${card.name} - ${card.id.substring(0, 4)}] `}</span>
+            )}
         </div>;
     }
-
     switch (status.currentState) {
         case "COMBAT":
             return <div>
@@ -75,12 +77,8 @@ export function Game({ api }: { api: GameApi }) {
                 {showStatus()}
                 <h2>{`Current stage: ${map?.stageName}`}</h2>
                 {map?.nodes.map((x) => <div key={x.id}>
-                    {x.level === 99 ? (<>
-                        <button className="btn" onClick={() => move.mutate(x.id)}>{`${x.name}`}</button>
-                    </>) : (<>
-                        <br />
-                        <label className="m-6">{`${x.level}`}</label><button className="btn" onClick={() => move.mutate(x.id)}>{`${x.name}`}</button>
-                    </>)}
+                    <button className="btn" onClick={() => move.mutate(x.id)}>{`${x.level} - ${x.name}`}</button>
+                    <br />
                 </div>)}
             </div>;
         case "DEATH":

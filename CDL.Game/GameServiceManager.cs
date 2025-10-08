@@ -12,7 +12,7 @@ namespace CDL.Game
         public void Reset()
         {
             _gameService = null;
-            Initialize(storeddlCode);
+            //Initialize(storeddlCode);
         }
 
         public bool Initialize(string CdlCode)

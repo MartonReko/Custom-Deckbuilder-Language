@@ -5,7 +5,7 @@ const temporaryCDL: string = `Game{
     Name: My_Wonderful_Game;
     Stages: [
     beginnerStage,
-    advancedStage
+beginnerStage
     ];
     Player: MyCharacter;
 }
@@ -21,8 +21,7 @@ Effect smallHeal{
 }
 
 Stage beginnerStage{
-    Length: 10;
-    Length: 10;
+    Length: 2;
     Max-width: 5;
     Min-width: 2;
     FillWith: [easyNode];
@@ -33,15 +32,6 @@ Stage beginnerStage{
 Node eliteNode{
     Enemies: [1x  eliteEnemy];
     Rewards: [3x rare with chance 100%];
-}
-
-Stage advancedStage{
-    Length: 5;
-    Max-width: 3;
-    Min-width: 1;
-    FillWith: [easyNode,eliteNode];
-    MustContain: [3x eliteNode];
-    EndsWith: bossNode;
 }
 
 Node easyNode{
@@ -160,10 +150,11 @@ Card poison{
 export function Editor({ api }: { api: GameApi }) {
 
     const [response, setResponse] = useState("");
+    const [code, setCode] = useState(temporaryCDL);
 
     function sendButton() {
         api.readCDL({
-            data: temporaryCDL,
+            data: code,
             headers: {
                 'Content-Type': 'text/plain'
             }
@@ -176,6 +167,7 @@ export function Editor({ api }: { api: GameApi }) {
         });
     }
 
+
     return (
         <div className=" h-full w-full flex flex-col  p-16">
             <div>
@@ -187,7 +179,7 @@ export function Editor({ api }: { api: GameApi }) {
                 </label>
             </div>
             <label className="h-full basis-9/10 p-8">
-                CDL code input: <textarea defaultValue={temporaryCDL} className="h-full w-full bg-gray-600 rounded align-top p-2" name="codeField" />
+                CDL code input: <textarea defaultValue={code} onChange={e => setCode(e.target.value)} className="h-full w-full bg-gray-600 rounded align-top p-2" name="codeField" />
                 <button className="btn" onClick={() => sendButton()}>Send</button>
             </label>
         </div>
