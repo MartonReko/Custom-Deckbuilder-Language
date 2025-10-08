@@ -139,19 +139,22 @@ namespace CDL.Game
             return result;
         }
 
-        public void PlayCard(Card card, GameEnemy enemy)
+        public bool PlayCard(Guid cardId, Guid enemyId)
         {
+            GameCard card = Deck.First(x => x.Id.Equals(cardId));
+            GameEnemy enemy = CurrentGameNode.Enemies.First(x => x.Id.Equals(enemyId));
             if (PlayerState != PlayerStates.COMBAT)
             {
                 // TODO
                 // Should error
-                return;
+                return false;
             }
             CurrentGameNode.AttackEnemy(card, enemy);
             if (CurrentGameNode.Enemies.Count == 0)
             {
                 PlayerState = PlayerStates.REWARD;
             }
+            return true;
         }
 
         private void GenerateRewards(string rarity, int cnt)

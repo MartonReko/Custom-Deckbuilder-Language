@@ -77,7 +77,8 @@ namespace CDL.Game.GameObjects
             }
             if (effect.EffectType == EffectType.INSTANT)
             {
-                Health += (int)Math.Round(effect.DamageDealt);
+                // NOTE: I have no idea why damage was added before
+                Health -= (int)Math.Round(effect.DamageDealt);
             }
         }
 

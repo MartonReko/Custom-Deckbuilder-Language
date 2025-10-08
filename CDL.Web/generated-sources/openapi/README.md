@@ -56,8 +56,10 @@ Class | Method | HTTP request | Description
 *GameApi* | [**getGameState**](docs/GameApi.md#getgamestate) | **GET** /Game/status | 
 *GameApi* | [**map**](docs/GameApi.md#map) | **GET** /Game/map | 
 *GameApi* | [**move**](docs/GameApi.md#move) | **POST** /Game/move | 
+*GameApi* | [**playCard**](docs/GameApi.md#playcard) | **POST** /Game/playCard | 
 *GameApi* | [**readCDL**](docs/GameApi.md#readcdl) | **POST** /Game/readcdl | 
 *GameApi* | [**reset**](docs/GameApi.md#reset) | **POST** /Game/reset | 
+*GameApi* | [**reward**](docs/GameApi.md#reward) | **GET** /Game/reward | 
 
 
 ### Documentation For Models
@@ -68,7 +70,9 @@ Class | Method | HTTP request | Description
  - [MapDto](docs/MapDto.md)
  - [MoveDto](docs/MoveDto.md)
  - [NodeDto](docs/NodeDto.md)
+ - [PlayCardDto](docs/PlayCardDto.md)
  - [PlayerStates](docs/PlayerStates.md)
+ - [RewardDto](docs/RewardDto.md)
  - [StatusDto](docs/StatusDto.md)
 
 

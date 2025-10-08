@@ -23,17 +23,18 @@ namespace CDL.Game.GameObjects
         {
             return Enemies.Exists(x => x.Health > 0);
         }
-        public void AttackEnemy(Card card, GameEnemy enemy)
+        public void AttackEnemy(GameCard card, GameEnemy enemy)
         {
-            foreach ((Effect effect, int cnt) in card.EffectsApplied)
+            foreach ((Effect effect, int cnt) in card.ModelCard.EffectsApplied)
             {
                 enemy.ApplyEffect(effect, cnt);
             }
             if (enemy.Health <= 0)
             {
+                // TODO:
                 // Not sure if this works
-                // Enemies.Remove(enemy);
                 // Instead of removal use a status
+                Enemies.Remove(enemy);
             }
         }
         public (EnemyAction EnemyAction, EnemyTarget target, int num) EnemyTurn(int idx, GameCharacter player)

@@ -24,6 +24,12 @@ export function Game({ api }: { api: GameApi }) {
         enabled: !!status && status.currentState === "MAP",
     })
 
+    const { isPending: rewardPending, isError: rewardErrored, data: reward, error: rewardError } = useQuery({
+        queryKey: ['reward'],
+        queryFn: async () => { const data = await api.reward(); return data.data },
+        enabled: !!status && status.currentState === "REWARD",
+    })
+
     const queryClient = useQueryClient()
 
     const move = useMutation({
@@ -42,7 +48,11 @@ export function Game({ api }: { api: GameApi }) {
         api.reset().then(() => queryClient.refetchQueries())
     }
     function useCard(cardId: string, targetId: string) {
-        console.log(`Card ${cardId} was used on ${targetId}`);
+        api.playCard({ cardId, targetId }).then(() => {
+            queryClient.refetchQueries()
+            console.log(`Card ${cardId} was used on ${targetId}`)
+        }
+        );
     }
     function endTurn() {
         //api.endTurn()
@@ -73,7 +83,7 @@ export function Game({ api }: { api: GameApi }) {
             <br />
         </div>;
     }
-    switch (status.currentState) {
+    switch (status?.currentState) {
         case "COMBAT":
             return <div>
                 {showStatus()}
@@ -107,7 +117,24 @@ export function Game({ api }: { api: GameApi }) {
                 </div>)}
             </div>;
         case "DEATH":
+            return <div>
+                You have died. Game over.
+            </div>;
         case "REWARD":
+            if (rewardPending) {
+                return <span>Loading combat...</span>
+            }
+            if (rewardErrored) {
+                return <span>Error: {rewardError?.message}</span>
+            }
+            return <div>
+                {reward?.cards.map(c => <div>
+                    <button className="btn">{`${c.name} - ${c.id.substring(0, 4)}`}</button>
+                </div>)}
+            </div>;
         case "WIN":
+            return <div>
+                You have won. Congratulations.
+            </div>;
     }
 }

@@ -76,6 +76,23 @@ namespace CDL.Game.Controllers
             }
         }
 
+        [HttpGet(template: "reward", Name = "Reward")]
+        public ActionResult<RewardDto> GetReward()
+        {
+            try
+            {
+                GameService gs = _gameServiceManager.GetService();
+                RewardDto response = new(
+                        Cards: [.. gs.NodeRewards.Select(x => new CardDto(x.Id, x.ModelCard.Name))]
+                        );
+                return response;
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
         [HttpPost(template: "readcdl", Name = "ReadCDL")]
         [Consumes("text/plain")]
         [Produces("text/plain")]
@@ -106,6 +123,14 @@ namespace CDL.Game.Controllers
                 return Ok("Successfully moved");
             else
                 return BadRequest("Not so successfully moved");
+        }
+        [HttpPost(template: "playCard", Name = "PlayCard")]
+        public IActionResult PlayCard([FromBody] PlayCardDto received)
+        {
+            if (_gameServiceManager.GetService().PlayCard(received.CardId, received.TargetId))
+                return Ok("Successfully played card");
+            else
+                return BadRequest("Playing card failed");
         }
 
         [HttpPost(template: "reset", Name = "Reset")]

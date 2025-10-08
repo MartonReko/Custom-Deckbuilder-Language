@@ -36,4 +36,10 @@ namespace CDL.Game.DTOs
             string Name,
             string Desc
             );
+    public record RewardDto(
+            List<CardDto> Cards
+            );
+
+    public record ReceivedCdlDto(string CodeString);
+    public record PlayCardDto(Guid CardId, Guid TargetId);
 }
