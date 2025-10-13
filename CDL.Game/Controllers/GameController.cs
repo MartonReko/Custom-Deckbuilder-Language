@@ -66,6 +66,7 @@ namespace CDL.Game.Controllers
             {
                 GameService gs = _gameServiceManager.GetService();
                 CombatDto response = new(
+                        Energy: gs.Energy,
                         Enemies: [.. gs.CurrentGameNode.Enemies.Select(x => new EnemyDto(x.Id, x.ModelEnemy.Name, x.Health))]
                         );
                 return response;
@@ -116,6 +117,7 @@ namespace CDL.Game.Controllers
         {
             public Guid NodeId { get; set; }
         }
+
         [HttpPost(template: "move", Name = "Move")]
         public ActionResult<MoveDto> MoveToNode([FromBody] Guid NodeId)
         {
@@ -124,6 +126,7 @@ namespace CDL.Game.Controllers
             else
                 return BadRequest("Not so successfully moved");
         }
+
         [HttpPost(template: "playCard", Name = "PlayCard")]
         public IActionResult PlayCard([FromBody] PlayCardDto received)
         {
@@ -138,6 +141,15 @@ namespace CDL.Game.Controllers
         {
             if (_gameServiceManager.GetService() != null)
                 _gameServiceManager.Reset();
+            return Ok();
+        }
+
+        [HttpPost(template: "enemyTurn", Name = "enemyTurn")]
+        public IActionResult EnemyTurn()
+        {
+            if (_gameServiceManager.GetService() != null)
+                //_gameServiceManager.();
+                Console.WriteLine("To be implemented");
             return Ok();
         }
     }

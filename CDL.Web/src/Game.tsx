@@ -87,6 +87,7 @@ export function Game({ api }: { api: GameApi }) {
         case "COMBAT":
             return <div>
                 {showStatus()}
+                <label>{`Energy: ${combat?.energy}`}</label>
                 <label>Target:</label>
                 <select value={selected} onChange={e => setSelected(e.target.value)}>
                     <option value={status?.playerId}>Player</option>

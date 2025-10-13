@@ -13,6 +13,7 @@ namespace CDL.Game.DTOs
             List<NodeDto> Nodes
             );
     public record CombatDto(
+            int Energy,
             List<EnemyDto> Enemies
             );
     public record EnemyDto(

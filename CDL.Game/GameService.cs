@@ -27,6 +27,9 @@ namespace CDL.Game
         public List<GameCard> NodeRewards { get; } = [];
         public List<GameCard> Deck { get; } = [];
 
+        // How many cards can be used in a turn, maybe tune later
+        public int Energy { get; private set; } = 3;
+
         private readonly Random random = new();
         public GameService(ObjectsHelper gameObjects)
         {
@@ -145,15 +148,18 @@ namespace CDL.Game
             GameEnemy enemy = CurrentGameNode.Enemies.First(x => x.Id.Equals(enemyId));
             if (PlayerState != PlayerStates.COMBAT)
             {
-                // TODO
-                // Should error
-                return false;
+                throw new InvalidOperationException("Can't play cards outside of combat");
+            }
+            if (Energy <= 0)
+            {
+                throw new InvalidOperationException("Out of energy, can't play any more cards");
             }
             CurrentGameNode.AttackEnemy(card, enemy);
             if (CurrentGameNode.Enemies.Count == 0)
             {
                 PlayerState = PlayerStates.REWARD;
             }
+            Energy--;
             return true;
         }
 
@@ -244,6 +250,10 @@ namespace CDL.Game
             {
                 PlayerState = PlayerStates.DEATH;
             }
+
+
+            // NOTE: this stays until cards have an energy cost and there is logic for it
+            Energy = 3;
         }
         // Also reused code from GameEnemy
         public void PlayerApplyEffect(Effect effect, int cnt)

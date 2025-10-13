@@ -50,6 +50,12 @@ export interface CardDto {
 export interface CombatDto {
     /**
      * 
+     * @type {number}
+     * @memberof CombatDto
+     */
+    'energy': number;
+    /**
+     * 
      * @type {Array<EnemyDto>}
      * @memberof CombatDto
      */
@@ -385,6 +391,35 @@ export const GameApiAxiosParamCreator = function (configuration?: Configuration)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
+        enemyTurn: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/Game/enemyTurn`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
         getGameState: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/Game/status`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -621,6 +656,17 @@ export const GameApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
+        async enemyTurn(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.enemyTurn(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GameApi.enemyTurn']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
         async getGameState(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StatusDto>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getGameState(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
@@ -718,6 +764,14 @@ export const GameApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
+        enemyTurn(options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.enemyTurn(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
         getGameState(options?: RawAxiosRequestConfig): AxiosPromise<StatusDto> {
             return localVarFp.getGameState(options).then((request) => request(axios, basePath));
         },
@@ -794,6 +848,14 @@ export interface GameApiInterface {
      * @throws {RequiredError}
      * @memberof GameApiInterface
      */
+    enemyTurn(options?: RawAxiosRequestConfig): AxiosPromise<void>;
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GameApiInterface
+     */
     getGameState(options?: RawAxiosRequestConfig): AxiosPromise<StatusDto>;
 
     /**
@@ -863,6 +925,16 @@ export class GameApi extends BaseAPI implements GameApiInterface {
      */
     public combat(options?: RawAxiosRequestConfig) {
         return GameApiFp(this.configuration).combat(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GameApi
+     */
+    public enemyTurn(options?: RawAxiosRequestConfig) {
+        return GameApiFp(this.configuration).enemyTurn(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
