@@ -391,8 +391,8 @@ export const GameApiAxiosParamCreator = function (configuration?: Configuration)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        enemyTurn: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/Game/enemyTurn`;
+        endTurn: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/Game/endTurn`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -656,10 +656,10 @@ export const GameApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async enemyTurn(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.enemyTurn(options);
+        async endTurn(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.endTurn(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['GameApi.enemyTurn']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['GameApi.endTurn']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -764,8 +764,8 @@ export const GameApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        enemyTurn(options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.enemyTurn(options).then((request) => request(axios, basePath));
+        endTurn(options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.endTurn(options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -848,7 +848,7 @@ export interface GameApiInterface {
      * @throws {RequiredError}
      * @memberof GameApiInterface
      */
-    enemyTurn(options?: RawAxiosRequestConfig): AxiosPromise<void>;
+    endTurn(options?: RawAxiosRequestConfig): AxiosPromise<void>;
 
     /**
      * 
@@ -933,8 +933,8 @@ export class GameApi extends BaseAPI implements GameApiInterface {
      * @throws {RequiredError}
      * @memberof GameApi
      */
-    public enemyTurn(options?: RawAxiosRequestConfig) {
-        return GameApiFp(this.configuration).enemyTurn(options).then((request) => request(this.axios, this.basePath));
+    public endTurn(options?: RawAxiosRequestConfig) {
+        return GameApiFp(this.configuration).endTurn(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

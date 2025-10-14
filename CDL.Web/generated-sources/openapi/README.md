@@ -53,7 +53,7 @@ Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
 *CDLGameApi* | [**rootGet**](docs/CDLGameApi.md#rootget) | **GET** / | 
 *GameApi* | [**combat**](docs/GameApi.md#combat) | **GET** /Game/combat | 
-*GameApi* | [**enemyTurn**](docs/GameApi.md#enemyturn) | **POST** /Game/enemyTurn | 
+*GameApi* | [**endTurn**](docs/GameApi.md#endturn) | **POST** /Game/endTurn | 
 *GameApi* | [**getGameState**](docs/GameApi.md#getgamestate) | **GET** /Game/status | 
 *GameApi* | [**map**](docs/GameApi.md#map) | **GET** /Game/map | 
 *GameApi* | [**move**](docs/GameApi.md#move) | **POST** /Game/move | 

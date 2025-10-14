@@ -104,8 +104,15 @@ namespace CDL.Game
             }
             else
             {
-                EnemyTurnCounter = 0;
-                CombatState = CombatStates.ENEMY;
+                // All enemies make their turn
+                //
+                //EnemyTurnCounter = 0;
+                //CombatState = CombatStates.ENEMY;
+                for (int i = 0; i < CurrentGameNode.Enemies.Count; i++)
+                {
+                    var turn = NextEnemyTurn();
+                    Console.WriteLine($"{turn.target} {turn.EnemyAction.Name} {turn.num}");
+                }
             }
         }
         public void EndEnemiesTurn()

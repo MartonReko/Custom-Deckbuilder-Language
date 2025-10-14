@@ -5,7 +5,7 @@ All URIs are relative to *http://localhost*
 |Method | HTTP request | Description|
 |------------- | ------------- | -------------|
 |[**combat**](#combat) | **GET** /Game/combat | |
-|[**enemyTurn**](#enemyturn) | **POST** /Game/enemyTurn | |
+|[**endTurn**](#endturn) | **POST** /Game/endTurn | |
 |[**getGameState**](#getgamestate) | **GET** /Game/status | |
 |[**map**](#map) | **GET** /Game/map | |
 |[**move**](#move) | **POST** /Game/move | |
@@ -57,8 +57,8 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **enemyTurn**
-> enemyTurn()
+# **endTurn**
+> endTurn()
 
 
 ### Example
@@ -72,7 +72,7 @@ import {
 const configuration = new Configuration();
 const apiInstance = new GameApi(configuration);
 
-const { status, data } = await apiInstance.enemyTurn();
+const { status, data } = await apiInstance.endTurn();
 ```
 
 ### Parameters

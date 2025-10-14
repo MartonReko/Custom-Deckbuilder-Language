@@ -1,6 +1,8 @@
 import { useState } from "react";
-import { GameApi, MoveDto } from "../generated-sources/openapi";
+import { GameApi } from "../generated-sources/openapi";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import playerImg from './assets/tempPlayer.png';
+import enemyImg from './assets/tempEnemy.png';
 //
 
 export function Game({ api }: { api: GameApi }) {
@@ -38,6 +40,12 @@ export function Game({ api }: { api: GameApi }) {
             queryClient.refetchQueries({ queryKey: ['status'] });
         },
     })
+    const endTurn = useMutation({
+        mutationFn: () => { return api.endTurn(); },
+        onSuccess: () => {
+            queryClient.refetchQueries({ queryKey: ['status'] });
+        },
+    })
     if (statusPending) {
         return <span>Loading combat...</span>
     }
@@ -54,88 +62,100 @@ export function Game({ api }: { api: GameApi }) {
         }
         );
     }
-    function endTurn() {
-        //api.endTurn()
-    }
 
     function showStatus() {
-        return <div>
-            <h1 className="text-4xl font-extrabold m-8">
-                Game
-            </h1 >
-            <button className="btn m-2" onClick={() => reset()}> RESET </button>
+        return <div className="">
+            <button className="text-white" onClick={() => reset()}> RESET </button>
             <br />
-            <button className="btn m-2" onClick={() => endTurn()}> End turn </button>
-            <br />
-            <label>Player name: {status?.name}</label>
-            <br />
-            <label>Player health: {status?.health}</label>
+            <button className="text-white" onClick={() => (endTurn.mutate())}> End turn </button>
             <br />
             <label>Currently in {status?.currentState}</label>
             <br />
             <br />
             {status?.deck.map((card) =>
-                <span className="m-2">{`[${card.name} - ${card.id.substring(0, 4)}]`}
-                    <button className="btn" onClick={() => useCard(card.id, selected)}>Use</button>
+                <span className="m-2">{`[${card.name}]`}
+                    <button className="text-white" onClick={() => useCard(card.id, selected)}>Use</button>
                 </span>
             )}
             <br />
             <br />
         </div>;
     }
-    switch (status?.currentState) {
-        case "COMBAT":
-            return <div>
-                {showStatus()}
-                <label>{`Energy: ${combat?.energy}`}</label>
-                <label>Target:</label>
-                <select value={selected} onChange={e => setSelected(e.target.value)}>
-                    <option value={status?.playerId}>Player</option>
-                    {combat?.enemies.map(e => <option value={e.id}>
-                        {`${e.name} - ${e.id.substring(0, 4)}`}
-                    </option>
-                    )}
-                </select>
-                <br />
-                <br />
-                {combat?.enemies.map((enemy) => <div key={enemy.id}>
-                    <label>{`Id: ${enemy.id}`}</label>
-                    <br />
-                    <label>{`Name: ${enemy.name}`}</label>
-                    <br />
-                    <label>{`Health: ${enemy.health}`}</label>
-                    <br />
-                </div>)
+    function subScreen() {
+        switch (status?.currentState) {
+            case "COMBAT":
+                return <div className="grid grid-cols-2 p-4  text-[24px] font-bold bg-[url(./assets/tempBg.png)] bg-center bg-no-repeat bg-cover grow text-black" >
+                    <div className="rows-2">
+                        <div className="h-140 overflow-auto p-8">
+                            {showStatus()}
+                            <label>{`Energy: ${combat?.energy}`}</label>
+                        </div>
+                        <div>
+                            <img src={playerImg} className="h-60" />
+                            <br />
+                            <label>{status?.name}</label>
+                            <br />
+                            <label>HP: {status?.health}</label>
+                        </div>
+                    </div>
+                    <div className="rows-2">
+                        <div className="h-140">
+                            <label>Target:</label>
+                            <select value={selected} onChange={e => setSelected(e.target.value)}>
+                                <option value={status?.playerId}>Player</option>
+                                {combat?.enemies.map(e => <option value={e.id}>
+                                    {`${e.name} - ${e.id.substring(0, 4)}`}
+                                </option>
+                                )}
+                            </select>
+                            <br />
+                            <br />
+                        </div>
+                        <div className="flex flex-row">
+                            {combat?.enemies.map((enemy) => <div key={enemy.id}>
+                                <img src={enemyImg} className="h-60" />
+                                <label>{`Id: ${enemy.id.substring(0, 4)}`}</label>
+                                <br />
+                                <label>{`Name: ${enemy.name}`}</label>
+                                <br />
+                                <label>{`Health: ${enemy.health}`}</label>
+                            </div>)
+                            }
+                        </div>
+                    </div>
+                </div >;
+            case "MAP":
+                return <div>
+                    {showStatus()}
+                    <h2>{`Current stage: ${map?.stageName}`}</h2>
+                    {map?.nodes.map((x) => <div key={x.id}>
+                        <button className="btn" onClick={() => move.mutate(x.id)}>{`${x.level} - ${x.name}`}</button>
+                        <br />
+                    </div>)}
+                </div>;
+            case "DEATH":
+                return <div>
+                    You have died. Game over.
+                </div>;
+            case "REWARD":
+                if (rewardPending) {
+                    return <span>Loading combat...</span>
                 }
-            </div >;
-        case "MAP":
-            return <div>
-                {showStatus()}
-                <h2>{`Current stage: ${map?.stageName}`}</h2>
-                {map?.nodes.map((x) => <div key={x.id}>
-                    <button className="btn" onClick={() => move.mutate(x.id)}>{`${x.level} - ${x.name}`}</button>
-                    <br />
-                </div>)}
-            </div>;
-        case "DEATH":
-            return <div>
-                You have died. Game over.
-            </div>;
-        case "REWARD":
-            if (rewardPending) {
-                return <span>Loading combat...</span>
-            }
-            if (rewardErrored) {
-                return <span>Error: {rewardError?.message}</span>
-            }
-            return <div>
-                {reward?.cards.map(c => <div>
-                    <button className="btn">{`${c.name} - ${c.id.substring(0, 4)}`}</button>
-                </div>)}
-            </div>;
-        case "WIN":
-            return <div>
-                You have won. Congratulations.
-            </div>;
+                if (rewardErrored) {
+                    return <span>Error: {rewardError?.message}</span>
+                }
+                return <div>
+                    {reward?.cards.map(c => <div>
+                        <button className="btn">{`${c.name} - ${c.id.substring(0, 4)}`}</button>
+                    </div>)}
+                </div>;
+            case "WIN":
+                return <div>
+                    You have won. Congratulations.
+                </div>;
+        }
     }
+    return <div className="grow flex">
+        {subScreen()}
+    </div>
 }

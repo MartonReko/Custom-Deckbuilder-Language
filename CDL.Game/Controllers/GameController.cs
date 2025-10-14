@@ -144,13 +144,12 @@ namespace CDL.Game.Controllers
             return Ok();
         }
 
-        [HttpPost(template: "enemyTurn", Name = "enemyTurn")]
-        public IActionResult EnemyTurn()
+        [HttpPost(template: "endTurn", Name = "EndTurn")]
+        public IActionResult EndTurn()
         {
-            if (_gameServiceManager.GetService() != null)
-                //_gameServiceManager.();
-                Console.WriteLine("To be implemented");
+            _gameServiceManager.GetService()?.EndTurn();
             return Ok();
         }
+
     }
 }

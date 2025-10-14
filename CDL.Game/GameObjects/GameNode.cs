@@ -21,7 +21,7 @@ namespace CDL.Game.GameObjects
         }
         public bool Cleared()
         {
-            return Enemies.Exists(x => x.Health > 0);
+            return !Enemies.Exists(x => x.Health > 0);
         }
         public void AttackEnemy(GameCard card, GameEnemy enemy)
         {
