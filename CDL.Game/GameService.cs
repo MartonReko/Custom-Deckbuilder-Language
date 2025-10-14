@@ -39,6 +39,7 @@ namespace CDL.Game
 
             GameMap = new GameMap(Model!.Game!, Model.Stages, Model.Nodes);
             GameMap.LoadNextStage();
+
             CreateDeck();
             PlayerState = PlayerStates.MAP;
         }
@@ -84,6 +85,8 @@ namespace CDL.Game
 
                 (string rarity, int num) = CurrentGameNode.GetRewardRarityAndNumber();
                 GenerateRewards(rarity, num);
+                // TODO: Set energy in one location with a method
+                Energy = 3;
                 return true;
             }
             else
@@ -100,14 +103,27 @@ namespace CDL.Game
 
             if (CurrentGameNode.Cleared())
             {
-                PlayerState = PlayerStates.REWARD;
+                if (GameMap.IsLastOnMap())
+                {
+                    PlayerState = PlayerStates.WIN;
+                }
+                else if (GameMap.IsLastOnStage())
+                {
+                    GameMap.LoadNextStage();
+                    Player.Restore();
+                    PlayerState = PlayerStates.MAP;
+                }
+                else
+                {
+                    PlayerState = PlayerStates.REWARD;
+                }
             }
             else
             {
                 // All enemies make their turn
                 //
                 //EnemyTurnCounter = 0;
-                //CombatState = CombatStates.ENEMY;
+                //nombatState = CombatStates.ENEMY;
                 for (int i = 0; i < CurrentGameNode.Enemies.Count; i++)
                 {
                     var turn = NextEnemyTurn();
@@ -115,21 +131,40 @@ namespace CDL.Game
                 }
             }
         }
+        public void Cleared()
+        {
+            if (GameMap.IsLastOnMap())
+            {
+                PlayerState = PlayerStates.WIN;
+            }
+            else if (GameMap.IsLastOnStage())
+            {
+                GameMap.LoadNextStage();
+                Player.Restore();
+                PlayerState = PlayerStates.MAP;
+            }
+            else
+            {
+                PlayerState = PlayerStates.REWARD;
+            }
+        }
         public void EndEnemiesTurn()
         {
             CurrentGameNode.EndTurn();
             if (CurrentGameNode.Cleared())
             {
-                if (GameMap.IsLast())
-                {
-                    PlayerState = PlayerStates.WIN;
-                }
-                PlayerState = PlayerStates.REWARD;
+                // if (GameMap.IsLast())
+                // {
+                //     PlayerState = PlayerStates.WIN;
+                // }
+                //PlayerState = PlayerStates.REWARD;
+                Cleared();
             }
             else
             {
                 CombatState = CombatStates.PLAYER;
                 EnemyTurnCounter = 0;
+                Energy = 3;
             }
         }
 
@@ -164,7 +199,7 @@ namespace CDL.Game
             CurrentGameNode.AttackEnemy(card, enemy);
             if (CurrentGameNode.Enemies.Count == 0)
             {
-                PlayerState = PlayerStates.REWARD;
+                Cleared();
             }
             Energy--;
             return true;
@@ -197,16 +232,17 @@ namespace CDL.Game
                 }
             }
         }
-        public void ChooseReward(Guid Id)
+        public bool ChooseReward(Guid Id)
         {
             // TODO
             // Nicer handling of wrong state
-            if (PlayerState != PlayerStates.REWARD) return;
+            if (PlayerState != PlayerStates.REWARD) return false;
             // TODO
             // Card not found error
             GameCard chosen = NodeRewards.Where(x => x.Id.Equals(Id)).First();
             Deck.Add(chosen);
             PlayerState = PlayerStates.MAP;
+            return true;
         }
 
         public void PlayCard(GameCard card)
@@ -225,23 +261,23 @@ namespace CDL.Game
         // Code was reused from GameEnemy...
         public void PlayerEndTurn()
         {
+            Energy = 3;
             List<Effect> toRemove = [];
-            ModelCharacter character = Model.Character!;
-            foreach (var item in character.CurrentEffects)
+            foreach (var item in Player.CurrentEffects)
             {
                 if (item.Key.EffectType == EffectType.TURNEND)
                 {
                     DealPlayerDamage((int)Math.Round(item.Key.DamageDealt));
-                    character.CurrentEffects[item.Key] = item.Value - 1;
-                    if (character.CurrentEffects[item.Key] == 0)
+                    Player.CurrentEffects[item.Key] = item.Value - 1;
+                    if (Player.CurrentEffects[item.Key] == 0)
                     {
                         toRemove.Add(item.Key);
                     }
                 }
                 if (item.Key.EffectType == EffectType.MOD)
                 {
-                    character.CurrentEffects[item.Key] = item.Value - 1;
-                    if (character.CurrentEffects[item.Key] == 0)
+                    Player.CurrentEffects[item.Key] = item.Value - 1;
+                    if (Player.CurrentEffects[item.Key] <= 0)
                     {
                         toRemove.Add(item.Key);
                     }
@@ -249,11 +285,12 @@ namespace CDL.Game
             }
             foreach (Effect effect in toRemove)
             {
-                character.CurrentEffects.Remove(effect);
+                //character.CurrentEffects.Remove(effect);
+                Player.CurrentEffects.Remove(effect);
             }
 
             // Maybe unnecessary
-            if (character.Health <= 0)
+            if (Player.Health <= 0)
             {
                 PlayerState = PlayerStates.DEATH;
             }

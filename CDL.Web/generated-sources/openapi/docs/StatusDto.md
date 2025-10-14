@@ -11,6 +11,7 @@ Name | Type | Description | Notes
 **currentNode** | **string** |  | [default to undefined]
 **currentState** | [**PlayerStates**](PlayerStates.md) |  | [default to undefined]
 **deck** | [**Array&lt;CardDto&gt;**](CardDto.md) |  | [default to undefined]
+**effects** | **Array&lt;any&gt;** |  | [default to undefined]
 
 ## Example
 
@@ -24,6 +25,7 @@ const instance: StatusDto = {
     currentNode,
     currentState,
     deck,
+    effects,
 };
 ```
 

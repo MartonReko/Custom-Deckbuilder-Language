@@ -18,6 +18,8 @@ namespace CDL.Game.GameObjects
         // Return info that can be used to actually show stuff in the GUI
         public (EnemyAction EnemyAction, EnemyTarget target, int num) Attack(GameCharacter player)
         {
+            if (ModelEnemy.Actions.Count == 0)
+                throw new InvalidOperationException("ZERO ACTIONS");
             int nextAttack = AttackCounter % ModelEnemy.Actions.Count;
             AttackCounter++;
             if (ModelEnemy.Actions[nextAttack].target == EnemyTarget.PLAYER)
@@ -26,10 +28,14 @@ namespace CDL.Game.GameObjects
                 player.ApplyAction(ModelEnemy.Actions[nextAttack].EnemyAction);
                 return ModelEnemy.Actions[nextAttack];
             }
-            else
+            else if (ModelEnemy.Actions[nextAttack].target == EnemyTarget.SELF)
             {
                 ApplyAction(ModelEnemy.Actions[nextAttack].EnemyAction);
                 return ModelEnemy.Actions[nextAttack];
+            }
+            else
+            {
+                throw new InvalidOperationException("Action target was no set");
             }
         }
 

@@ -27,7 +27,8 @@ namespace CDL.Game.Controllers
                         Health: gs.Player.Health,
                         CurrentNode: gs.CurrentGameNode?.Id ?? null,
                         CurrentState: gs.PlayerState,
-                        Deck: [.. gs.Deck.Select((x) => new CardDto(x.Id, x.ModelCard.Name))]
+                        Deck: [.. gs.Deck.Select((x) => new CardDto(x.Id, x.ModelCard.Name, [.. x.ModelCard.EffectsApplied.Select(y => new EffectDto(y.effect.Name, 1, "Temp desc"))]))],
+                        Effects: [.. gs.Player.CurrentEffects.Select(x => new EffectDto(x.Key.Name, x.Value, "Temp desc"))]
                         );
                 return response;
             }
@@ -67,7 +68,7 @@ namespace CDL.Game.Controllers
                 GameService gs = _gameServiceManager.GetService();
                 CombatDto response = new(
                         Energy: gs.Energy,
-                        Enemies: [.. gs.CurrentGameNode.Enemies.Select(x => new EnemyDto(x.Id, x.ModelEnemy.Name, x.Health))]
+                        Enemies: [.. gs.CurrentGameNode.Enemies.Select(x => new EnemyDto(x.Id, x.ModelEnemy.Name, x.Health, x.CurrentEffects.Select(y => new EffectDto(y.Key.Name, y.Value, "Temp desc")).ToList()))]
                         );
                 return response;
             }
@@ -84,7 +85,7 @@ namespace CDL.Game.Controllers
             {
                 GameService gs = _gameServiceManager.GetService();
                 RewardDto response = new(
-                        Cards: [.. gs.NodeRewards.Select(x => new CardDto(x.Id, x.ModelCard.Name))]
+                        Cards: [.. gs.NodeRewards.Select(x => new CardDto(x.Id, x.ModelCard.Name, [.. x.ModelCard.EffectsApplied.Select(y => new EffectDto(y.effect.Name, 1, "Temp desc"))]))]
                         );
                 return response;
             }
@@ -106,16 +107,10 @@ namespace CDL.Game.Controllers
                 _gameServiceManager.Initialize(content);
                 return Ok("GameService initialized successfully.");
             }
-            catch (Exception e)
+            catch (InvalidByteRangeException e)
             {
                 return BadRequest(e.Message);
             }
-        }
-
-
-        public class MoveDto
-        {
-            public Guid NodeId { get; set; }
         }
 
         [HttpPost(template: "move", Name = "Move")]
@@ -125,6 +120,15 @@ namespace CDL.Game.Controllers
                 return Ok("Successfully moved");
             else
                 return BadRequest("Not so successfully moved");
+        }
+
+        [HttpPost(template: "getReward", Name = "GetReward")]
+        public ActionResult<MoveDto> GetReward([FromBody] Guid CardId)
+        {
+            if (_gameServiceManager.GetService().ChooseReward(CardId))
+                return Ok("Successfully chosen reward");
+            else
+                return BadRequest("Reward could not be choosen");
         }
 
         [HttpPost(template: "playCard", Name = "PlayCard")]

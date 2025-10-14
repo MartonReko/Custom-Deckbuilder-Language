@@ -1,23 +1,23 @@
-# CardDto
+# EffectDto
 
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**id** | **string** |  | [default to undefined]
 **name** | **string** |  | [default to undefined]
-**effects** | [**Array&lt;EffectDto&gt;**](EffectDto.md) |  | [default to undefined]
+**stack** | **number** |  | [default to undefined]
+**desc** | **string** |  | [default to undefined]
 
 ## Example
 
 ```typescript
-import { CardDto } from 'restClient';
+import { EffectDto } from 'restClient';
 
-const instance: CardDto = {
-    id,
+const instance: EffectDto = {
     name,
-    effects,
+    stack,
+    desc,
 };
 ```
 

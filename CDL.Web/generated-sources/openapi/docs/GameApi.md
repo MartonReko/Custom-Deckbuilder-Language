@@ -7,6 +7,7 @@ All URIs are relative to *http://localhost*
 |[**combat**](#combat) | **GET** /Game/combat | |
 |[**endTurn**](#endturn) | **POST** /Game/endTurn | |
 |[**getGameState**](#getgamestate) | **GET** /Game/status | |
+|[**getReward**](#getreward) | **POST** /Game/getReward | |
 |[**map**](#map) | **GET** /Game/map | |
 |[**move**](#move) | **POST** /Game/move | |
 |[**playCard**](#playcard) | **POST** /Game/playCard | |
@@ -133,6 +134,56 @@ No authorization required
 ### HTTP request headers
 
  - **Content-Type**: Not defined
+ - **Accept**: text/plain, application/json, text/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getReward**
+> MoveDto getReward(body)
+
+
+### Example
+
+```typescript
+import {
+    GameApi,
+    Configuration
+} from 'restClient';
+
+const configuration = new Configuration();
+const apiInstance = new GameApi(configuration);
+
+let body: string; //
+
+const { status, data } = await apiInstance.getReward(
+    body
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **body** | **string**|  | |
+
+
+### Return type
+
+**MoveDto**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json, text/json, application/*+json
  - **Accept**: text/plain, application/json, text/json
 
 

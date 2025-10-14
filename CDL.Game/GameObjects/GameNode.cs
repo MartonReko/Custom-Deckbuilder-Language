@@ -21,7 +21,12 @@ namespace CDL.Game.GameObjects
         }
         public bool Cleared()
         {
-            return !Enemies.Exists(x => x.Health > 0);
+            // foreach (var e in Enemies)
+            // {
+            //     Console.WriteLine("Enemy " + e.Id + " health is " + e.Health);
+            // }
+            // return !Enemies.Exists(x => x.Health > 0);
+            return !(Enemies.Count > 0);
         }
         public void AttackEnemy(GameCard card, GameEnemy enemy)
         {

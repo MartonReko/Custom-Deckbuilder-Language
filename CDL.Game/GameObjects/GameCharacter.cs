@@ -9,6 +9,10 @@ namespace CDL.Game.GameObjects
         public string Name { get; private set; } = modelCharacter.Name;
         public Dictionary<Effect, int> CurrentEffects { get; private set; } = [];
 
+        public void Restore()
+        {
+            Health = modelCharacter.Health;
+        }
         public void Damage(double value)
         {
             double damage = value;
@@ -16,7 +20,7 @@ namespace CDL.Game.GameObjects
             {
                 damage *= effect.InDmgMod;
             }
-            Health += (int)damage;
+            Health -= (int)damage;
         }
         public void ApplyAction(EnemyAction ea)
         {

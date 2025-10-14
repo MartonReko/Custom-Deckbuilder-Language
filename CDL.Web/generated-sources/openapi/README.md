@@ -55,6 +55,7 @@ Class | Method | HTTP request | Description
 *GameApi* | [**combat**](docs/GameApi.md#combat) | **GET** /Game/combat | 
 *GameApi* | [**endTurn**](docs/GameApi.md#endturn) | **POST** /Game/endTurn | 
 *GameApi* | [**getGameState**](docs/GameApi.md#getgamestate) | **GET** /Game/status | 
+*GameApi* | [**getReward**](docs/GameApi.md#getreward) | **POST** /Game/getReward | 
 *GameApi* | [**map**](docs/GameApi.md#map) | **GET** /Game/map | 
 *GameApi* | [**move**](docs/GameApi.md#move) | **POST** /Game/move | 
 *GameApi* | [**playCard**](docs/GameApi.md#playcard) | **POST** /Game/playCard | 
@@ -67,6 +68,7 @@ Class | Method | HTTP request | Description
 
  - [CardDto](docs/CardDto.md)
  - [CombatDto](docs/CombatDto.md)
+ - [EffectDto](docs/EffectDto.md)
  - [EnemyDto](docs/EnemyDto.md)
  - [MapDto](docs/MapDto.md)
  - [MoveDto](docs/MoveDto.md)

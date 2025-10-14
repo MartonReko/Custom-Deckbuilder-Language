@@ -8,6 +8,7 @@ configuration.ts
 docs/CDLGameApi.md
 docs/CardDto.md
 docs/CombatDto.md
+docs/EffectDto.md
 docs/EnemyDto.md
 docs/GameApi.md
 docs/MapDto.md

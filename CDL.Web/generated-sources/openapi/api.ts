@@ -41,6 +41,12 @@ export interface CardDto {
      * @memberof CardDto
      */
     'name': string;
+    /**
+     * 
+     * @type {Array<EffectDto>}
+     * @memberof CardDto
+     */
+    'effects': Array<EffectDto>;
 }
 /**
  * 
@@ -60,6 +66,31 @@ export interface CombatDto {
      * @memberof CombatDto
      */
     'enemies': Array<EnemyDto>;
+}
+/**
+ * 
+ * @export
+ * @interface EffectDto
+ */
+export interface EffectDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof EffectDto
+     */
+    'name': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof EffectDto
+     */
+    'stack': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof EffectDto
+     */
+    'desc': string;
 }
 /**
  * 
@@ -85,6 +116,12 @@ export interface EnemyDto {
      * @memberof EnemyDto
      */
     'health': number;
+    /**
+     * 
+     * @type {Array<EffectDto>}
+     * @memberof EnemyDto
+     */
+    'effects': Array<EffectDto>;
 }
 /**
  * 
@@ -234,6 +271,12 @@ export interface StatusDto {
      * @memberof StatusDto
      */
     'deck': Array<CardDto>;
+    /**
+     * 
+     * @type {Array<any>}
+     * @memberof StatusDto
+     */
+    'effects': Array<any>;
 }
 
 
@@ -438,6 +481,41 @@ export const GameApiAxiosParamCreator = function (configuration?: Configuration)
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getReward: async (body: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('getReward', 'body', body)
+            const localVarPath = `/Game/getReward`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -675,6 +753,18 @@ export const GameApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {string} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getReward(body: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MoveDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getReward(body, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GameApi.getReward']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -777,6 +867,15 @@ export const GameApiFactory = function (configuration?: Configuration, basePath?
         },
         /**
          * 
+         * @param {string} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getReward(body: string, options?: RawAxiosRequestConfig): AxiosPromise<MoveDto> {
+            return localVarFp.getReward(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -857,6 +956,15 @@ export interface GameApiInterface {
      * @memberof GameApiInterface
      */
     getGameState(options?: RawAxiosRequestConfig): AxiosPromise<StatusDto>;
+
+    /**
+     * 
+     * @param {string} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GameApiInterface
+     */
+    getReward(body: string, options?: RawAxiosRequestConfig): AxiosPromise<MoveDto>;
 
     /**
      * 
@@ -945,6 +1053,17 @@ export class GameApi extends BaseAPI implements GameApiInterface {
      */
     public getGameState(options?: RawAxiosRequestConfig) {
         return GameApiFp(this.configuration).getGameState(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GameApi
+     */
+    public getReward(body: string, options?: RawAxiosRequestConfig) {
+        return GameApiFp(this.configuration).getReward(body, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

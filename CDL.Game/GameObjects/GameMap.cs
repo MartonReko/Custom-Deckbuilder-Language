@@ -20,8 +20,8 @@ namespace CDL.Game.GameObjects
 
             CurrentStage = new GameStage(GameProps.Stages[StageCounter]);
             CurrentStage.Init();
-            StageCounter++;
             LevelCounter = 0;
+            StageCounter = 0;
         }
 
         public void LoadNextStage()
@@ -40,9 +40,16 @@ namespace CDL.Game.GameObjects
             }
             return CurrentStage.GameNodesByLevel[LevelCounter];
         }
-        public bool IsLast()
+        public bool IsLastOnStage()
         {
-            return StageCounter == GameProps.Stages.Count && LevelCounter == CurrentStage.GameNodesByLevel.Count;
+            bool isLast = LevelCounter == CurrentStage.GameNodesByLevel.Count;
+            return isLast;
+        }
+        public bool IsLastOnMap()
+        {
+            bool isLast = IsLastOnStage() && StageCounter == GameProps.Stages.Count;
+            Console.WriteLine($"Scounter: {StageCounter}, SCount: {GameProps.Stages.Count}, LevelCounter: {CurrentStage.GameNodesByLevel.Count}");
+            return isLast;
         }
         public bool MoveTo(GameNode node)
         {

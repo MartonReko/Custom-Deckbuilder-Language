@@ -8,6 +8,7 @@ Name | Type | Description | Notes
 **id** | **string** |  | [default to undefined]
 **name** | **string** |  | [default to undefined]
 **health** | **number** |  | [default to undefined]
+**effects** | [**Array&lt;EffectDto&gt;**](EffectDto.md) |  | [default to undefined]
 
 ## Example
 
@@ -18,6 +19,7 @@ const instance: EnemyDto = {
     id,
     name,
     health,
+    effects,
 };
 ```
 

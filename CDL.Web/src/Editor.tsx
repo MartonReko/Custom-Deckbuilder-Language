@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { GameApi } from "../generated-sources/openapi";
+import { useQueryClient } from "@tanstack/react-query";
 
 const temporaryCDL: string = `Game{
     Name: My_Wonderful_Game;
@@ -152,6 +153,10 @@ export function Editor({ api }: { api: GameApi }) {
     const [response, setResponse] = useState("");
     const [code, setCode] = useState(temporaryCDL);
 
+    const queryClient = useQueryClient()
+    function reset() {
+        api.reset().then(() => queryClient.refetchQueries())
+    }
     function sendButton() {
         api.readCDL({
             data: code,
@@ -178,6 +183,8 @@ export function Editor({ api }: { api: GameApi }) {
                     Response: {response}
                 </label>
             </div>
+            <button className="text-white bg-purple-700" onClick={() => reset()}> RESET </button>
+            <br />
             <label className="h-full basis-9/10 p-8">
                 CDL code input: <textarea defaultValue={code} onChange={e => setCode(e.target.value)} className="h-full w-full bg-gray-600 rounded align-top p-2" name="codeField" />
                 <button className="btn" onClick={() => sendButton()}>Send</button>
