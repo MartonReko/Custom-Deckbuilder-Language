@@ -2,7 +2,7 @@
 
 namespace CDL.Game.GameObjects
 {
-    public class GameMap
+    public class GameMap : GameEntity
     {
         private readonly GameSetup GameProps;
         private readonly List<Stage> StagesProps;
@@ -10,12 +10,18 @@ namespace CDL.Game.GameObjects
         public int StageCounter { get; private set; } = 0;
         public GameStage CurrentStage { get; private set; }
         public int LevelCounter { get; private set; } = 0;
-        public Node? CurrentNode { get; private set; } = null;
+        public GameNode? CurrentNode { get; private set; } = null;
+
         public GameMap(GameSetup game, List<Stage> stages, List<Node> Nodes)
         {
             GameProps = game;
             StagesProps = stages;
             NodesProps = Nodes;
+
+            CurrentStage = new GameStage(GameProps.Stages[StageCounter]);
+            CurrentStage.Init();
+            LevelCounter = 0;
+            StageCounter = 0;
         }
 
         public void LoadNextStage()
@@ -25,21 +31,29 @@ namespace CDL.Game.GameObjects
             StageCounter++;
             LevelCounter = 0;
         }
-        public List<Node> GetPossibleSteps()
+
+        public List<GameNode> GetPossibleSteps()
         {
-            if(LevelCounter == CurrentStage.NodesByLevel.Count)
+            if (LevelCounter == CurrentStage.GameNodesByLevel.Count)
             {
                 LoadNextStage();
             }
-            return CurrentStage.NodesByLevel[LevelCounter];
+            return CurrentStage.GameNodesByLevel[LevelCounter];
         }
-        public bool IsLast()
+        public bool IsLastOnStage()
         {
-            return (StageCounter == GameProps.Stages.Count && LevelCounter == CurrentStage.NodesByLevel.Count);
+            bool isLast = LevelCounter == CurrentStage.GameNodesByLevel.Count;
+            return isLast;
         }
-        public bool MoveTo(Node node)
+        public bool IsLastOnMap()
         {
-            if (CurrentStage.NodesByLevel[LevelCounter].Contains(node))
+            bool isLast = IsLastOnStage() && StageCounter == GameProps.Stages.Count;
+            Console.WriteLine($"Scounter: {StageCounter}, SCount: {GameProps.Stages.Count}, LevelCounter: {CurrentStage.GameNodesByLevel.Count}");
+            return isLast;
+        }
+        public bool MoveTo(GameNode node)
+        {
+            if (CurrentStage.GameNodesByLevel[LevelCounter].Contains(node))
             {
                 LevelCounter++;
                 CurrentNode = node;
@@ -47,7 +61,7 @@ namespace CDL.Game.GameObjects
             }
             else
             {
-                // TODO error cant move there
+                // TODO: error cant move there
                 return false;
             }
         }

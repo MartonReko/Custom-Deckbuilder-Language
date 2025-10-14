@@ -226,7 +226,7 @@ public class VisBlocks(EnvManager envManager, CDLExceptionHandler exceptionHandl
         }
         string targetString = context.enemyTarget().GetText();
 
-        if (context.enemyTarget().SELF != null)
+        if (context.enemyTarget().SELF() != null)
             LocalEnemyAttackList.Add((num, varName, EnemyTarget.SELF));
         else if (context.enemyTarget().PLAYER != null)
             LocalEnemyAttackList.Add((num, varName, EnemyTarget.PLAYER));

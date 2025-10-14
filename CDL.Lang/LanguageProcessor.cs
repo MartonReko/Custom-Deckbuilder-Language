@@ -9,7 +9,7 @@ namespace CDL.Lang;
 
 public class LanguageProcessor
 {
-    private CDLExceptionHandler exceptionHandler = new();
+    public readonly CDLExceptionHandler exceptionHandler = new();
     public ObjectsHelper? ProcessText(string file)
     {
         var ast = ReadAST(file);
@@ -45,9 +45,9 @@ public class LanguageProcessor
         }
     }
 
-    private CDLParser.ProgramContext ReadAST(string fileName)
+    private CDLParser.ProgramContext ReadAST(string code)
     {
-        var code = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, fileName));
+        //var code = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, fileName));
         var inputStream = new AntlrInputStream(code);
         var lexer = new CDLLexer(inputStream);
         lexer.RemoveErrorListeners();

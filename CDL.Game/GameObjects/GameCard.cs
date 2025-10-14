@@ -2,13 +2,8 @@
 
 namespace CDL.Game.GameObjects
 {
-    public class GameCard
+    public class GameCard(Card gameCard) : GameEntity
     {
-        public readonly Card ModelCard;
-        public Guid Id { get; } = Guid.NewGuid();
-        public GameCard(Card gameCard)
-        {
-            this.ModelCard = gameCard;
-        }
+        public readonly Card ModelCard = gameCard;
     }
 }

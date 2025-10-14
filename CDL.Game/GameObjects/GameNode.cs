@@ -2,17 +2,15 @@
 
 namespace CDL.Game.GameObjects
 {
-    public class GameNode   
+    public class GameNode : GameEntity
     {
         public readonly Node ModelNode;
         public List<GameEnemy> Enemies { get; private set; } = [];
         public GameNode(Node node)
         {
             ModelNode = node;
-            CreateEnemies();
-        }
-        private void CreateEnemies()
-        {
+
+            // Create enemies
             foreach (var enemy in ModelNode.Enemies)
             {
                 for (int i = 0; i < enemy.Value; i++)
@@ -23,22 +21,28 @@ namespace CDL.Game.GameObjects
         }
         public bool Cleared()
         {
-            return Enemies.Exists(x=>x.Health > 0);
+            // foreach (var e in Enemies)
+            // {
+            //     Console.WriteLine("Enemy " + e.Id + " health is " + e.Health);
+            // }
+            // return !Enemies.Exists(x => x.Health > 0);
+            return !(Enemies.Count > 0);
         }
-        public void AttackEnemy(Card card, GameEnemy enemy)
+        public void AttackEnemy(GameCard card, GameEnemy enemy)
         {
-            foreach((Effect effect, int cnt) in card.EffectsApplied)
+            foreach ((Effect effect, int cnt) in card.ModelCard.EffectsApplied)
             {
                 enemy.ApplyEffect(effect, cnt);
             }
-            if(enemy.Health <= 0)
+            if (enemy.Health <= 0)
             {
+                // TODO:
                 // Not sure if this works
-                // Enemies.Remove(enemy);
                 // Instead of removal use a status
+                Enemies.Remove(enemy);
             }
         }
-        public (EnemyAction EnemyAction, EnemyTarget target, int num) EnemyTurn(int idx,GameCharacter player)
+        public (EnemyAction EnemyAction, EnemyTarget target, int num) EnemyTurn(int idx, GameCharacter player)
         {
             return Enemies[idx].Attack(player);
         }
@@ -50,21 +54,24 @@ namespace CDL.Game.GameObjects
             }
 
         }
-        public (string rarity,int num) GetRewardRarityAndNumber()
+        public (string rarity, int num) GetRewardRarityAndNumber()
         {
-            Random r = new Random();
-            int random = r.Next(0,101);
-            int tmp = 100;
-            foreach(var rarity in ModelNode.RarityNumChance)
+            Random r = new();
+            int random = r.Next(0, 101);
+            int acc = 0;
+
+            foreach (var rarity in ModelNode.RarityNumChance)
             {
-                if(tmp - rarity.Value.chance <= random)
+                if (acc + rarity.Value.chance > random)
                 {
-                    return (rarity.Key,rarity.Value.num);
+                    return (rarity.Key, rarity.Value.num);
                 }
+                acc += rarity.Value.chance;
             }
             // Default, definitely should not happen
-            // TODO error message
-            return (ModelNode.RarityNumChance.First().Key,ModelNode.RarityNumChance.First().Value.num);
+            // TODO: error message
+            throw new InvalidOperationException("Could not generate rewards in node");
+            // return (ModelNode.RarityNumChance.First().Key, ModelNode.RarityNumChance.First().Value.num);
         }
     }
 }

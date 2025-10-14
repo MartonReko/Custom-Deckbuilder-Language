@@ -1,0 +1,50 @@
+using System.Diagnostics.CodeAnalysis;
+using CDL.Lang;
+using CDL.Lang.Parsing;
+
+namespace CDL.Game
+{
+    public class GameServiceManager
+    {
+        private GameService? _gameService;
+        private string storeddlCode = "";
+
+        public void Reset()
+        {
+            _gameService = null;
+            //Initialize(storeddlCode);
+        }
+
+        public bool Initialize(string CdlCode)
+        {
+            if (_gameService != null)
+            {
+                throw new InvalidOperationException("Already initialized.");
+            }
+
+            LanguageProcessor lp = new();
+            ObjectsHelper? objectsHelper = lp.ProcessText(CdlCode);
+
+            if (objectsHelper == null)
+            {
+                throw new InvalidOperationException("Invalid code.");
+            }
+            else
+            {
+                _gameService = new(objectsHelper);
+                storeddlCode = CdlCode;
+                //_gameService.Initialize();
+                return true;
+            }
+        }
+
+        public GameService GetService()
+        {
+            if (_gameService != null)
+                return _gameService;
+            else
+                throw new InvalidOperationException("Game service not yet initialized.");
+        }
+    }
+}
+

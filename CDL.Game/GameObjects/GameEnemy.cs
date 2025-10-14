@@ -1,9 +1,8 @@
-﻿using System.Diagnostics.Contracts;
-using CDL.Lang.GameModel;
+﻿using CDL.Lang.GameModel;
 
 namespace CDL.Game.GameObjects
 {
-    public class GameEnemy
+    public class GameEnemy : GameEntity
     {
         public readonly Enemy ModelEnemy;
         public int Health { get; private set; }
@@ -19,6 +18,8 @@ namespace CDL.Game.GameObjects
         // Return info that can be used to actually show stuff in the GUI
         public (EnemyAction EnemyAction, EnemyTarget target, int num) Attack(GameCharacter player)
         {
+            if (ModelEnemy.Actions.Count == 0)
+                throw new InvalidOperationException("ZERO ACTIONS");
             int nextAttack = AttackCounter % ModelEnemy.Actions.Count;
             AttackCounter++;
             if (ModelEnemy.Actions[nextAttack].target == EnemyTarget.PLAYER)
@@ -27,10 +28,14 @@ namespace CDL.Game.GameObjects
                 player.ApplyAction(ModelEnemy.Actions[nextAttack].EnemyAction);
                 return ModelEnemy.Actions[nextAttack];
             }
-            else
+            else if (ModelEnemy.Actions[nextAttack].target == EnemyTarget.SELF)
             {
                 ApplyAction(ModelEnemy.Actions[nextAttack].EnemyAction);
                 return ModelEnemy.Actions[nextAttack];
+            }
+            else
+            {
+                throw new InvalidOperationException("Action target was no set");
             }
         }
 
@@ -40,9 +45,8 @@ namespace CDL.Game.GameObjects
             {
                 if (effect.EffectType == EffectType.MOD || effect.EffectType == EffectType.TURNEND)
                 {
-                    if (player.CurrentEffects.ContainsKey(effect))
+                    if (player.CurrentEffects.TryGetValue(effect, out int oldCnt))
                     {
-                        int oldCnt = player.CurrentEffects[effect];
                         player.CurrentEffects[effect] = cnt + oldCnt;
                     }
                     else
@@ -68,9 +72,8 @@ namespace CDL.Game.GameObjects
         {
             if (effect.EffectType == EffectType.MOD || effect.EffectType == EffectType.TURNEND)
             {
-                if (CurrentEffects.ContainsKey(effect))
+                if (CurrentEffects.TryGetValue(effect, out int oldCnt))
                 {
-                    int oldCnt = CurrentEffects[effect];
                     CurrentEffects[effect] = cnt + oldCnt;
                 }
                 else
@@ -80,7 +83,8 @@ namespace CDL.Game.GameObjects
             }
             if (effect.EffectType == EffectType.INSTANT)
             {
-                Health += (int)Math.Round(effect.DamageDealt);
+                // NOTE: I have no idea why damage was added before
+                Health -= (int)Math.Round(effect.DamageDealt);
             }
         }
 

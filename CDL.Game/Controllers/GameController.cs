@@ -1,128 +1,159 @@
 ﻿using CDL.Game.DTOs;
-using CDL.Game.GameObjects;
-using CDL.Lang.GameModel;
-using CDL.Lang.Parsing;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CDL.Game.Controllers
 {
+
     [ApiController]
-    [Route("[controller]/Test")]
-    public class GameController : ControllerBase
+    [Route("[controller]")]
+    public class GameController(GameServiceManager gameServiceManager) : ControllerBase
     {
-        private readonly GameService _gameService;
+        private static int statusCounter = 0;
+        private static int mapCounter = 0;
+        private static int combatCounter = 0;
+        private readonly GameServiceManager _gameServiceManager = gameServiceManager;
 
-        public GameController(GameService gameService) {
-            _gameService = gameService;
-        }
-
-        [HttpPost("MoveToNode")]
-        public IActionResult Receive([FromBody] MoveResponse response)
+        [HttpGet(template: "status", Name = "GetGameState")]
+        public ActionResult<StatusDto> GetStatus()
         {
-            if (response == null)
+            Console.WriteLine($"Get status was called {statusCounter} times!");
+            statusCounter++;
+            try
             {
-                return BadRequest("Invalid received");
+                GameService gs = _gameServiceManager.GetService();
+                StatusDto response = new(
+                        Name: gs.Player.Name,
+                        PlayerId: gs.Player.Id,
+                        Health: gs.Player.Health,
+                        CurrentNode: gs.CurrentGameNode?.Id ?? null,
+                        CurrentState: gs.PlayerState,
+                        Deck: [.. gs.Deck.Select((x) => new CardDto(x.Id, x.ModelCard.Name, [.. x.ModelCard.EffectsApplied.Select(y => new EffectDto(y.effect.Name, 1, "Temp desc"))]))],
+                        Effects: [.. gs.Player.CurrentEffects.Select(x => new EffectDto(x.Key.Name, x.Value, "Temp desc"))]
+                        );
+                return response;
             }
-            // TODO
-            // Should also move to using IDs here
-            _gameService.Move(_gameService.GetMoves()[response.Index]);
-            return Ok(new { message = "Data received successfully!", receivedData = response});
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
-        [HttpGet("GetState")]
-        public IGameDto? GetState()
+
+        [HttpGet(template: "map", Name = "Map")]
+        public ActionResult<MapDto> GetMap()
         {
-            /*
-            switch (_gameService.PlayerState)
+            Console.WriteLine($"Get status was called {mapCounter} times!");
+            mapCounter++;
+            try
             {
-                case GameService.PlayerStates.MAPMOVE:
-                    return new SMapMoveDto
-                    (
-                        _gameService.PlayerState.ToString(),
-                        GetGameMap()
-                    );
-                case GameService.PlayerStates.COMBAT:
-                    return new SCombatDto(
-                        _gameService.PlayerState.ToString(),
-                        _gameService.CombatState.ToString(),
-                        GetPlayerInfo()
-                        GetEnemiesInfo()
-                    );
+                GameService gs = _gameServiceManager.GetService();
+                MapDto response = new(
+                        StageName: gs.GameMap.CurrentStage.ModelStage.Name,
+                        Nodes: [.. gs.GameMap.CurrentStage.GameNodesByLevel.SelectMany(x => x.Value.Select(y => new NodeDto(Id: y.Id, Name: y.ModelNode.Name, Level: x.Key)).ToList())]
+                        );
+                return response;
             }
-            */
-            return null;
-        }
-        private GameMapDto GetGameMap() {
-            GameMapDto gameMap = new();
-            foreach(var item in _gameService.GameMap.CurrentStage.NodesByLevel)
+            catch (Exception e)
             {
-                List<string> nodeNames = [];
-                foreach (Node node in item.Value)
-                {
-                    nodeNames.Add(node.Name);
-                }
+                return BadRequest(e.Message);
+            }
+        }
 
-                gameMap.NodesByLevel.Add(nodeNames);
-            }
-            return gameMap;
-        }
-        private PlayerDto GetPlayerInfo()
+        [HttpGet(template: "combat", Name = "Combat")]
+        public ActionResult<CombatDto> GetCombat()
         {
-            PlayerDto playerInfo = new PlayerDto
+            Console.WriteLine($"Get combat was called {combatCounter} times!");
+            combatCounter++;
+            try
             {
-                Health = _gameService.Player.Health
-            };
-
-            foreach(GameCard card in _gameService.Deck)
-            {
-                List<string> targets = [];
-                foreach(var target in card.ModelCard.ValidTargets)
-                {
-                    targets.Add(target.ToString()); 
-                }
-                List<EffectDto> effects = new List<EffectDto>();
-                /*
-                foreach((Effect effect, int num) in card.ModelCard.EffectsApplied)
-                {
-                    effects.Add(new EffectDto
-                    (
-                        effect.    
-                    ));
-                }
-                playerInfo.Deck.Add(new CardDto
-                {
-                    Id = card.Id,
-                    Name = card.ModelCard.Name,
-                    Rarity = card.ModelCard.Rarity,
-                    ValidTargets = targets,
-
-                });
-                */
+                GameService gs = _gameServiceManager.GetService();
+                CombatDto response = new(
+                        Energy: gs.Energy,
+                        Enemies: [.. gs.CurrentGameNode.Enemies.Select(x => new EnemyDto(x.Id, x.ModelEnemy.Name, x.Health, x.CurrentEffects.Select(y => new EffectDto(y.Key.Name, y.Value, "Temp desc")).ToList()))]
+                        );
+                return response;
             }
-
-            return playerInfo;
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
-        [HttpGet("GameState")]
-        public GameServiceDto Get()
+
+        [HttpGet(template: "reward", Name = "Reward")]
+        public ActionResult<RewardDto> GetReward()
         {
-            GameServiceDto response = new GameServiceDto();
-
-            response.PlayerState = _gameService.PlayerState;
-
-            foreach(var item in _gameService.GameMap.CurrentStage.NodesByLevel)
+            try
             {
-                List<string> nodeNames = [];
-                foreach (Node node in item.Value)
-                {
-                    nodeNames.Add(node.Name);
-                }
-
-                response.Map.NodesByLevel.Add(nodeNames);
+                GameService gs = _gameServiceManager.GetService();
+                RewardDto response = new(
+                        Cards: [.. gs.NodeRewards.Select(x => new CardDto(x.Id, x.ModelCard.Name, [.. x.ModelCard.EffectsApplied.Select(y => new EffectDto(y.effect.Name, 1, "Temp desc"))]))]
+                        );
+                return response;
             }
-
-            response.CurrentNode =  new GameNodeDto();
-            response.CurrentNode.Name = _gameService.GameMap.CurrentNode?.Name ?? "";
-
-            return response;
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
+
+        [HttpPost(template: "readcdl", Name = "ReadCDL")]
+        [Consumes("text/plain")]
+        [Produces("text/plain")]
+        public async Task<ActionResult<string>> ParseCDL()
+        {
+            using var reader = new StreamReader(Request.Body);
+            string content = await reader.ReadToEndAsync();
+            try
+            {
+                _gameServiceManager.Initialize(content);
+                return Ok("GameService initialized successfully.");
+            }
+            catch (InvalidByteRangeException e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpPost(template: "move", Name = "Move")]
+        public ActionResult<MoveDto> MoveToNode([FromBody] Guid NodeId)
+        {
+            if (_gameServiceManager.GetService().Move(NodeId))
+                return Ok("Successfully moved");
+            else
+                return BadRequest("Not so successfully moved");
+        }
+
+        [HttpPost(template: "getReward", Name = "GetReward")]
+        public ActionResult<MoveDto> GetReward([FromBody] Guid CardId)
+        {
+            if (_gameServiceManager.GetService().ChooseReward(CardId))
+                return Ok("Successfully chosen reward");
+            else
+                return BadRequest("Reward could not be choosen");
+        }
+
+        [HttpPost(template: "playCard", Name = "PlayCard")]
+        public IActionResult PlayCard([FromBody] PlayCardDto received)
+        {
+            if (_gameServiceManager.GetService().PlayCard(received.CardId, received.TargetId))
+                return Ok("Successfully played card");
+            else
+                return BadRequest("Playing card failed");
+        }
+
+        [HttpPost(template: "reset", Name = "Reset")]
+        public IActionResult Reset()
+        {
+            if (_gameServiceManager.GetService() != null)
+                _gameServiceManager.Reset();
+            return Ok();
+        }
+
+        [HttpPost(template: "endTurn", Name = "EndTurn")]
+        public IActionResult EndTurn()
+        {
+            _gameServiceManager.GetService()?.EndTurn();
+            return Ok();
+        }
+
     }
 }

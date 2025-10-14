@@ -1,77 +1,31 @@
-import { useEffect, useState } from 'react'
-import axios from 'axios'
-import './App.css'
+import { Route, Routes } from 'react-router';
+import { Sidebar } from './Sidebar';
+import { Editor } from './Editor';
+import { Game } from './Game';
+import Welcome from './Welcome';
+import { Configuration, GameApi } from '../generated-sources/openapi';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-const API_BASE = "http://localhost:5035"
+const api = new GameApi(new Configuration({ basePath: 'http://localhost:5035' }));
 
- async function getGameState() {
-     try {
-         const response = await axios.get(`${API_BASE}/Test/GameState`)
-         return response.data
-     } catch (error) {
-         console.error("Error fetching state:", error);
-         return null;
-     }
-}
+// Create a client
+const queryClient = new QueryClient()
 
-async function moveToNode(idx: number) {
-    const moveResponse: MoveResponse ={
-        Index : idx
-    };
-    console.warn("ASD");
-    const response = await axios.post(`${API_BASE}/Test/MoveToNode`, moveResponse)
-    return response.data
-}
-interface MoveResponse {
-    Index: number;
-}
-interface StageMap {
-    nodesByLevel: string[][];
-}
-interface Node {
-    name: string;
-}
-interface GameState {
-    playerState: number;
-    map: StageMap;
-    currentNode: Node;
-}
 function App() {
-    const [gameState, setGameState] = useState<GameState | null>(null)
-    const [reload, setReload] = useState(0)
-    async function fetchState() {
-        const state = await getGameState();
-        if (state) setGameState(state);
-    }
-    useEffect(() => {
-        fetchState();
-    }, [gameState,reload])
-    if (!gameState) {
-        fetchState();
-        return <p>Loading...</p>
-    }
-    async function moveAndUpdate(idx:number) {
-        moveToNode(idx); setReload(prev => prev + 1)
-    }
-  return (
-    <>
-          <p>
-              PlayerState: {gameState.playerState}
-              <br></br>
-              CurrentNode: {gameState.currentNode.name || "Empty"}
-              <br></br>
-              StageMap:
-              {gameState.map.nodesByLevel.map((nodes, idx) => (
-                  <p>
-                      Level { idx}
-                      {nodes.map((node, nodeIdx) => (
-                          <p onClick={() => moveAndUpdate(nodeIdx)}>-- {node}-{nodeIdx}</p>
-                      ))}
-                  </p>
-              ))}
-          </p>
-    </>
-  )
+    return (
+        <QueryClientProvider client={queryClient}>
+            <div className="flex h-screen">
+                <Sidebar />
+                <main className="flex-1 flex flex-col overflow-auto">
+                    <Routes>
+                        <Route path="/" element={<Welcome />} />
+                        <Route path="/editor" element={<Editor api={api} />} />
+                        <Route path="/game" element={<Game api={api} />} />
+                    </Routes>
+                </main>
+            </div>
+        </QueryClientProvider>
+    )
 }
 //Map: {gameState.map.nodesByLevel.map(name => (<p>{name}</p>))}
 export default App

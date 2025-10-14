@@ -1,15 +1,16 @@
-﻿using System.Reflection.Emit;
+﻿using System.Text.Json.Serialization;
 using CDL.Game.GameObjects;
 using CDL.Lang.GameModel;
 using CDL.Lang.Parsing;
 
 namespace CDL.Game
 {
-    public class GameService(ObjectsHelper gameObjects)
+    public class GameService
     {
+        [JsonConverter(typeof(JsonStringEnumConverter<PlayerStates>))]
         public enum PlayerStates
         {
-            COMBAT, MAPMOVE, DEATH, REWARD, WIN
+            COMBAT, MAP, DEATH, REWARD, WIN
         }
         public enum CombatStates
         {
@@ -20,55 +21,79 @@ namespace CDL.Game
         public PlayerStates PlayerState { get; private set; }
         public CombatStates CombatState { get; private set; }
         public GameCharacter Player { get; private set; }
-        public ObjectsHelper GameObjects { get; } = gameObjects;
-        public GameMap? GameMap { get; private set; } 
+        public ObjectsHelper Model { get; }
+        public GameMap? GameMap { get; private set; }
         public GameNode? CurrentGameNode { get; private set; }
-        public List<GameCard> Rewards { get; } = [];
+        public List<GameCard> NodeRewards { get; } = [];
         public List<GameCard> Deck { get; } = [];
 
+        // How many cards can be used in a turn, maybe tune later
+        public int Energy { get; private set; } = 3;
+
         private readonly Random random = new();
+        public GameService(ObjectsHelper gameObjects)
+        {
+            Model = gameObjects;
+            Player = new(gameObjects.Character!);
+
+
+            GameMap = new GameMap(Model!.Game!, Model.Stages, Model.Nodes);
+            GameMap.LoadNextStage();
+
+            CreateDeck();
+            PlayerState = PlayerStates.MAP;
+        }
+
         public void DealPlayerDamage(double num)
         {
             Player.Damage(num);
-            if(Player.Health < 0)
+            if (Player.Health < 0)
             {
                 PlayerState = PlayerStates.DEATH;
             }
         }
 
-        public void Initialize()
-        {
-            GameMap = new GameMap(GameObjects!.Game!, GameObjects.Stages, GameObjects.Nodes);
-            GameMap.LoadNextStage();
-            CreateDeck();
-            PlayerState = PlayerStates.MAPMOVE;
-        }
+
         private void CreateDeck()
         {
-            foreach ((Card card, int num) in GameObjects!.Character!.Deck) {
-                Deck.Add(new GameCard(card));
+            foreach ((Card card, int num) in Model!.Character!.Deck)
+            {
+                for (int i = 0; i < num; i++)
+                {
+                    Deck.Add(new GameCard(card));
+                }
             }
         }
 
-        public List<Node> GetMoves()
+        // TODO: Really have to fix all these null warnings, also implement logging or some feedback
+        public bool Move(Guid nodeId)
         {
-            return GameMap.GetPossibleSteps();
-        }
-
-        public bool Move(Node node)
-        {
-            if (PlayerState == PlayerStates.MAPMOVE && GameMap.MoveTo(node))
+            if (!GameMap!.CurrentStage.GameNodesByLevel.TryGetValue(GameMap.LevelCounter, out List<GameNode>? nodes))
             {
-                GameNode gameNode = new(node);
-                PlayerState = PlayerStates.COMBAT;
-                CombatState = CombatStates.PLAYER;
-                CurrentGameNode = gameNode;
-                (string rarity, int num) = CurrentGameNode.GetRewardRarityAndNumber();
-                GenerateRewards(rarity,num);
-                return true;
-            }else {
                 return false;
             }
+            GameNode? node = nodes.FirstOrDefault(x => x.Id.Equals(nodeId));
+            if (node == null)
+            {
+                return false;
+            }
+            if (PlayerState == PlayerStates.MAP && GameMap.MoveTo(node))
+            {
+                PlayerState = PlayerStates.COMBAT;
+                CombatState = CombatStates.PLAYER;
+                CurrentGameNode = node;
+
+                (string rarity, int num) = CurrentGameNode.GetRewardRarityAndNumber();
+                GenerateRewards(rarity, num);
+                // TODO: Set energy in one location with a method
+                Energy = 3;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
         }
         private int EnemyTurnCounter;
         public void EndTurn()
@@ -78,12 +103,49 @@ namespace CDL.Game
 
             if (CurrentGameNode.Cleared())
             {
-                PlayerState = PlayerStates.REWARD;
+                if (GameMap.IsLastOnMap())
+                {
+                    PlayerState = PlayerStates.WIN;
+                }
+                else if (GameMap.IsLastOnStage())
+                {
+                    GameMap.LoadNextStage();
+                    Player.Restore();
+                    PlayerState = PlayerStates.MAP;
+                }
+                else
+                {
+                    PlayerState = PlayerStates.REWARD;
+                }
             }
             else
             {
-                EnemyTurnCounter = 0;
-                CombatState = CombatStates.ENEMY;
+                // All enemies make their turn
+                //
+                //EnemyTurnCounter = 0;
+                //nombatState = CombatStates.ENEMY;
+                for (int i = 0; i < CurrentGameNode.Enemies.Count; i++)
+                {
+                    var turn = NextEnemyTurn();
+                    Console.WriteLine($"{turn.target} {turn.EnemyAction.Name} {turn.num}");
+                }
+            }
+        }
+        public void Cleared()
+        {
+            if (GameMap.IsLastOnMap())
+            {
+                PlayerState = PlayerStates.WIN;
+            }
+            else if (GameMap.IsLastOnStage())
+            {
+                GameMap.LoadNextStage();
+                Player.Restore();
+                PlayerState = PlayerStates.MAP;
+            }
+            else
+            {
+                PlayerState = PlayerStates.REWARD;
             }
         }
         public void EndEnemiesTurn()
@@ -91,16 +153,18 @@ namespace CDL.Game
             CurrentGameNode.EndTurn();
             if (CurrentGameNode.Cleared())
             {
-                if (GameMap.IsLast())
-                {
-                    PlayerState = PlayerStates.WIN;
-                }
-                PlayerState = PlayerStates.REWARD;
+                // if (GameMap.IsLast())
+                // {
+                //     PlayerState = PlayerStates.WIN;
+                // }
+                //PlayerState = PlayerStates.REWARD;
+                Cleared();
             }
             else
             {
                 CombatState = CombatStates.PLAYER;
                 EnemyTurnCounter = 0;
+                Energy = 3;
             }
         }
 
@@ -109,78 +173,83 @@ namespace CDL.Game
             var result = CurrentGameNode.EnemyTurn(EnemyTurnCounter, Player);
             // Reset to 0 on enemies turn end
             EnemyTurnCounter++;
-            if(EnemyTurnCounter >= CurrentGameNode.Enemies.Count)
+            if (EnemyTurnCounter >= CurrentGameNode.Enemies.Count)
             {
                 EndEnemiesTurn();
             }
-            if(Player.Health < 0)
+            if (Player.Health < 0)
             {
                 PlayerState = PlayerStates.DEATH;
             }
             return result;
         }
 
-        public void PlayCard(Card card, GameEnemy enemy)
+        public bool PlayCard(Guid cardId, Guid enemyId)
         {
+            GameCard card = Deck.First(x => x.Id.Equals(cardId));
+            GameEnemy enemy = CurrentGameNode.Enemies.First(x => x.Id.Equals(enemyId));
             if (PlayerState != PlayerStates.COMBAT)
             {
-                // TODO
-                // Should error
-                return;
+                throw new InvalidOperationException("Can't play cards outside of combat");
+            }
+            if (Energy <= 0)
+            {
+                throw new InvalidOperationException("Out of energy, can't play any more cards");
             }
             CurrentGameNode.AttackEnemy(card, enemy);
-            if(CurrentGameNode.Enemies.Count == 0)
+            if (CurrentGameNode.Enemies.Count == 0)
             {
-                PlayerState = PlayerStates.REWARD;
+                Cleared();
             }
+            Energy--;
+            return true;
         }
-        // TODO
-        // Could probably create a dictionary for rarities
+
         private void GenerateRewards(string rarity, int cnt)
         {
-            List<Card> possibleCards = [];
-            foreach(Card card in GameObjects.Cards)
+            List<Card> candidates = [.. Model.Cards.Where(x => x.Rarity.Equals(rarity))];
+
+            if (candidates.Count == 0)
             {
-                if(card.Rarity == rarity)
-                {
-                    possibleCards.Add(card);
-                }
+                throw new InvalidOperationException("Rarity not found!");
             }
-            List<GameCard> cardsChosen = [];
+
             for (int i = 0; i < cnt; i++)
             {
-                if(possibleCards.Count != 0)
+                if (candidates.Count != 0)
                 {
-                    Card cardToAdd = possibleCards[random.Next(0, possibleCards.Count)];
-                    Rewards.Add(new GameCard(cardToAdd));
-                    // TODO
+                    Card cardToAdd = candidates[random.Next(0, candidates.Count)];
+                    NodeRewards.Add(new GameCard(cardToAdd));
+                    // TODO:
                     // Check if this works
-                    possibleCards.Remove(cardToAdd);
+                    candidates.Remove(cardToAdd);
                 }
                 else
                 {
                     // Maybe there arent enough unique cards for a rarity, then duplicate last one
-                    Rewards.Add(cardsChosen.Last());
+                    // NOTE: Actually just do nothing instead :)
+                    // NodeRewards.Add(cardsChosen.Last());
                 }
             }
         }
-        public void ChooseReward(Guid Id)
+        public bool ChooseReward(Guid Id)
         {
             // TODO
             // Nicer handling of wrong state
-            if (PlayerState != PlayerStates.REWARD) return;
+            if (PlayerState != PlayerStates.REWARD) return false;
             // TODO
             // Card not found error
-            GameCard chosen = Rewards.Where(x=>x.Id.Equals(Id)).First();
+            GameCard chosen = NodeRewards.Where(x => x.Id.Equals(Id)).First();
             Deck.Add(chosen);
-            PlayerState = PlayerStates.MAPMOVE;
+            PlayerState = PlayerStates.MAP;
+            return true;
         }
 
         public void PlayCard(GameCard card)
         {
             if (PlayerState != PlayerStates.COMBAT)
             {
-                foreach((Effect effect, int cnt) in card.ModelCard.EffectsApplied)
+                foreach ((Effect effect, int cnt) in card.ModelCard.EffectsApplied)
                 {
                     PlayerApplyEffect(effect, cnt);
                 }
@@ -192,23 +261,23 @@ namespace CDL.Game
         // Code was reused from GameEnemy...
         public void PlayerEndTurn()
         {
+            Energy = 3;
             List<Effect> toRemove = [];
-            ModelCharacter character = GameObjects.Character!;
-            foreach (var item in character.CurrentEffects)
+            foreach (var item in Player.CurrentEffects)
             {
                 if (item.Key.EffectType == EffectType.TURNEND)
                 {
                     DealPlayerDamage((int)Math.Round(item.Key.DamageDealt));
-                    character.CurrentEffects[item.Key] = item.Value - 1;
-                    if(character.CurrentEffects[item.Key] == 0)
+                    Player.CurrentEffects[item.Key] = item.Value - 1;
+                    if (Player.CurrentEffects[item.Key] == 0)
                     {
                         toRemove.Add(item.Key);
                     }
                 }
                 if (item.Key.EffectType == EffectType.MOD)
                 {
-                    character.CurrentEffects[item.Key] = item.Value - 1;
-                    if(character.CurrentEffects[item.Key] == 0)
+                    Player.CurrentEffects[item.Key] = item.Value - 1;
+                    if (Player.CurrentEffects[item.Key] <= 0)
                     {
                         toRemove.Add(item.Key);
                     }
@@ -216,30 +285,35 @@ namespace CDL.Game
             }
             foreach (Effect effect in toRemove)
             {
-                character.CurrentEffects.Remove(effect);
+                //character.CurrentEffects.Remove(effect);
+                Player.CurrentEffects.Remove(effect);
             }
 
             // Maybe unnecessary
-            if(character.Health <= 0)
+            if (Player.Health <= 0)
             {
                 PlayerState = PlayerStates.DEATH;
             }
+
+
+            // NOTE: this stays until cards have an energy cost and there is logic for it
+            Energy = 3;
         }
         // Also reused code from GameEnemy
         public void PlayerApplyEffect(Effect effect, int cnt)
         {
-            if(effect.EffectType == EffectType.MOD || effect.EffectType == EffectType.TURNEND)
+            if (effect.EffectType == EffectType.MOD || effect.EffectType == EffectType.TURNEND)
             {
-                if (GameObjects.Character.CurrentEffects.TryGetValue(effect, out int oldCnt))
+                if (Model.Character.CurrentEffects.TryGetValue(effect, out int oldCnt))
                 {
-                    GameObjects.Character.CurrentEffects[effect] = cnt + oldCnt;
+                    Model.Character.CurrentEffects[effect] = cnt + oldCnt;
                 }
                 else
                 {
-                    GameObjects.Character.CurrentEffects.Add(effect, cnt);
+                    Model.Character.CurrentEffects.Add(effect, cnt);
                 }
             }
-            if(effect.EffectType == EffectType.INSTANT)
+            if (effect.EffectType == EffectType.INSTANT)
             {
                 DealPlayerDamage((int)Math.Round(effect.DamageDealt));
             }
