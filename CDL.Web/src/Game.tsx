@@ -15,14 +15,14 @@ export function Game({ api }: { api: GameApi }) {
         enabled: false,
     })
 
-    const { isPending: combatPending, isError: combatErrored, data: combat, error: combatError } = useQuery({
+    const { isPending: _combatPending, isError: _combatErrored, data: combat, error: _combatError } = useQuery({
         queryKey: ['combat'],
         queryFn: async () => { const data = await api.combat(); return data.data },
         enabled: false,
         //enabled: !!status && status.currentState === "COMBAT",
     })
 
-    const { isPending: mapPending, isError: mapErrored, data: map, error: mapError } = useQuery({
+    const { isPending: _mapPending, isError: _mapErrored, data: map, error: _mapError } = useQuery({
         queryKey: ['map'],
         queryFn: async () => { const data = await api.map(); return data.data },
         enabled: false,
@@ -40,7 +40,7 @@ export function Game({ api }: { api: GameApi }) {
         queryClient.fetchQuery({ queryKey: [`${name}`] })
     }
 
-    useEffect(() => { fetch('status'); fetch('map') });
+    useEffect(() => { fetch('status'); fetch('map'); setSelected(status?.playerId || '') });
     const move = useMutation({
         mutationFn: (guid: string) => { return api.move(guid); },
         onSuccess: () => {
@@ -69,6 +69,7 @@ export function Game({ api }: { api: GameApi }) {
         return <span>Error: {statusError.message}</span>
     }
     function useCard(cardId: string, targetId: string) {
+        console.log(`Card ${cardId} and target ${targetId}`);
         api.playCard({ cardId, targetId }).then(() => {
             fetch('status');
             fetch('combat');

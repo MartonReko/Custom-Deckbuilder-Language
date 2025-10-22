@@ -5,16 +5,15 @@ import { useQueryClient } from "@tanstack/react-query";
 const temporaryCDL: string = `Game{
     Name: My_Wonderful_Game;
     Stages: [
-    beginnerStage,
-beginnerStage
+    beginnerStage
     ];
-    Player: MyCharacter;
+    Player: Knight;
 }
 
-Character MyCharacter{
-    Health: 75;
+Character Knight{
+    Health: 150;
     EffectEveryTurn: [smallHeal];
-    Deck: [10x strike];
+    Deck: [3x strike, 1x heal];
 }
 
 Effect smallHeal{

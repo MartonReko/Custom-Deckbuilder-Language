@@ -184,10 +184,16 @@ namespace CDL.Game
             return result;
         }
 
-        public bool PlayCard(Guid cardId, Guid enemyId)
+        // NOTE: Used for temporary player targeting workaround
+        public void AttackPlayer(GameCard card)
         {
-            GameCard card = Deck.First(x => x.Id.Equals(cardId));
-            GameEnemy enemy = CurrentGameNode.Enemies.First(x => x.Id.Equals(enemyId));
+            foreach ((Effect effect, int cnt) in card.ModelCard.EffectsApplied)
+            {
+                PlayerApplyEffect(effect, cnt);
+            }
+        }
+        public bool PlayCard(Guid cardId, Guid targetId)
+        {
             if (PlayerState != PlayerStates.COMBAT)
             {
                 throw new InvalidOperationException("Can't play cards outside of combat");
@@ -196,10 +202,26 @@ namespace CDL.Game
             {
                 throw new InvalidOperationException("Out of energy, can't play any more cards");
             }
-            CurrentGameNode.AttackEnemy(card, enemy);
-            if (CurrentGameNode.Enemies.Count == 0)
+
+            GameCard card = Deck.First(x => x.Id.Equals(cardId));
+
+            if (targetId.Equals(Player.Id))
             {
-                Cleared();
+                // FIX: Current attack management system won't work well
+                // Use a something like visitor instead?
+
+                // HACK: Temp "fix"
+                AttackPlayer(card);
+            }
+            else
+            {
+                GameEnemy enemy = CurrentGameNode.Enemies.First(x => x.Id.Equals(targetId));
+                CurrentGameNode.AttackEnemy(card, enemy);
+                if (CurrentGameNode.Enemies.Count == 0)
+                {
+                    Cleared();
+                }
+
             }
             Energy--;
             return true;
