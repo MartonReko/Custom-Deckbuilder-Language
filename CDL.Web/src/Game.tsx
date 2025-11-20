@@ -40,7 +40,12 @@ export function Game({ api }: { api: GameApi }) {
         queryClient.fetchQuery({ queryKey: [`${name}`] })
     }
 
-    useEffect(() => { fetch('status'); fetch('map'); setSelected(status?.playerId || '') });
+    useEffect(() => {
+        fetch('status');
+        fetch('map');
+        // Set selection default value to self (first option)
+        //      setSelected(status?.playerId || '');
+    });
     const move = useMutation({
         mutationFn: (guid: string) => { return api.move(guid); },
         onSuccess: () => {

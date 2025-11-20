@@ -208,7 +208,7 @@ namespace CDL.Game
             if (targetId.Equals(Player.Id))
             {
                 // FIX: Current attack management system won't work well
-                // Use a something like visitor instead?
+                // Use something like visitor instead?
 
                 // HACK: Temp "fix"
                 AttackPlayer(card);
