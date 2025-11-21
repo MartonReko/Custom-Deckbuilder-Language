@@ -65,16 +65,18 @@ namespace CDL.Game
             }
         }
 
-        // TODO: Really have to fix all these null warnings, also implement logging or some feedback
         public bool Move(Guid nodeId)
         {
             if (!GameMap!.CurrentStage.GameNodesByLevel.TryGetValue(GameMap.LevelCounter, out List<GameNode>? nodes))
             {
+                Console.WriteLine("Could not get nodes?");
                 return false;
             }
             GameNode? node = nodes.FirstOrDefault(x => x.Id.Equals(nodeId));
             if (node == null)
             {
+
+                Console.WriteLine("Node with ID not found!");
                 return false;
             }
             if (PlayerState == PlayerStates.MAP && GameMap.MoveTo(node))
@@ -139,6 +141,7 @@ namespace CDL.Game
             }
             else if (GameMap.IsLastOnStage())
             {
+                Console.WriteLine("Last node on stage");
                 GameMap.LoadNextStage();
                 Player.Restore();
                 PlayerState = PlayerStates.MAP;

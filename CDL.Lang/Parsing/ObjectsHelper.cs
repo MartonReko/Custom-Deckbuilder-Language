@@ -72,6 +72,16 @@ public class ObjectsHelper(EnvManager em, CDLExceptionHandler exceptionHandler)
                 {
                     exceptionHandler.AddException($"Stage {s.Name} is missing end node definition");
                 }
+
+                int cnt = 0;
+                foreach (var item in s.MustContain)
+                {
+                    cnt += item.Value;
+                }
+                if (cnt > s.StageWidthMax * (s.StageLength - 1))
+                {
+                    exceptionHandler.AddException($"Stage {s.Name}'s must contain list exceeds max capacity");
+                }
             }
         }
 

@@ -61,7 +61,7 @@ namespace CDL.Game.GameObjects
             }
             else
             {
-                // TODO: error cant move there
+                Console.WriteLine($"{node.Id} tried on level {LevelCounter} on stage {CurrentStage.ModelStage.Name}");
                 return false;
             }
         }

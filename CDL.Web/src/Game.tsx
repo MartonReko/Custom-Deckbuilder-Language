@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { GameApi } from "../generated-sources/openapi";
+import { GameApi, PlayCardDto } from "../generated-sources/openapi";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import playerImg from './assets/tempPlayer.png';
 import enemyImg from './assets/tempEnemy.png';
@@ -8,6 +8,7 @@ import enemyImg from './assets/tempEnemy.png';
 export function Game({ api }: { api: GameApi }) {
 
     const [selected, setSelected] = useState('')
+    //const [bDIsabled, setBDisabled] = useState(false)
 
     const { isPending: statusPending, isError: statusErrored, data: status, error: statusError } = useQuery({
         queryKey: ['status'],
@@ -15,7 +16,7 @@ export function Game({ api }: { api: GameApi }) {
         enabled: false,
     })
 
-    const { isPending: _combatPending, isError: _combatErrored, data: combat, error: _combatError } = useQuery({
+    const { isPending: combatPending, isError: _combatErrored, data: combat, error: _combatError } = useQuery({
         queryKey: ['combat'],
         queryFn: async () => { const data = await api.combat(); return data.data },
         enabled: false,
@@ -67,21 +68,32 @@ export function Game({ api }: { api: GameApi }) {
             fetch('combat');
         },
     })
+    const playCard = useMutation({
+        mutationFn: (msg: PlayCardDto) => {
+            return api.playCard(msg);
+        },
+        onSuccess: () => {
+            fetch('status');
+            fetch('combat');
+        }
+    })
     if (statusPending) {
         return <span>Loading combat...</span>
     }
     if (statusErrored) {
         return <span>Error: {statusError.message}</span>
     }
-    function useCard(cardId: string, targetId: string) {
-        console.log(`Card ${cardId} and target ${targetId}`);
-        api.playCard({ cardId, targetId }).then(() => {
-            fetch('status');
-            fetch('combat');
-            console.log(`Card ${cardId} was used on ${targetId}`)
-        }
-        );
-    }
+
+    //    function useCard(cardId: string, targetId: string) {
+    //        console.log(`Card ${cardId} and target ${targetId}`);
+    //        api.playCard({ cardId, targetId }).then(() => {
+    //            fetch('status');
+    //            fetch('combat');
+    //            console.log(`Card ${cardId} was used on ${targetId}`)
+    //        }
+    //        );
+    //    }
+
 
     function showStatus() {
         return <div className="">
@@ -91,7 +103,7 @@ export function Game({ api }: { api: GameApi }) {
             <br />
             {status?.deck.map((card) =>
                 <span className="m-2">{`[${card.name}]`}
-                    <button className="text-white bg-gray-700" onClick={() => useCard(card.id, selected)}>Use</button>
+                    <button className="text-white bg-gray-700" onClick={() => playCard.mutate({ cardId: card.id, targetId: selected })}>Use</button>
                 </span>
             )}
             <br />
@@ -101,52 +113,57 @@ export function Game({ api }: { api: GameApi }) {
     function subScreen() {
         switch (status?.currentState) {
             case "COMBAT":
-                { fetch('status'); fetch('combat') }
-                return <div className="grid grid-cols-2 p-4  text-[24px] font-bold bg-[url(./assets/tempBg.png)] bg-center bg-no-repeat bg-cover grow text-black" >
-                    <div className="rows-2">
-                        <div className="h-140 overflow-auto p-8">
-                            {showStatus()}
-                            <label>{`Energy: ${combat?.energy}`}</label>
-                        </div>
-                        <div>
-                            <img src={playerImg} className="h-60" />
-                            <br />
-                            <label>{status?.name}</label>
-                            <br />
-                            <label>HP: {status?.health}</label>
-                            <br />
-                            {status.effects.map((effect) => <span key={effect.name}>{`${effect.name}-${effect.stack}`}</span>)}
-                        </div>
-                    </div>
-                    <div className="rows-2">
-                        <div className="h-140">
-                            <label>Target:</label>
-                            <select value={selected} onChange={e => setSelected(e.target.value)}>
-                                <option value={status?.playerId}>Player</option>
-                                {combat?.enemies.map(e => <option value={e.id}>
-                                    {`${e.name} - ${e.id.substring(0, 4)}`}
-                                </option>
-                                )}
-                            </select>
-                            <br />
-                            <br />
-                        </div>
-                        <div className="flex flex-row">
-                            {combat?.enemies.map((enemy) => <div key={enemy.id}>
-                                <img src={enemyImg} className="h-60" />
-                                <label>{`Id: ${enemy.id.substring(0, 4)}`}</label>
+                { fetch('status'); fetch('combat'); if (selected == '') setSelected(status.playerId) }
+                if (statusPending || combatPending) {
+                    return <div> Loading... </div>
+                }
+                else {
+                    return <div className="grid grid-cols-2 p-4  text-[24px] font-bold bg-[url(./assets/tempBg.png)] bg-center bg-no-repeat bg-cover grow text-black" >
+                        <div className="rows-2">
+                            <div className="h-140 overflow-auto p-8">
+                                {showStatus()}
+                                <label>{`Energy: ${combat?.energy}`}</label>
+                            </div>
+                            <div>
+                                <img src={playerImg} className="h-60" />
                                 <br />
-                                <label>{`Name: ${enemy.name}`}</label>
+                                <label>{status?.name}</label>
                                 <br />
-                                <label>{`Health: ${enemy.health}`}</label>
+                                <label>HP: {status?.health}</label>
                                 <br />
-                                <label>{`Effects:`}</label>
-                                {enemy.effects.map((effect) => <span key={effect.name}>{`${effect.name}-${effect.stack}`}</span>)}
-                            </div>)
-                            }
+                                {status.effects.map((effect) => <span key={effect.name}>{`${effect.name}-${effect.stack}`}</span>)}
+                            </div>
                         </div>
-                    </div>
-                </div >;
+                        <div className="rows-2">
+                            <div className="h-140">
+                                <label>Target:</label>
+                                <select value={selected} onChange={e => setSelected(e.target.value)}>
+                                    <option value={status?.playerId}>Player</option>
+                                    {combat?.enemies.map(e => <option value={e.id}>
+                                        {`${e.name} - ${e.id.substring(0, 4)}`}
+                                    </option>
+                                    )}
+                                </select>
+                                <br />
+                                <br />
+                            </div>
+                            <div className="flex flex-row">
+                                {combat?.enemies.map((enemy) => <div key={enemy.id}>
+                                    <img src={enemyImg} className="h-60" />
+                                    <label>{`Id: ${enemy.id.substring(0, 4)}`}</label>
+                                    <br />
+                                    <label>{`Name: ${enemy.name}`}</label>
+                                    <br />
+                                    <label>{`Health: ${enemy.health}`}</label>
+                                    <br />
+                                    <label>{`Effects:`}</label>
+                                    {enemy.effects.map((effect) => <span key={effect.name}>{`${effect.name}-${effect.stack}`}</span>)}
+                                </div>)
+                                }
+                            </div>
+                        </div>
+                    </div >;
+                }
             case "MAP":
                 { fetch('status'); fetch('map') }
                 return <div>

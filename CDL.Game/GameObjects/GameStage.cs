@@ -24,38 +24,35 @@ namespace CDL.Game.GameObjects
             }
 
             // Initialize list for each level in stage
-            // And randomly fill with nodes that are required
+            // Length - 1 so there is space for boss node
+            for (int i = 0; i < ModelStage.StageLength - 1; i++)
+            {
+                GameNodesByLevel.Add(i, []);
+            }
+
+            // Randomly fill with nodes that are required
             while (gameNodesUnordered.Count > 0)
             {
+                Console.WriteLine($"Still running, {gameNodesUnordered.Count} left");
                 // Length - 1 so there is space for boss node
                 for (int i = 0; i < ModelStage.StageLength - 1; i++)
                 {
-                    if (!GameNodesByLevel.TryGetValue(i, out List<GameNode> val))
-                    {
-                        List<GameNode> nodesOnLevel = [];
-                        if (gameNodesUnordered.Count > 0)
-                        {
-                            if (r.Next(0, 2) == 0)
-                            {
-                                nodesOnLevel.Add(gameNodesUnordered.Pop());
-                            }
-                        }
-                        GameNodesByLevel.Add(i, nodesOnLevel);
-                    }
-                    else if (GameNodesByLevel[i].Count < ModelStage.StageWidthMax)
+                    if (GameNodesByLevel[i].Count < ModelStage.StageWidthMax)
                     {
                         if (gameNodesUnordered.Count > 0)
                         {
                             if (r.Next(0, 2) == 0)
                             {
                                 GameNodesByLevel[i].Add(gameNodesUnordered.Pop());
+                                Console.WriteLine("pop");
                             }
                         }
                     }
-                    else
-                    {
-                        // Error, but should not happen because it is checked in CDL.Lang
-                    }
+                    //  else
+                    //  {
+                    //      throw new InvalidOperationException("Fatal error in creating stage");
+                    //      // Error, but should not happen because it is checked in CDL.Lang
+                    //  }
                 }
             }
 
