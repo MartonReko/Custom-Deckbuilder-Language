@@ -7,6 +7,9 @@ namespace CDL.Game.GameObjects
         //private readonly ModelCharacter ModelCharacter = modelCharacter;
         public int Health { get; private set; } = modelCharacter.Health;
         public string Name { get; private set; } = modelCharacter.Name;
+        // NOTE:
+        // Is this even a good feature?
+        public Dictionary<Effect, int> EffectEveryTurn { get; private set; } = [];
         public Dictionary<Effect, int> CurrentEffects { get; private set; } = [];
 
         public void Restore()

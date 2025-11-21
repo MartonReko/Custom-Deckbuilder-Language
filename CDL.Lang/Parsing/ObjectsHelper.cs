@@ -94,6 +94,8 @@ public class ObjectsHelper(EnvManager em, CDLExceptionHandler exceptionHandler)
         {
             foreach (Node n in Nodes)
             {
+                // :TODO:
+                // Could be moved to VisBlocks
                 if (n.Enemies.Count < 0)
                 {
                     exceptionHandler.AddException($"Invalid number of enemies for node {n.Name}");
