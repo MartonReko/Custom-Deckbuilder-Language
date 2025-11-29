@@ -47,5 +47,6 @@ namespace CDL.Game.DTOs
             );
 
     public record ReceivedCdlDto(string CodeString);
+    public record ErrorReturnDto(string Message, List<string>? CodeErrors);
     public record PlayCardDto(Guid CardId, Guid TargetId);
 }

@@ -1,6 +1,8 @@
 import { useState } from "react";
-import { GameApi } from "../generated-sources/openapi";
-import { useQueryClient } from "@tanstack/react-query";
+import { ErrorReturnDto, GameApi } from "../generated-sources/openapi";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { data } from "react-router";
+import { send } from "vite";
 
 const temporaryCDL: string = `Game{
     Name: MyGame;
@@ -154,27 +156,56 @@ Card poison{
 
 export function Editor({ api }: { api: GameApi }) {
 
-    const [response, setResponse] = useState("");
+    const [response, setResponse] = useState<ErrorReturnDto>({ codeErrors: [], message: '' });
     const [code, setCode] = useState(temporaryCDL);
 
     const queryClient = useQueryClient()
     function reset() {
         api.reset().then(() => queryClient.refetchQueries())
     }
-    function sendButton() {
-        api.readCDL({
-            data: code,
-            headers: {
-                'Content-Type': 'text/plain'
-            }
-        }).then((result) => {
-            setResponse(result.data);
-            console.log(result.data);
-        }).catch((e) => {
-            console.error(e);
-            setResponse(e.response.data)
-        });
-    }
+
+    //const { isPending: cdlPending, isError: cdlErrored, data: cdlMessage, error: cdlError } = useQuery({
+    //    queryKey: ['cdlCode'],
+    //    queryFn: async () => {
+    //        const data = await api.readCDL({
+    //            headers: {
+    //                'Content-Type': 'text/plain'
+    //            }
+    //        }); return data.data
+    //    },
+    //    enabled: false,
+    //})
+
+
+    const sendCode = useMutation({
+        mutationFn: (code: string) => {
+            return api.readCDL({
+                data: code,
+                headers: {
+                    "Content-Type": 'text/plain'
+                }
+            });
+        },
+        onSuccess: (data) => {
+            console.log(data.data.message);
+            console.log(data.data.codeErrors);
+            //setResponse(data.data);
+        },
+    })
+    //  function sendButton() {
+    //      api.readCDL({
+    //          data: code,
+    //          headers: {
+    //              'Content-Type': 'text/plain'
+    //          }
+    //      }).then((result) => {
+    //          setResponse(result.data);
+    //          console.log(result.data);
+    //      }).catch((e) => {
+    //          console.error(e);
+    //          setResponse(e.response.data.message)
+    //      });
+    //  }
 
 
     return (
@@ -184,14 +215,20 @@ export function Editor({ api }: { api: GameApi }) {
                     CDL Editor
                 </h1>
                 <label>
-                    Response: {response}
+                    Response: {response.message}
+                    <br />
+                    {response.codeErrors?.map((error) =>
+                        <div>
+                            {error}
+                        </div>
+                    )}
                 </label>
             </div>
             <button className="text-white bg-purple-700" onClick={() => reset()}> RESET </button>
             <br />
             <label className="h-full basis-9/10 p-8">
                 CDL code input: <textarea defaultValue={code} onChange={e => setCode(e.target.value)} className="h-full w-full bg-gray-600 rounded align-top p-2" name="codeField" />
-                <button className="btn" onClick={() => sendButton()}>Send</button>
+                <button className="btn" onClick={() => sendCode.mutate(code)}>Send</button>
             </label>
         </div>
     )

@@ -2,7 +2,7 @@
 
 Welcome to the Custom Deckbuilder Language project!
 
-This project was developed as part of the **Project Laboratory** course at the Faculty of Electrical Engineering and Informatics, Budapest University of Technology and Economics.
+This project was developed as part of my Bachelor's Thesis at the Faculty of Electrical Engineering and Informatics, Budapest University of Technology and Economics.
 
 # Overview
 
@@ -15,9 +15,5 @@ The project was inspired by the mechanics of _Slay the Spire_.
 **Current Features:**
   + **Lexical and semantic analysis** using **ANTLR4** and **C#**.
   + **Storing parsed data** as objects in C#.
-  + A foundation for an **ASP.NET** application, which will be controlled by a React front-end via REST API.
-
-**Planned Features:**
-  + React front-end
-  + Automated tests
-  + Grammar expansion
+  + An ASP.NET application which takes care of game logic and a web api
+  + A React front-end for controlling the game via REST API

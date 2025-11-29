@@ -10,7 +10,7 @@ namespace CDL.Lang;
 public class LanguageProcessor
 {
     public readonly CDLExceptionHandler exceptionHandler = new();
-    public ObjectsHelper? ProcessText(string file)
+    public (ObjectsHelper?, CDLExceptionHandler) ProcessText(string file)
     {
         var ast = ReadAST(file);
         if (!exceptionHandler.IsValid())
@@ -20,7 +20,7 @@ public class LanguageProcessor
             {
                 Console.WriteLine(item);
             }
-            return null;
+            return (null, exceptionHandler);
         }
         EnvManager envM = new(exceptionHandler);
         ObjectsHelper oh = new(envM, exceptionHandler);
@@ -29,7 +29,7 @@ public class LanguageProcessor
         if (!exceptionHandler.IsValid())
         {
             Console.WriteLine("Exceptions found :(");
-            return null;
+            return (null, exceptionHandler);
         }
         VisBlocks visitorBlocks = new(envM, exceptionHandler, oh);
         visitorBlocks.Visit(ast);
@@ -37,11 +37,11 @@ public class LanguageProcessor
         if (!exceptionHandler.IsValid())
         {
             Console.WriteLine("Exceptions found :(");
-            return null;
+            return (null, exceptionHandler);
         }
         else
         {
-            return oh;
+            return (oh, exceptionHandler);
         }
     }
 

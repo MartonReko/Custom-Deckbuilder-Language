@@ -62,7 +62,7 @@ public class VisBlocks(EnvManager envManager, CDLExceptionHandler exceptionHandl
             foreach ((Effect effect, int cnt) in card.EffectsApplied)
                 effects += $"{cnt}x\t{effect.Name}";
 
-            _logger.LogDebug("Card \"{c}\" properties:\n\tRarity: {r}\n\tValidTargets: {t}\n\tApplies: {a}", card.Name, card.Rarity, targets, effects);
+            _logger.LogDebug("Card \"{c}\" properties:\n\tRarity: {r}\n\tCost: {cost}\n\tValidTargets: {t}\n\tApplies: {a}", card.Name, card.Rarity, card.Cost, targets, effects);
         }
     }
     private void LogEnemyActions()
@@ -715,6 +715,18 @@ public class VisBlocks(EnvManager envManager, CDLExceptionHandler exceptionHandl
             _logger.LogError("Multiple rarity definitions for card {c} {d}", currentCard?.Name, currentCard?.Rarity);
         }
         return base.VisitCardRarity(context);
+    }
+    public override object VisitCardCost([NotNull] CDLParser.CardCostContext context)
+    {
+        if (currentCard?.Cost != -1)
+        {
+            currentCard!.Cost = int.Parse(context.COST().GetText());
+        }
+        else
+        {
+            _logger.LogError("Multiple cost definitions for card {c} {d}", currentCard?.Name, currentCard?.Cost);
+        }
+        return base.VisitCardCost(context);
     }
     public override object VisitCardTargets([NotNull] CDLParser.CardTargetsContext context)
     {

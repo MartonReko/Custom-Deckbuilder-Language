@@ -70,6 +70,7 @@ Class | Method | HTTP request | Description
  - [CombatDto](docs/CombatDto.md)
  - [EffectDto](docs/EffectDto.md)
  - [EnemyDto](docs/EnemyDto.md)
+ - [ErrorReturnDto](docs/ErrorReturnDto.md)
  - [MapDto](docs/MapDto.md)
  - [MoveDto](docs/MoveDto.md)
  - [NodeDto](docs/NodeDto.md)

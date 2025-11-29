@@ -1,4 +1,5 @@
 ﻿using CDL.Game.DTOs;
+using CDL.Lang.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CDL.Game.Controllers
@@ -97,19 +98,22 @@ namespace CDL.Game.Controllers
 
         [HttpPost(template: "readcdl", Name = "ReadCDL")]
         [Consumes("text/plain")]
-        [Produces("text/plain")]
-        public async Task<ActionResult<string>> ParseCDL()
+        //[Produces("text/plain")]
+        public async Task<ActionResult<ErrorReturnDto>> ParseCDL()
         {
             using var reader = new StreamReader(Request.Body);
             string content = await reader.ReadToEndAsync();
-            try
+            CDLExceptionHandler eh = _gameServiceManager.Initialize(content);
+            //return ;
+            if (eh == null)
             {
-                _gameServiceManager.Initialize(content);
-                return Ok("GameService initialized successfully.");
+                ErrorReturnDto msg = new(Message: "GameService initialized successfully.", CodeErrors: null);
+                return Ok(msg);
             }
-            catch (InvalidByteRangeException e)
+            else
             {
-                return BadRequest(e.Message);
+                ErrorReturnDto msg = new(Message: "Errors in code detected.", CodeErrors: new([.. eh.GetExceptions().Select(x => x.ToString())]));
+                return BadRequest(msg);
             }
         }
 
