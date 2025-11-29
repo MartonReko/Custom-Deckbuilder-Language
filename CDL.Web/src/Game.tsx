@@ -3,6 +3,7 @@ import { GameApi, PlayCardDto } from "../generated-sources/openapi";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import playerImg from './assets/tempPlayer.png';
 import enemyImg from './assets/tempEnemy.png';
+import { OrbitProgress } from "react-loading-indicators";
 //
 
 export function Game({ api }: { api: GameApi }) {
@@ -78,7 +79,10 @@ export function Game({ api }: { api: GameApi }) {
         }
     })
     if (statusPending) {
-        return <span>Loading combat...</span>
+        return <div className="m-auto  flex items-center justify-center">
+            <OrbitProgress color="#32cd32" size="medium" text="" textColor="" />
+            Loading game...
+        </div>
     }
     if (statusErrored) {
         return <span>Error: {statusError.message}</span>
