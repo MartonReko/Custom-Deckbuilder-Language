@@ -1,5 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
+using CDL.Game.DTOs;
 using CDL.Lang;
+using CDL.Lang.Exceptions;
 using CDL.Lang.Parsing;
 
 namespace CDL.Game
@@ -15,7 +17,7 @@ namespace CDL.Game
             //Initialize(storeddlCode);
         }
 
-        public bool Initialize(string CdlCode)
+        public CDLExceptionHandler? Initialize(string CdlCode)
         {
             if (_gameService != null)
             {
@@ -23,18 +25,21 @@ namespace CDL.Game
             }
 
             LanguageProcessor lp = new();
-            ObjectsHelper? objectsHelper = lp.ProcessText(CdlCode);
+            (ObjectsHelper?, CDLExceptionHandler) lpReturnValue = lp.ProcessText(CdlCode);
+            ObjectsHelper objectsHelper = lpReturnValue.Item1;
+            CDLExceptionHandler excHandler = lpReturnValue.Item2;
 
             if (objectsHelper == null)
             {
-                throw new InvalidOperationException("Invalid code.");
+                return excHandler;
+                //throw new InvalidOperationException("Invalid code.");
             }
             else
             {
                 _gameService = new(objectsHelper);
                 storeddlCode = CdlCode;
                 //_gameService.Initialize();
-                return true;
+                return null;
             }
         }
 

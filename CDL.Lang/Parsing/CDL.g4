@@ -30,8 +30,6 @@ expression:
 // | expression addSubOp expression # addSubExpression | expression mulDivOp expression #
 // mulDivExpression;
 expressionContainer: expression;
-addSubOp: PLUS | MINUS;
-mulDivOp: MUL | DIV;
 expressionOp: PLUS | MINUS | MUL | DIV;
 primary: parenthesizedExpression | literalExpression;
 parenthesizedExpression: LPAREN expression RPAREN;
@@ -54,8 +52,6 @@ paramsDef:
 params: LPAREN (varRef | literalExpression)? RPAREN;
 
 gameSetup: GAME LCURLY gameProperties+ RCURLY;
-/* gameProperties: ( PLAYERSELECT CLN varName EOS | STAGES CLN list EOS | NAME CLN varName EOS )+;
- */
 gameProperties:
 	PLAYERSELECT CLN varName EOS	# gamePlayerSelect
 	| NAME CLN varName EOS			# gameName
@@ -104,7 +100,8 @@ cardDefinition: CARD varName LCURLY cardProperty+ RCURLY;
 cardProperty:
 	RARITY CLN rarityName EOS	# cardRarity
 	| VALIDTARGETS CLN list EOS	# cardTargets
-	| APPLY CLN list EOS		# cardEffects;
+	| APPLY CLN list EOS		# cardEffects
+	| COST CLN INT EOS          # cardCost;
 
 //Lexer
 
@@ -155,6 +152,7 @@ NAME: 'Name';
 PLAYERSELECT: 'Player';
 ENEMY: 'Enemy';
 ENEMYLC: 'enemy';
+COST: 'Cost';
 
 
 

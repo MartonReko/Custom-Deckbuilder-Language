@@ -126,6 +126,25 @@ export interface EnemyDto {
 /**
  * 
  * @export
+ * @interface ErrorReturnDto
+ */
+export interface ErrorReturnDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof ErrorReturnDto
+     */
+    'message': string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof ErrorReturnDto
+     */
+    'codeErrors': Array<string> | null;
+}
+/**
+ * 
+ * @export
  * @interface MapDto
  */
 export interface MapDto {
@@ -803,7 +822,7 @@ export const GameApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async readCDL(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+        async readCDL(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ErrorReturnDto>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.readCDL(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['GameApi.readCDL']?.[localVarOperationServerIndex]?.url;
@@ -905,7 +924,7 @@ export const GameApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        readCDL(options?: RawAxiosRequestConfig): AxiosPromise<string> {
+        readCDL(options?: RawAxiosRequestConfig): AxiosPromise<ErrorReturnDto> {
             return localVarFp.readCDL(options).then((request) => request(axios, basePath));
         },
         /**
@@ -998,7 +1017,7 @@ export interface GameApiInterface {
      * @throws {RequiredError}
      * @memberof GameApiInterface
      */
-    readCDL(options?: RawAxiosRequestConfig): AxiosPromise<string>;
+    readCDL(options?: RawAxiosRequestConfig): AxiosPromise<ErrorReturnDto>;
 
     /**
      * 
