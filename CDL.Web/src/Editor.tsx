@@ -5,14 +5,12 @@ import { data } from "react-router";
 import { send } from "vite";
 
 const temporaryCDL: string = `Game{
-    Name: My_Wonderful_Game;
-    Stages: [
-    beginnerStage
-    ];
-    Player: Knight;
+    Name: MyGame;
+    Stages: [stage1, stage2];
+    Player: MyCharacter;
 }
 
-Character Knight{
+Character MyCharacter{
     Health: 150;
     EffectEveryTurn: [smallHeal];
     Deck: [3x strike, 1x heal];
@@ -22,12 +20,21 @@ Effect smallHeal{
     Deal -1 damage instantly;
 }
 
-Stage beginnerStage{
+Stage stage1{
     Length: 2;
     Max-width: 5;
     Min-width: 2;
     FillWith: [easyNode];
     MustContain: [1x eliteNode, 2x normalNode];
+    EndsWith: bossNode;
+}
+
+Stage stage2{
+    Length: 2;
+    Max-width: 10;
+    Min-width: 5;
+    FillWith: [easyNode];
+    MustContain: [5x eliteNode, 10x normalNode];
     EndsWith: bossNode;
 }
 
@@ -37,30 +44,23 @@ Node eliteNode{
 }
 
 Node easyNode{
-    Enemies: [
-    2x easyEnemy
-    ];
+    Enemies: [2x easyEnemy];
     Rewards: [
 		3x common with chance 80%,
 		2x rare with chance 20%
     ];
 }
+
 Node normalNode{
-    Enemies: [
-    3x easyEnemy
-    ];
+    Enemies: [3x easyEnemy];
     Rewards: [
 		3x common with chance 50%,
 		2x rare with chance 50%
     ];
 }
 
-
-
 Node bossNode{
-    Enemies: [
-    1x bossEnemy
-    ];
+    Enemies: [1x bossEnemy];
     Rewards: [
         3x rare with chance 100%
     ];
@@ -81,23 +81,27 @@ Enemy eliteEnemy{
     Actions: [basicEnemyAttack player,statusAttack player];
 }
 
-
 Enemy bossEnemy{
     Health: 100;
     Actions: [bossAttack player, 2x statusAttack player, bossBuff self];
 }
+
 EnemyAction bossAttack{
     Apply: [bossDamageEffect, poisonEffect];
 }
+
 EnemyAction statusAttack{
     Apply: [curseEffect, poisonEffect];
 }
+
 EnemyAction bossBuff{
     Apply: [bossBuffEffect];
 }
+
 Effect bossDamageEffect{
     Deal 20 damage instantly;
 }
+
 Effect bossBuffEffect{
     Outgoing damage is 1.25x;
     Incoming damage is 0.75x;
@@ -107,24 +111,25 @@ EnemyAction basicEnemyAttack{
     Apply: [2x basicAttack, poisonEffect];
 }
 
-
-
-
 Effect curseEffect{
     Outgoing damage is 0.75x;
     Incoming damage is 1.2x;
 }
+
 Card superCard{
     Rarity: rare;
     ValidTargets: [enemy];
     Apply: [10x basicAttack, 5x weakness, 2x poisonEffect];
 }
+
 Effect poisonEffect{
     Deal 3 damage end of turn;
 }
+
 Effect basicAttack{
     Deal baseDamage * 2 damage instantly;
 }
+
 Effect weakness{
     Outgoing damage is 0.75x;
 }

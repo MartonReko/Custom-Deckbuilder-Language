@@ -37,7 +37,6 @@ namespace CDL.Game.GameObjects
             if (enemy.Health <= 0)
             {
                 // TODO:
-                // Not sure if this works
                 // Instead of removal use a status
                 Enemies.Remove(enemy);
             }

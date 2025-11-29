@@ -19,7 +19,6 @@ Effect smallHeal{
 
 Stage beginnerStage{
     Length: 10;
-    Length: 10;
     Max-width: 5;
     Min-width: 2;
     FillWith: [easyNode];

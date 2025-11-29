@@ -18,7 +18,7 @@ public class VisBlocks(EnvManager envManager, CDLExceptionHandler exceptionHandl
     private List<(int num, string varName, EnemyTarget target)> LocalEnemyAttackList { get; set; } = [];
     private HashSet<TargetTypes> LocalCardTargetList { get; set; } = [];
 
-    // TODO
+    // TODO:
     // Possibly unfinished
     private readonly struct ExpressionHelper(CDLType type, string value)
     {
@@ -29,12 +29,7 @@ public class VisBlocks(EnvManager envManager, CDLExceptionHandler exceptionHandl
             return $"ExpressionHelper type: {type.Name}\tvalue: {value}";
         }
     }
-    /*
-    private readonly struct ListHelper(string name, int num = 1, int chance = 100)
-    {
 
-    }
-    */
     private Stage currentStage = null!;
     private void LogCharacter()
     {

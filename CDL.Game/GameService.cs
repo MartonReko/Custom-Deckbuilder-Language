@@ -16,7 +16,7 @@ namespace CDL.Game
         {
             PLAYER, ENEMY
         }
-        // TODO
+        // TODO:
         // Block actions upon death
         public PlayerStates PlayerState { get; private set; }
         public CombatStates CombatState { get; private set; }
@@ -65,16 +65,18 @@ namespace CDL.Game
             }
         }
 
-        // TODO: Really have to fix all these null warnings, also implement logging or some feedback
         public bool Move(Guid nodeId)
         {
             if (!GameMap!.CurrentStage.GameNodesByLevel.TryGetValue(GameMap.LevelCounter, out List<GameNode>? nodes))
             {
+                Console.WriteLine("Could not get nodes?");
                 return false;
             }
             GameNode? node = nodes.FirstOrDefault(x => x.Id.Equals(nodeId));
             if (node == null)
             {
+
+                Console.WriteLine("Node with ID not found!");
                 return false;
             }
             if (PlayerState == PlayerStates.MAP && GameMap.MoveTo(node))
@@ -139,6 +141,7 @@ namespace CDL.Game
             }
             else if (GameMap.IsLastOnStage())
             {
+                Console.WriteLine("Last node on stage");
                 GameMap.LoadNextStage();
                 Player.Restore();
                 PlayerState = PlayerStates.MAP;
@@ -207,9 +210,6 @@ namespace CDL.Game
 
             if (targetId.Equals(Player.Id))
             {
-                // FIX: Current attack management system won't work well
-                // Use a something like visitor instead?
-
                 // HACK: Temp "fix"
                 AttackPlayer(card);
             }
@@ -246,20 +246,14 @@ namespace CDL.Game
                     // Check if this works
                     candidates.Remove(cardToAdd);
                 }
-                else
-                {
-                    // Maybe there arent enough unique cards for a rarity, then duplicate last one
-                    // NOTE: Actually just do nothing instead :)
-                    // NodeRewards.Add(cardsChosen.Last());
-                }
             }
         }
         public bool ChooseReward(Guid Id)
         {
-            // TODO
+            // TODO:
             // Nicer handling of wrong state
             if (PlayerState != PlayerStates.REWARD) return false;
-            // TODO
+            // TODO:
             // Card not found error
             GameCard chosen = NodeRewards.Where(x => x.Id.Equals(Id)).First();
             Deck.Add(chosen);
