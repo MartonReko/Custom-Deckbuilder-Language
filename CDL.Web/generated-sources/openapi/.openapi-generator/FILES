@@ -7,10 +7,11 @@ common.ts
 configuration.ts
 docs/CDLGameApi.md
 docs/CardDto.md
+docs/CodeErrorDto.md
+docs/CodeErrorListDto.md
 docs/CombatDto.md
 docs/EffectDto.md
 docs/EnemyDto.md
-docs/ErrorReturnDto.md
 docs/GameApi.md
 docs/MapDto.md
 docs/MoveDto.md

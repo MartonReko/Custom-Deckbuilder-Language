@@ -98,22 +98,35 @@ namespace CDL.Game.Controllers
 
         [HttpPost(template: "readcdl", Name = "ReadCDL")]
         [Consumes("text/plain")]
-        //[Produces("text/plain")]
-        public async Task<ActionResult<ErrorReturnDto>> ParseCDL()
+        [Produces("text/plain")]
+        public async Task<ActionResult<string>> ParseCDL()
         {
             using var reader = new StreamReader(Request.Body);
             string content = await reader.ReadToEndAsync();
-            CDLExceptionHandler eh = _gameServiceManager.Initialize(content);
-            //return ;
-            if (eh == null)
+
+            try
             {
-                ErrorReturnDto msg = new(Message: "GameService initialized successfully.", CodeErrors: null);
-                return Ok(msg);
+                _gameServiceManager.Initialize(content);
+                return Ok("GameService initialized successfully.");
+
             }
-            else
+            catch (Exception e)
             {
-                ErrorReturnDto msg = new(Message: "Errors in code detected.", CodeErrors: new([.. eh.GetExceptions().Select(x => x.ToString())]));
-                return BadRequest(msg);
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet(template: "codeErrors", Name = "CodeErrors")]
+        public ActionResult<CodeErrorListDto> GetCodeErrors()
+        {
+            try
+            {
+                CodeErrorListDto errors = new([.. _gameServiceManager.CDLExceptions.Select(x => new CodeErrorDto(x.Column, x.Message))]);
+                return Ok(errors);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
             }
         }
 
@@ -142,14 +155,6 @@ namespace CDL.Game.Controllers
                 return Ok("Successfully played card");
             else
                 return BadRequest("Playing card failed");
-        }
-
-        [HttpPost(template: "reset", Name = "Reset")]
-        public IActionResult Reset()
-        {
-            if (_gameServiceManager.GetService() != null)
-                _gameServiceManager.Reset();
-            return Ok();
         }
 
         [HttpPost(template: "endTurn", Name = "EndTurn")]

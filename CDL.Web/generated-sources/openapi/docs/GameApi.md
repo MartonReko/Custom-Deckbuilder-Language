@@ -4,6 +4,7 @@ All URIs are relative to *http://localhost*
 
 |Method | HTTP request | Description|
 |------------- | ------------- | -------------|
+|[**codeErrors**](#codeerrors) | **GET** /Game/codeErrors | |
 |[**combat**](#combat) | **GET** /Game/combat | |
 |[**endTurn**](#endturn) | **POST** /Game/endTurn | |
 |[**getGameState**](#getgamestate) | **GET** /Game/status | |
@@ -12,8 +13,50 @@ All URIs are relative to *http://localhost*
 |[**move**](#move) | **POST** /Game/move | |
 |[**playCard**](#playcard) | **POST** /Game/playCard | |
 |[**readCDL**](#readcdl) | **POST** /Game/readcdl | |
-|[**reset**](#reset) | **POST** /Game/reset | |
 |[**reward**](#reward) | **GET** /Game/reward | |
+
+# **codeErrors**
+> CodeErrorListDto codeErrors()
+
+
+### Example
+
+```typescript
+import {
+    GameApi,
+    Configuration
+} from 'restClient';
+
+const configuration = new Configuration();
+const apiInstance = new GameApi(configuration);
+
+const { status, data } = await apiInstance.codeErrors();
+```
+
+### Parameters
+This endpoint does not have any parameters.
+
+
+### Return type
+
+**CodeErrorListDto**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: text/plain, application/json, text/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **combat**
 > CombatDto combat()
@@ -339,7 +382,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **readCDL**
-> ErrorReturnDto readCDL()
+> string readCDL()
 
 
 ### Example
@@ -362,7 +405,7 @@ This endpoint does not have any parameters.
 
 ### Return type
 
-**ErrorReturnDto**
+**string**
 
 ### Authorization
 
@@ -371,50 +414,7 @@ No authorization required
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: text/plain, application/json, text/json
-
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-|**200** | OK |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **reset**
-> reset()
-
-
-### Example
-
-```typescript
-import {
-    GameApi,
-    Configuration
-} from 'restClient';
-
-const configuration = new Configuration();
-const apiInstance = new GameApi(configuration);
-
-const { status, data } = await apiInstance.reset();
-```
-
-### Parameters
-This endpoint does not have any parameters.
-
-
-### Return type
-
-void (empty response body)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: Not defined
+ - **Accept**: text/plain
 
 
 ### HTTP response details

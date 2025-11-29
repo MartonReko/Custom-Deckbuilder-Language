@@ -52,6 +52,7 @@ All URIs are relative to *http://localhost*
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
 *CDLGameApi* | [**rootGet**](docs/CDLGameApi.md#rootget) | **GET** / | 
+*GameApi* | [**codeErrors**](docs/GameApi.md#codeerrors) | **GET** /Game/codeErrors | 
 *GameApi* | [**combat**](docs/GameApi.md#combat) | **GET** /Game/combat | 
 *GameApi* | [**endTurn**](docs/GameApi.md#endturn) | **POST** /Game/endTurn | 
 *GameApi* | [**getGameState**](docs/GameApi.md#getgamestate) | **GET** /Game/status | 
@@ -60,17 +61,17 @@ Class | Method | HTTP request | Description
 *GameApi* | [**move**](docs/GameApi.md#move) | **POST** /Game/move | 
 *GameApi* | [**playCard**](docs/GameApi.md#playcard) | **POST** /Game/playCard | 
 *GameApi* | [**readCDL**](docs/GameApi.md#readcdl) | **POST** /Game/readcdl | 
-*GameApi* | [**reset**](docs/GameApi.md#reset) | **POST** /Game/reset | 
 *GameApi* | [**reward**](docs/GameApi.md#reward) | **GET** /Game/reward | 
 
 
 ### Documentation For Models
 
  - [CardDto](docs/CardDto.md)
+ - [CodeErrorDto](docs/CodeErrorDto.md)
+ - [CodeErrorListDto](docs/CodeErrorListDto.md)
  - [CombatDto](docs/CombatDto.md)
  - [EffectDto](docs/EffectDto.md)
  - [EnemyDto](docs/EnemyDto.md)
- - [ErrorReturnDto](docs/ErrorReturnDto.md)
  - [MapDto](docs/MapDto.md)
  - [MoveDto](docs/MoveDto.md)
  - [NodeDto](docs/NodeDto.md)

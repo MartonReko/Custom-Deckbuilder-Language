@@ -1,8 +1,6 @@
-import { useState } from "react";
-import { ErrorReturnDto, GameApi } from "../generated-sources/openapi";
+import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { data } from "react-router";
-import { send } from "vite";
+import { CodeErrorListDto, GameApi } from "../generated-sources/openapi";
 
 const temporaryCDL: string = `Game{
     Name: MyGame;
@@ -156,26 +154,25 @@ Card poison{
 
 export function Editor({ api }: { api: GameApi }) {
 
-    const [response, setResponse] = useState<ErrorReturnDto>({ codeErrors: [], message: '' });
-    const [code, setCode] = useState(temporaryCDL);
+    const [response, setResponse] = useState('');
+    const [code, setCode] = useState(localStorage.getItem('code') || temporaryCDL);
+    const [errorsAreOld, setErrorsAreOld] = useState(false);
+
+    useEffect(() => {
+        localStorage.setItem('code', code);
+    }, [code])
 
     const queryClient = useQueryClient()
-    function reset() {
-        api.reset().then(() => queryClient.refetchQueries())
-    }
 
-    //const { isPending: cdlPending, isError: cdlErrored, data: cdlMessage, error: cdlError } = useQuery({
-    //    queryKey: ['cdlCode'],
-    //    queryFn: async () => {
-    //        const data = await api.readCDL({
-    //            headers: {
-    //                'Content-Type': 'text/plain'
-    //            }
-    //        }); return data.data
-    //    },
-    //    enabled: false,
-    //})
-
+    const { isPending: _cdlPending, isError: _cdlErrored, data: cdlMessage, error: _cdlError } = useQuery({
+        queryKey: ['cdl'],
+        queryFn: async () => {
+            const data = await api.codeErrors();
+            setErrorsAreOld(false);
+            return data.data;
+        },
+        enabled: false,
+    })
 
     const sendCode = useMutation({
         mutationFn: (code: string) => {
@@ -186,27 +183,30 @@ export function Editor({ api }: { api: GameApi }) {
                 }
             });
         },
-        onSuccess: (data) => {
-            console.log(data.data.message);
-            console.log(data.data.codeErrors);
-            //setResponse(data.data);
+        onSuccess: () => {
+            setResponse("Succesfully parsed code.");
+            setErrorsAreOld(true);
         },
+        onError: () => {
+            queryClient.fetchQuery({ queryKey: ['cdl'] });
+            setResponse("Failed to parse code.");
+        }
     })
-    //  function sendButton() {
-    //      api.readCDL({
-    //          data: code,
-    //          headers: {
-    //              'Content-Type': 'text/plain'
-    //          }
-    //      }).then((result) => {
-    //          setResponse(result.data);
-    //          console.log(result.data);
-    //      }).catch((e) => {
-    //          console.error(e);
-    //          setResponse(e.response.data.message)
-    //      });
-    //  }
-
+    function Errors() {
+        if (!errorsAreOld) {
+            return <div>
+                {cdlMessage?.errors.map((error) => {
+                    return <div>
+                        {error.errorMessage}
+                        <br />
+                    </div>
+                }
+                )}
+            </div>
+        }
+        else {
+        }
+    }
 
     return (
         <div className=" h-full w-full flex flex-col  p-16">
@@ -215,21 +215,17 @@ export function Editor({ api }: { api: GameApi }) {
                     CDL Editor
                 </h1>
                 <label>
-                    Response: {response.message}
+                    {response}
                     <br />
-                    {response.codeErrors?.map((error) =>
-                        <div>
-                            {error}
-                        </div>
-                    )}
+                    <br />
+                    <Errors />
                 </label>
-            </div>
-            <button className="text-white bg-purple-700" onClick={() => reset()}> RESET </button>
+            </div >
             <br />
             <label className="h-full basis-9/10 p-8">
                 CDL code input: <textarea defaultValue={code} onChange={e => setCode(e.target.value)} className="h-full w-full bg-gray-600 rounded align-top p-2" name="codeField" />
                 <button className="btn" onClick={() => sendCode.mutate(code)}>Send</button>
             </label>
-        </div>
+        </div >
     )
 }

@@ -51,6 +51,38 @@ export interface CardDto {
 /**
  * 
  * @export
+ * @interface CodeErrorDto
+ */
+export interface CodeErrorDto {
+    /**
+     * 
+     * @type {number}
+     * @memberof CodeErrorDto
+     */
+    'line': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof CodeErrorDto
+     */
+    'errorMessage': string;
+}
+/**
+ * 
+ * @export
+ * @interface CodeErrorListDto
+ */
+export interface CodeErrorListDto {
+    /**
+     * 
+     * @type {Array<CodeErrorDto>}
+     * @memberof CodeErrorListDto
+     */
+    'errors': Array<CodeErrorDto>;
+}
+/**
+ * 
+ * @export
  * @interface CombatDto
  */
 export interface CombatDto {
@@ -122,25 +154,6 @@ export interface EnemyDto {
      * @memberof EnemyDto
      */
     'effects': Array<EffectDto>;
-}
-/**
- * 
- * @export
- * @interface ErrorReturnDto
- */
-export interface ErrorReturnDto {
-    /**
-     * 
-     * @type {string}
-     * @memberof ErrorReturnDto
-     */
-    'message': string;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof ErrorReturnDto
-     */
-    'codeErrors': Array<string> | null;
 }
 /**
  * 
@@ -424,6 +437,35 @@ export const GameApiAxiosParamCreator = function (configuration?: Configuration)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
+        codeErrors: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/Game/codeErrors`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
         combat: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/Game/combat`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -674,35 +716,6 @@ export const GameApiAxiosParamCreator = function (configuration?: Configuration)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        reset: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/Game/reset`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
         reward: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/Game/reward`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -737,6 +750,17 @@ export const GameApiAxiosParamCreator = function (configuration?: Configuration)
 export const GameApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = GameApiAxiosParamCreator(configuration)
     return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async codeErrors(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CodeErrorListDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.codeErrors(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GameApi.codeErrors']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
         /**
          * 
          * @param {*} [options] Override http request option.
@@ -822,21 +846,10 @@ export const GameApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async readCDL(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ErrorReturnDto>> {
+        async readCDL(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.readCDL(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['GameApi.readCDL']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async reset(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.reset(options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['GameApi.reset']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -860,6 +873,14 @@ export const GameApiFp = function(configuration?: Configuration) {
 export const GameApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
     const localVarFp = GameApiFp(configuration)
     return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        codeErrors(options?: RawAxiosRequestConfig): AxiosPromise<CodeErrorListDto> {
+            return localVarFp.codeErrors(options).then((request) => request(axios, basePath));
+        },
         /**
          * 
          * @param {*} [options] Override http request option.
@@ -924,16 +945,8 @@ export const GameApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        readCDL(options?: RawAxiosRequestConfig): AxiosPromise<ErrorReturnDto> {
+        readCDL(options?: RawAxiosRequestConfig): AxiosPromise<string> {
             return localVarFp.readCDL(options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        reset(options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.reset(options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -952,6 +965,14 @@ export const GameApiFactory = function (configuration?: Configuration, basePath?
  * @interface GameApi
  */
 export interface GameApiInterface {
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GameApiInterface
+     */
+    codeErrors(options?: RawAxiosRequestConfig): AxiosPromise<CodeErrorListDto>;
+
     /**
      * 
      * @param {*} [options] Override http request option.
@@ -1017,15 +1038,7 @@ export interface GameApiInterface {
      * @throws {RequiredError}
      * @memberof GameApiInterface
      */
-    readCDL(options?: RawAxiosRequestConfig): AxiosPromise<ErrorReturnDto>;
-
-    /**
-     * 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof GameApiInterface
-     */
-    reset(options?: RawAxiosRequestConfig): AxiosPromise<void>;
+    readCDL(options?: RawAxiosRequestConfig): AxiosPromise<string>;
 
     /**
      * 
@@ -1044,6 +1057,16 @@ export interface GameApiInterface {
  * @extends {BaseAPI}
  */
 export class GameApi extends BaseAPI implements GameApiInterface {
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GameApi
+     */
+    public codeErrors(options?: RawAxiosRequestConfig) {
+        return GameApiFp(this.configuration).codeErrors(options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @param {*} [options] Override http request option.
@@ -1125,16 +1148,6 @@ export class GameApi extends BaseAPI implements GameApiInterface {
      */
     public readCDL(options?: RawAxiosRequestConfig) {
         return GameApiFp(this.configuration).readCDL(options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof GameApi
-     */
-    public reset(options?: RawAxiosRequestConfig) {
-        return GameApiFp(this.configuration).reset(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

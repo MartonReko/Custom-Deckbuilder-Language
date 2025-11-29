@@ -9,37 +9,24 @@ namespace CDL.Game
     public class GameServiceManager
     {
         private GameService? _gameService;
+        public List<CDLException> CDLExceptions { get; private set; }
         private string storeddlCode = "";
 
-        public void Reset()
+        public void Initialize(string CdlCode)
         {
-            _gameService = null;
-            //Initialize(storeddlCode);
-        }
-
-        public CDLExceptionHandler? Initialize(string CdlCode)
-        {
-            if (_gameService != null)
-            {
-                throw new InvalidOperationException("Already initialized.");
-            }
-
             LanguageProcessor lp = new();
             (ObjectsHelper?, CDLExceptionHandler) lpReturnValue = lp.ProcessText(CdlCode);
-            ObjectsHelper objectsHelper = lpReturnValue.Item1;
-            CDLExceptionHandler excHandler = lpReturnValue.Item2;
+            CDLExceptions = lpReturnValue.Item2.GetExceptions();
 
-            if (objectsHelper == null)
+            if (lpReturnValue.Item1 == null)
             {
-                return excHandler;
-                //throw new InvalidOperationException("Invalid code.");
+                throw new InvalidOperationException("Failed to parse code.");
             }
             else
             {
-                _gameService = new(objectsHelper);
+                _gameService = new(lpReturnValue.Item1);
                 storeddlCode = CdlCode;
                 //_gameService.Initialize();
-                return null;
             }
         }
 

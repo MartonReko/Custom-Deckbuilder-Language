@@ -33,7 +33,6 @@ namespace CDL.Game.GameObjects
             // Randomly fill with nodes that are required
             while (gameNodesUnordered.Count > 0)
             {
-                Console.WriteLine($"Still running, {gameNodesUnordered.Count} left");
                 // Length - 1 so there is space for boss node
                 for (int i = 0; i < ModelStage.StageLength - 1; i++)
                 {
@@ -44,7 +43,6 @@ namespace CDL.Game.GameObjects
                             if (r.Next(0, 2) == 0)
                             {
                                 GameNodesByLevel[i].Add(gameNodesUnordered.Pop());
-                                Console.WriteLine("pop");
                             }
                         }
                     }
