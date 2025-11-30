@@ -88,17 +88,6 @@ export function Game({ api }: { api: GameApi }) {
         return <span>Error: {statusError.message}</span>
     }
 
-    //    function useCard(cardId: string, targetId: string) {
-    //        console.log(`Card ${cardId} and target ${targetId}`);
-    //        api.playCard({ cardId, targetId }).then(() => {
-    //            fetch('status');
-    //            fetch('combat');
-    //            console.log(`Card ${cardId} was used on ${targetId}`)
-    //        }
-    //        );
-    //    }
-
-
     function showStatus() {
         return <div className="">
             <button className="text-white bg-gray-700" onClick={() => (endTurn.mutate())}> End turn </button>
@@ -106,7 +95,7 @@ export function Game({ api }: { api: GameApi }) {
             <label>Currently in {status?.currentState}</label>
             <br />
             {status?.deck.map((card) =>
-                <span className="m-2">{`[${card.name}]`}
+                <span className="m-2">{`[${card.name}, ${card.cost}]`}
                     <button className="text-white bg-gray-700" onClick={() => playCard.mutate({ cardId: card.id, targetId: selected })}>Use</button>
                 </span>
             )}

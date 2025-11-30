@@ -99,9 +99,10 @@ effectTarget: ENEMIES | TARGET | PLAYER;
 cardDefinition: CARD varName LCURLY cardProperty+ RCURLY;
 cardProperty:
 	RARITY CLN rarityName EOS	# cardRarity
+	| COST CLN INT EOS          # cardCost
 	| VALIDTARGETS CLN list EOS	# cardTargets
 	| APPLY CLN list EOS		# cardEffects
-	| COST CLN INT EOS          # cardCost;
+	;
 
 //Lexer
 

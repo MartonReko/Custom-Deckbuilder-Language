@@ -7,6 +7,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **id** | **string** |  | [default to undefined]
 **name** | **string** |  | [default to undefined]
+**cost** | **number** |  | [default to undefined]
 **effects** | [**Array&lt;EffectDto&gt;**](EffectDto.md) |  | [default to undefined]
 
 ## Example
@@ -17,6 +18,7 @@ import { CardDto } from 'restClient';
 const instance: CardDto = {
     id,
     name,
+    cost,
     effects,
 };
 ```

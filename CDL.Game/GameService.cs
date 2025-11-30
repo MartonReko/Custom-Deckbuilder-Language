@@ -197,6 +197,7 @@ namespace CDL.Game
         }
         public bool PlayCard(Guid cardId, Guid targetId)
         {
+
             if (PlayerState != PlayerStates.COMBAT)
             {
                 throw new InvalidOperationException("Can't play cards outside of combat");
@@ -207,6 +208,15 @@ namespace CDL.Game
             }
 
             GameCard card = Deck.First(x => x.Id.Equals(cardId));
+
+            if (card.ModelCard.Cost > Energy)
+            {
+                throw new InvalidOperationException("Not enough energy to play card");
+            }
+            else
+            {
+                Energy -= card.ModelCard.Cost;
+            }
 
             if (targetId.Equals(Player.Id))
             {
@@ -223,7 +233,6 @@ namespace CDL.Game
                 }
 
             }
-            Energy--;
             return true;
         }
 

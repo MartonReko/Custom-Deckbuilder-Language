@@ -43,6 +43,12 @@ export interface CardDto {
     'name': string;
     /**
      * 
+     * @type {number}
+     * @memberof CardDto
+     */
+    'cost': number;
+    /**
+     * 
      * @type {Array<EffectDto>}
      * @memberof CardDto
      */

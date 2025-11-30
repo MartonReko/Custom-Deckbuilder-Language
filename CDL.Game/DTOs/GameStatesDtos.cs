@@ -35,6 +35,7 @@ namespace CDL.Game.DTOs
     public record CardDto(
             Guid Id,
             string Name,
+            int Cost,
             List<EffectDto> Effects
             );
     public record EffectDto(

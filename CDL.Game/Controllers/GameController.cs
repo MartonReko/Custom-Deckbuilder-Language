@@ -28,7 +28,7 @@ namespace CDL.Game.Controllers
                         Health: gs.Player.Health,
                         CurrentNode: gs.CurrentGameNode?.Id ?? null,
                         CurrentState: gs.PlayerState,
-                        Deck: [.. gs.Deck.Select((x) => new CardDto(x.Id, x.ModelCard.Name, [.. x.ModelCard.EffectsApplied.Select(y => new EffectDto(y.effect.Name, 1, "Temp desc"))]))],
+                        Deck: [.. gs.Deck.Select((x) => new CardDto(x.Id, x.ModelCard.Name, x.ModelCard.Cost, [.. x.ModelCard.EffectsApplied.Select(y => new EffectDto(y.effect.Name, 1, "Temp desc"))]))],
                         Effects: [.. gs.Player.CurrentEffects.Select(x => new EffectDto(x.Key.Name, x.Value, "Temp desc"))]
                         );
                 return response;
@@ -86,7 +86,7 @@ namespace CDL.Game.Controllers
             {
                 GameService gs = _gameServiceManager.GetService();
                 RewardDto response = new(
-                        Cards: [.. gs.NodeRewards.Select(x => new CardDto(x.Id, x.ModelCard.Name, [.. x.ModelCard.EffectsApplied.Select(y => new EffectDto(y.effect.Name, 1, "Temp desc"))]))]
+                        Cards: [.. gs.NodeRewards.Select(x => new CardDto(x.Id, x.ModelCard.Name, x.ModelCard.Cost, [.. x.ModelCard.EffectsApplied.Select(y => new EffectDto(y.effect.Name, 1, "Temp desc"))]))]
                         );
                 return response;
             }

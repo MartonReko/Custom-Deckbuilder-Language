@@ -112,18 +112,6 @@ public interface ICDLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitExpressionContainer([NotNull] CDLParser.ExpressionContainerContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CDLParser.addSubOp"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitAddSubOp([NotNull] CDLParser.AddSubOpContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="CDLParser.mulDivOp"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitMulDivOp([NotNull] CDLParser.MulDivOpContext context);
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="CDLParser.expressionOp"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -426,6 +414,13 @@ public interface ICDLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitCardRarity([NotNull] CDLParser.CardRarityContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>cardCost</c>
+	/// labeled alternative in <see cref="CDLParser.cardProperty"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitCardCost([NotNull] CDLParser.CardCostContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>cardTargets</c>
 	/// labeled alternative in <see cref="CDLParser.cardProperty"/>.
 	/// </summary>
@@ -439,11 +434,4 @@ public interface ICDLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitCardEffects([NotNull] CDLParser.CardEffectsContext context);
-	/// <summary>
-	/// Visit a parse tree produced by the <c>cardCost</c>
-	/// labeled alternative in <see cref="CDLParser.cardProperty"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitCardCost([NotNull] CDLParser.CardCostContext context);
 }

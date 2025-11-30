@@ -718,9 +718,9 @@ public class VisBlocks(EnvManager envManager, CDLExceptionHandler exceptionHandl
     }
     public override object VisitCardCost([NotNull] CDLParser.CardCostContext context)
     {
-        if (currentCard?.Cost != -1)
+        if (currentCard?.Cost == -1)
         {
-            currentCard!.Cost = int.Parse(context.COST().GetText());
+            currentCard!.Cost = int.Parse(context.INT().GetText());
         }
         else
         {

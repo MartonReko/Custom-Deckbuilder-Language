@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { CodeErrorListDto, GameApi } from "../generated-sources/openapi";
+import { GameApi } from "../generated-sources/openapi";
 
 const temporaryCDL: string = `Game{
     Name: MyGame;
@@ -28,7 +28,7 @@ Stage stage1{
 }
 
 Stage stage2{
-    Length: 2;
+    Length: 3;
     Max-width: 10;
     Min-width: 5;
     FillWith: [easyNode];
@@ -114,12 +114,6 @@ Effect curseEffect{
     Incoming damage is 1.2x;
 }
 
-Card superCard{
-    Rarity: rare;
-    ValidTargets: [enemy];
-    Apply: [10x basicAttack, 5x weakness, 2x poisonEffect];
-}
-
 Effect poisonEffect{
     Deal 3 damage end of turn;
 }
@@ -134,18 +128,28 @@ Effect weakness{
 
 int baseDamage = 5;
 
+Card superCard{
+    Cost: 3;
+    Rarity: rare;
+    ValidTargets: [enemy];
+    Apply: [10x basicAttack, 5x weakness, 2x poisonEffect];
+}
+
 Card strike{
+    Cost: 1;
     Rarity: common;
     ValidTargets: [enemy];
     Apply: [basicAttack];
 }
 Card heal{
+    Cost: 1;
     Rarity: rare;
     ValidTargets: [player];
     Apply: [smallHeal];
 }
 
 Card poison{
+    Cost: 2;
     Rarity: common;
     ValidTargets: [player, enemy];
     Apply: [2x poisonEffect, weakness];
@@ -192,6 +196,9 @@ export function Editor({ api }: { api: GameApi }) {
             setResponse("Failed to parse code.");
         }
     })
+    function ResetCode() {
+        setCode(temporaryCDL);
+    }
     function Errors() {
         if (!errorsAreOld) {
             return <div>
@@ -223,8 +230,9 @@ export function Editor({ api }: { api: GameApi }) {
             </div >
             <br />
             <label className="h-full basis-9/10 p-8">
-                CDL code input: <textarea defaultValue={code} onChange={e => setCode(e.target.value)} className="h-full w-full bg-gray-600 rounded align-top p-2" name="codeField" />
+                CDL code input: <textarea value={code} onChange={e => setCode(e.target.value)} className="h-full w-full bg-gray-600 rounded align-top p-2" name="codeField" />
                 <button className="btn" onClick={() => sendCode.mutate(code)}>Send</button>
+                <button className="btn" onClick={() => ResetCode()}>Reset</button>
             </label>
         </div >
     )
