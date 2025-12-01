@@ -6,6 +6,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **stageName** | **string** |  | [default to undefined]
+**edges** | **{ [key: string]: Array&lt;string&gt;; }** |  | [default to undefined]
 **nodes** | [**Array&lt;NodeDto&gt;**](NodeDto.md) |  | [default to undefined]
 
 ## Example
@@ -15,6 +16,7 @@ import { MapDto } from 'restClient';
 
 const instance: MapDto = {
     stageName,
+    edges,
     nodes,
 };
 ```

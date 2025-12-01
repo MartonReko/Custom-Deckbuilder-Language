@@ -7,6 +7,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **energy** | **number** |  | [default to undefined]
 **enemies** | [**Array&lt;EnemyDto&gt;**](EnemyDto.md) |  | [default to undefined]
+**hand** | [**Array&lt;CardDto&gt;**](CardDto.md) |  | [default to undefined]
 
 ## Example
 
@@ -16,6 +17,7 @@ import { CombatDto } from 'restClient';
 const instance: CombatDto = {
     energy,
     enemies,
+    hand,
 };
 ```
 

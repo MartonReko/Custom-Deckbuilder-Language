@@ -5,12 +5,15 @@ namespace CDL.Game.DTOs
         Guid PlayerId,
         int Health,
         Guid? CurrentNode,
+        int CurrentLevel,
         GameService.PlayerStates CurrentState,
         List<CardDto> Deck,
         List<EffectDto> Effects
     );
     public record MapDto(
             string StageName,
+            Dictionary<Guid, HashSet<Guid>> Edges,
+            //Dictionary<Guid, NodeDto> Nodes
             List<NodeDto> Nodes
             );
     public class MoveDto
@@ -19,7 +22,8 @@ namespace CDL.Game.DTOs
     }
     public record CombatDto(
             int Energy,
-            List<EnemyDto> Enemies
+            List<EnemyDto> Enemies,
+            List<CardDto> Hand
             );
     public record EnemyDto(
             Guid Id,

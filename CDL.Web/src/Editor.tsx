@@ -191,9 +191,10 @@ export function Editor({ api }: { api: GameApi }) {
             setResponse("Succesfully parsed code.");
             setErrorsAreOld(true);
         },
-        onError: () => {
+        onError: (error) => {
             queryClient.fetchQuery({ queryKey: ['cdl'] });
             setResponse("Failed to parse code.");
+            console.log(error);
         }
     })
     function ResetCode() {

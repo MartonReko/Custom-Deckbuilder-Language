@@ -9,6 +9,7 @@ Name | Type | Description | Notes
 **playerId** | **string** |  | [default to undefined]
 **health** | **number** |  | [default to undefined]
 **currentNode** | **string** |  | [default to undefined]
+**currentLevel** | **number** |  | [default to undefined]
 **currentState** | [**PlayerStates**](PlayerStates.md) |  | [default to undefined]
 **deck** | [**Array&lt;CardDto&gt;**](CardDto.md) |  | [default to undefined]
 **effects** | **Array&lt;any&gt;** |  | [default to undefined]
@@ -23,6 +24,7 @@ const instance: StatusDto = {
     playerId,
     health,
     currentNode,
+    currentLevel,
     currentState,
     deck,
     effects,

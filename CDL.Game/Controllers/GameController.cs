@@ -1,4 +1,5 @@
 ﻿using CDL.Game.DTOs;
+using CDL.Game.GameObjects;
 using CDL.Lang.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,7 +18,6 @@ namespace CDL.Game.Controllers
         [HttpGet(template: "status", Name = "GetGameState")]
         public ActionResult<StatusDto> GetStatus()
         {
-            Console.WriteLine($"Get status was called {statusCounter} times!");
             statusCounter++;
             try
             {
@@ -26,6 +26,7 @@ namespace CDL.Game.Controllers
                         Name: gs.Player.Name,
                         PlayerId: gs.Player.Id,
                         Health: gs.Player.Health,
+                        CurrentLevel: gs.GameMap.LevelCounter,
                         CurrentNode: gs.CurrentGameNode?.Id ?? null,
                         CurrentState: gs.PlayerState,
                         Deck: [.. gs.Deck.Select((x) => new CardDto(x.Id, x.ModelCard.Name, x.ModelCard.Cost, [.. x.ModelCard.EffectsApplied.Select(y => new EffectDto(y.effect.Name, 1, "Temp desc"))]))],
@@ -42,15 +43,30 @@ namespace CDL.Game.Controllers
         [HttpGet(template: "map", Name = "Map")]
         public ActionResult<MapDto> GetMap()
         {
-            Console.WriteLine($"Get status was called {mapCounter} times!");
             mapCounter++;
             try
             {
                 GameService gs = _gameServiceManager.GetService();
+                Dictionary<Guid, HashSet<Guid>> edges = [];
+                foreach (var pair in gs.GameMap.CurrentStage.Edges)
+                {
+                    edges.Add(pair.Key, pair.Value);
+                }
                 MapDto response = new(
                         StageName: gs.GameMap.CurrentStage.ModelStage.Name,
-                        Nodes: [.. gs.GameMap.CurrentStage.GameNodesByLevel.SelectMany(x => x.Value.Select(y => new NodeDto(Id: y.Id, Name: y.ModelNode.Name, Level: x.Key)).ToList())]
-                        );
+                        Edges: edges,
+                        Nodes: [.. gs.GameMap.CurrentStage.GameNodesByLevel.SelectMany(x => x.Value.Select(y => new NodeDto(
+                             Id: y.Id,
+                             Name: y.ModelNode.Name,
+                             Level: x.Key
+                             )))]);
+                // foreach (var (level, nodes) in gs.GameMap.CurrentStage.GameNodesByLevel)
+                // {
+                //     foreach (var node in nodes)
+                //     {
+                //         response.Nodes.Add(node.Id, new NodeDto(node.Id, node.ModelNode.Name, level, [.. gs.GameMap.CurrentStage.Edges[node.Id]]));
+                //     }
+                // }
                 return response;
             }
             catch (Exception e)
@@ -62,14 +78,14 @@ namespace CDL.Game.Controllers
         [HttpGet(template: "combat", Name = "Combat")]
         public ActionResult<CombatDto> GetCombat()
         {
-            Console.WriteLine($"Get combat was called {combatCounter} times!");
             combatCounter++;
             try
             {
                 GameService gs = _gameServiceManager.GetService();
                 CombatDto response = new(
                         Energy: gs.Energy,
-                        Enemies: [.. gs.CurrentGameNode.Enemies.Select(x => new EnemyDto(x.Id, x.ModelEnemy.Name, x.Health, x.CurrentEffects.Select(y => new EffectDto(y.Key.Name, y.Value, "Temp desc")).ToList()))]
+                        Enemies: [.. gs.CurrentGameNode.Enemies.Select(x => new EnemyDto(x.Id, x.ModelEnemy.Name, x.Health, x.CurrentEffects.Select(y => new EffectDto(y.Key.Name, y.Value, "Temp desc")).ToList()))],
+                        Hand: [.. gs.Hand.Select((x) => new CardDto(x.Id, x.ModelCard.Name, x.ModelCard.Cost, [.. x.ModelCard.EffectsApplied.Select(y => new EffectDto(y.effect.Name, 1, "Temp desc"))]))]
                         );
                 return response;
             }
@@ -112,6 +128,7 @@ namespace CDL.Game.Controllers
             }
             catch (Exception e)
             {
+                Console.WriteLine(e);
                 return BadRequest(e.Message);
             }
         }

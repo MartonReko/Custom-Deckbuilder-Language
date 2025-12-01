@@ -28,6 +28,7 @@ namespace CDL.Game.GameObjects
         {
             CurrentStage = new GameStage(GameProps.Stages[StageCounter]);
             CurrentStage.Init();
+            CurrentNode = null;
             StageCounter++;
             LevelCounter = 0;
         }

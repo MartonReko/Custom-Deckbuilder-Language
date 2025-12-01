@@ -104,6 +104,12 @@ export interface CombatDto {
      * @memberof CombatDto
      */
     'enemies': Array<EnemyDto>;
+    /**
+     * 
+     * @type {Array<CardDto>}
+     * @memberof CombatDto
+     */
+    'hand': Array<CardDto>;
 }
 /**
  * 
@@ -173,6 +179,12 @@ export interface MapDto {
      * @memberof MapDto
      */
     'stageName': string;
+    /**
+     * 
+     * @type {{ [key: string]: Array<string>; }}
+     * @memberof MapDto
+     */
+    'edges': { [key: string]: Array<string>; };
     /**
      * 
      * @type {Array<NodeDto>}
@@ -297,6 +309,12 @@ export interface StatusDto {
      * @memberof StatusDto
      */
     'currentNode': string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof StatusDto
+     */
+    'currentLevel': number;
     /**
      * 
      * @type {PlayerStates}

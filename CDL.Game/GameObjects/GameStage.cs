@@ -7,6 +7,7 @@ namespace CDL.Game.GameObjects
         public readonly Stage ModelStage = model;
         //public Dictionary<int, List<Node>> NodesByLevel { get; private set; } = [];
         public Dictionary<int, List<GameNode>> GameNodesByLevel { get; private set; } = [];
+        public Dictionary<Guid, HashSet<Guid>> Edges { get; private set; } = [];
 
         public void Init()
         {
@@ -75,8 +76,23 @@ namespace CDL.Game.GameObjects
 
             GameNode bossNode = new(ModelStage.EndsWith);
             // Also add last node (bossnode) to the end
-            GameNodesByLevel.Add(GameNodesByLevel.Last().Key + 1, [bossNode]);
+            GameNodesByLevel.Add((int)ModelStage.StageLength - 1, [bossNode]);
 
+            // Create edges (paths) between Nodes on different levels
+            for (int level = 0; level < ModelStage.StageLength - 1; level++)
+            {
+                foreach (GameNode n in GameNodesByLevel[level])
+                {
+                    int size = GameNodesByLevel[level + 1].Count;
+                    HashSet<Guid> nextNodes = [];
+                    nextNodes.Add(GameNodesByLevel[level + 1][r.Next(0, size)].Id);
+                    if (r.Next(0, 100) < 80)
+                    {
+                        nextNodes.Add(GameNodesByLevel[level + 1][r.Next(0, size)].Id);
+                    }
+                    Edges.Add(n.Id, nextNodes);
+                }
+            }
         }
     }
 }

@@ -94,7 +94,7 @@ export function Game({ api }: { api: GameApi }) {
             <br />
             <label>Currently in {status?.currentState}</label>
             <br />
-            {status?.deck.map((card) =>
+            {status?.currentState == "COMBAT" && combat?.hand.map((card) =>
                 <span className="m-2">{`[${card.name}, ${card.cost}]`}
                     <button className="text-white bg-gray-700" onClick={() => playCard.mutate({ cardId: card.id, targetId: selected })}>Use</button>
                 </span>
@@ -102,6 +102,11 @@ export function Game({ api }: { api: GameApi }) {
             <br />
             <br />
         </div>;
+    }
+    function showEdges() {
+        return <div>
+            {map?.nodes.map((x) => { return <div key={x.id}>{x.name} ({x.id.substring(0, 4)}): {map?.edges[x.id]?.map((z) => { return <span key={z.substring(1)}>{z.substring(0, 4)}, </span> })}</div> })}
+        </div>
     }
     function subScreen() {
         switch (status?.currentState) {
@@ -162,10 +167,25 @@ export function Game({ api }: { api: GameApi }) {
                 return <div>
                     {showStatus()}
                     <h2>{`Current stage: ${map?.stageName}`}</h2>
-                    {map?.nodes.map((x) => <div key={x.id}>
-                        <button className="btn bg-gray-700" onClick={() => move.mutate(x.id)}>{`${x.level} - ${x.name}`}</button>
-                        <br />
-                    </div>)}
+                    <div className="grid grid-cols-2">
+                        <div>
+                            {map?.nodes.map((x) => {
+                                var validMove: boolean = true;
+                                if (status.currentNode != null && status.currentLevel != 0) {
+                                    validMove = map?.edges[status.currentNode]?.includes(x.id);
+                                }
+
+                                if (x.level == status.currentLevel && validMove) {
+                                    return <div key={x.id}>
+                                        <button className="btn bg-gray-700" onClick={() => move.mutate(x.id)}>{`${x.name} (${x.id.substring(0, 4)})`}</button>
+                                    </div>
+                                }
+                            })}
+                        </div>
+                        <div>
+                            {showEdges()}
+                        </div>
+                    </div>
                 </div>;
             case "DEATH":
                 return <div>

@@ -26,6 +26,7 @@ namespace CDL.Game
         public GameNode? CurrentGameNode { get; private set; }
         public List<GameCard> NodeRewards { get; } = [];
         public List<GameCard> Deck { get; } = [];
+        public List<GameCard> Hand { get; } = [];
 
         // How many cards can be used in a turn, maybe tune later
         public int Energy { get; private set; } = 3;
@@ -69,15 +70,28 @@ namespace CDL.Game
         {
             if (!GameMap!.CurrentStage.GameNodesByLevel.TryGetValue(GameMap.LevelCounter, out List<GameNode>? nodes))
             {
-                Console.WriteLine("Could not get nodes?");
+                Console.WriteLine("Could not get nodes");
                 return false;
             }
             GameNode? node = nodes.FirstOrDefault(x => x.Id.Equals(nodeId));
             if (node == null)
             {
-
                 Console.WriteLine("Node with ID not found!");
                 return false;
+            }
+            //  if (CurrentGameNode != null && !GameMap.CurrentStage.Edges[CurrentGameNode.Id].Contains(nodeId))
+            //  {
+            //      Console.WriteLine("Invalid move");
+            //      return false;
+            //  }
+            if (CurrentGameNode != null && GameMap.LevelCounter != 0)
+            {
+                GameMap.CurrentStage.Edges.TryGetValue(CurrentGameNode.Id, out var nextNodes);
+                if (!nextNodes.Contains(nodeId))
+                {
+                    Console.WriteLine("Invalid move");
+                    return false;
+                }
             }
             if (PlayerState == PlayerStates.MAP && GameMap.MoveTo(node))
             {
@@ -89,6 +103,7 @@ namespace CDL.Game
                 GenerateRewards(rarity, num);
                 // TODO: Set energy in one location with a method
                 Energy = 3;
+                GetNextHand();
                 return true;
             }
             else
@@ -96,6 +111,25 @@ namespace CDL.Game
                 return false;
             }
 
+        }
+        private int handCounter = 0;
+        public void GetNextHand()
+        {
+            Hand.Clear();
+            if (Deck.Count >= 3)
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    Hand.Add(Deck[handCounter++ % Deck.Count]);
+                }
+            }
+            else
+            {
+                foreach (var card in Deck)
+                {
+                    Hand.Add(card);
+                }
+            }
         }
         private int EnemyTurnCounter;
         public void EndTurn()
@@ -112,7 +146,9 @@ namespace CDL.Game
                 else if (GameMap.IsLastOnStage())
                 {
                     GameMap.LoadNextStage();
+                    // For correct handling in front-end
                     Player.Restore();
+                    CurrentGameNode = null;
                     PlayerState = PlayerStates.MAP;
                 }
                 else
@@ -198,6 +234,10 @@ namespace CDL.Game
         public bool PlayCard(Guid cardId, Guid targetId)
         {
 
+            if (!CurrentGameNode.Enemies.Exists(x => x.Id.Equals(targetId)) && targetId != Player.Id)
+            {
+                throw new InvalidOperationException("Target not valid");
+            }
             if (PlayerState != PlayerStates.COMBAT)
             {
                 throw new InvalidOperationException("Can't play cards outside of combat");
@@ -216,6 +256,7 @@ namespace CDL.Game
             else
             {
                 Energy -= card.ModelCard.Cost;
+                Hand.Remove(Deck.First(x => x.Id.Equals(cardId)));
             }
 
             if (targetId.Equals(Player.Id))
@@ -323,6 +364,8 @@ namespace CDL.Game
 
             // NOTE: this stays until cards have an energy cost and there is logic for it
             Energy = 3;
+
+            GetNextHand();
         }
         // Also reused code from GameEnemy
         public void PlayerApplyEffect(Effect effect, int cnt)
