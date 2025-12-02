@@ -73,7 +73,7 @@ nodeProperties:
 
 charSetup: CHARACTER varName LCURLY charProperties+ RCURLY;
 charProperties:
-	HEALTH CLN number EOS			# charHealth
+	HEALTH CLN INT EOS			# charHealth
 	| EFFECTEVERYTURN CLN list EOS	# charEffects
 	| DECK CLN list EOS				# charDeck;
 
@@ -99,7 +99,7 @@ effectTarget: ENEMIES | TARGET | PLAYER;
 cardDefinition: CARD varName LCURLY cardProperty+ RCURLY;
 cardProperty:
 	RARITY CLN rarityName EOS	# cardRarity
-	| COST CLN INT EOS          # cardCostf
+	| COST CLN INT EOS          # cardCost
 	| VALIDTARGETS CLN list EOS	# cardTargets
 	| APPLY CLN list EOS		# cardEffects
 	;

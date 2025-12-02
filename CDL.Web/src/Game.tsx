@@ -90,7 +90,7 @@ export function Game({ api }: { api: GameApi }) {
 
     function showStatus() {
         return <div className="">
-            <button className="text-white bg-gray-700" onClick={() => (endTurn.mutate())}> End turn </button>
+            {status?.currentState == "COMBAT" && <button className="text-white bg-gray-700" onClick={() => (endTurn.mutate())}> End turn </button>}
             <br />
             <label>Currently in {status?.currentState}</label>
             <br />
@@ -182,7 +182,7 @@ export function Game({ api }: { api: GameApi }) {
                                 }
                             })}
                         </div>
-                        <div>
+                        <div className="ml-16">
                             {showEdges()}
                         </div>
                     </div>

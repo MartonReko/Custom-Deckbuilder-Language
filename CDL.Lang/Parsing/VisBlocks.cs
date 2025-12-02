@@ -509,17 +509,17 @@ public class VisBlocks(EnvManager envManager, CDLExceptionHandler exceptionHandl
 
     public override object VisitCharHealth([NotNull] CDLParser.CharHealthContext context)
     {
-        if (context.number().INT() == null)
-        {
-            exceptionHandler.AddException(context, $"{context.number().GetText()} must be int");
-        }
-        else if (int.TryParse(context.number().INT().GetText(), out int value))
+        //  if (context.INT() == null)
+        //  {
+        //      exceptionHandler.AddException(context, $"{context.number().GetText()} must be int");
+        //  }
+        if (int.TryParse(context.INT().GetText(), out int value))
         {
             if (objects.Character != null) { objects.Character.Health = value; }
         }
         else
         {
-            exceptionHandler.AddException(context, $"Unable to parse {context.number().GetText()} as int");
+            exceptionHandler.AddException(context, $"Unable to parse {context.GetText()} as int");
         }
         return base.VisitCharHealth(context);
     }

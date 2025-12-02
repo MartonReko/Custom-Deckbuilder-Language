@@ -180,7 +180,7 @@ namespace CDL.Game
                 Console.WriteLine("Last node on stage");
                 GameMap.LoadNextStage();
                 Player.Restore();
-                PlayerState = PlayerStates.MAP;
+                PlayerState = PlayerStates.REWARD;
             }
             else
             {
@@ -307,6 +307,7 @@ namespace CDL.Game
             // Card not found error
             GameCard chosen = NodeRewards.Where(x => x.Id.Equals(Id)).First();
             Deck.Add(chosen);
+            NodeRewards.Clear();
             PlayerState = PlayerStates.MAP;
             return true;
         }

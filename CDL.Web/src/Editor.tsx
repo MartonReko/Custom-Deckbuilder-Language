@@ -2,158 +2,181 @@ import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { GameApi } from "../generated-sources/openapi";
 
-const temporaryCDL: string = `Game{
+const temporaryCDL: string =
+    `// Game
+
+Game{
     Name: MyGame;
-    Stages: [stage1, stage2];
+    Stages: [Stage1, Stage2];
     Player: MyCharacter;
 }
 
+// Character
+
 Character MyCharacter{
     Health: 150;
-    EffectEveryTurn: [smallHeal];
-    Deck: [3x strike, 1x heal];
+    Deck: [3x Strike, 2x Heal];
 }
 
-Effect smallHeal{
-    Deal -1 damage instantly;
-}
+// Stages
 
-Stage stage1{
+Stage Stage1{
     Length: 2;
-    Max-width: 5;
-    Min-width: 2;
-    FillWith: [easyNode];
-    MustContain: [1x eliteNode, 2x normalNode];
-    EndsWith: bossNode;
+    Max-width: 3;
+    Min-width: 1;
+    FillWith: [EasyNode1, EasyNode2];
+    MustContain: [EasyNode2];
+    EndsWith: BossNode;
 }
 
-Stage stage2{
+Stage Stage2{
     Length: 3;
-    Max-width: 10;
-    Min-width: 5;
-    FillWith: [easyNode];
-    MustContain: [5x eliteNode, 10x normalNode];
-    EndsWith: bossNode;
+    Max-width: 4;
+    Min-width: 2;
+    FillWith: [NormalNode];
+    MustContain: [2x EliteNode];
+    EndsWith: BossNode;
 }
 
-Node eliteNode{
-    Enemies: [1x  eliteEnemy];
-    Rewards: [3x rare with chance 100%];
-}
+// Nodes
 
-Node easyNode{
-    Enemies: [2x easyEnemy];
+Node EasyNode1{
+    Enemies: [1x EasyEnemy];
     Rewards: [
-		3x common with chance 80%,
-		2x rare with chance 20%
+		3x common with chance 90%,
+		1x rare with chance 10%
     ];
 }
 
-Node normalNode{
-    Enemies: [3x easyEnemy];
+Node EasyNode2{
+    Enemies: [2x EasyEnemy];
     Rewards: [
-		3x common with chance 50%,
-		2x rare with chance 50%
+		3x common with chance 90%,
+		1x rare with chance 10%
     ];
 }
 
-Node bossNode{
-    Enemies: [1x bossEnemy];
+Node NormalNode{
+    Enemies: [3x EasyEnemy];
+    Rewards: [
+		3x common with chance 65%,
+		2x rare with chance 25%
+    ];
+}
+
+Node EliteNode{
+    Enemies: [1x  EliteEnemy];
+    Rewards: [
+        3x rare with chance 70%,
+        2x common with chance 30% 
+    ];
+}
+
+Node BossNode{
+    Enemies: [1x BossEnemy];
     Rewards: [
         3x rare with chance 100%
     ];
 }
 
-Enemy easyEnemy{
+// Enemies
+
+Enemy EasyEnemy{
     Health: 10;
-    Actions: [basicEnemyAttack player];
+    Actions: [BasicEnemyAttack player];
 }
 
-Enemy enemy_hard{
-    Health: 30;
-    Actions: [basicEnemyAttack player];
-}
-
-Enemy eliteEnemy{
+Enemy EliteEnemy{
     Health: 50;
-    Actions: [basicEnemyAttack player,statusAttack player];
+    Actions: [BasicEnemyAttack player,StatusAttack player];
 }
 
-Enemy bossEnemy{
+Enemy BossEnemy{
     Health: 100;
-    Actions: [bossAttack player, 2x statusAttack player, bossBuff self];
+    Actions: [BossAttack player, 2x StatusAttack player, BossBuff self];
 }
 
-EnemyAction bossAttack{
-    Apply: [bossDamageEffect, poisonEffect];
+// Cards
+
+Card Bash{
+    Cost: 2;
+    Rarity: rare;
+    ValidTargets: [enemy];
+    Apply: [5x BasicAttack, 2x Weakness];
 }
 
-EnemyAction statusAttack{
-    Apply: [curseEffect, poisonEffect];
+Card Strike{
+    Cost: 1;
+    Rarity: common;
+    ValidTargets: [enemy];
+    Apply: [BasicAttack];
+}
+Card Heal{
+    Cost: 1;
+    Rarity: rare;
+    ValidTargets: [player];
+    Apply: [HealEffect];
 }
 
-EnemyAction bossBuff{
-    Apply: [bossBuffEffect];
+Card Poison{
+    Cost: 2;
+    Rarity: common;
+    ValidTargets: [player, enemy];
+    Apply: [2x PoisonEffect, Weakness];
 }
 
-Effect bossDamageEffect{
-    Deal 20 damage instantly;
+// Enemy Actions
+
+EnemyAction BasicEnemyAttack{
+    Apply: [2x BasicAttack];
 }
 
-Effect bossBuffEffect{
+EnemyAction BossAttack{
+    Apply: [BossDamageEffect, 2x PoisonEffect];
+}
+
+EnemyAction StatusAttack{
+    Apply: [CurseEffect, PoisonEffect];
+}
+
+EnemyAction BossBuff{
+    Apply: [BossBuffEffect];
+}
+
+// Effects
+
+int baseDamage = 10;
+
+Effect BossDamageEffect{
+    Deal baseDamage * 2 damage instantly;
+}
+
+Effect BossBuffEffect{
     Outgoing damage is 1.25x;
     Incoming damage is 0.75x;
 }
 
-EnemyAction basicEnemyAttack{
-    Apply: [2x basicAttack, poisonEffect];
-}
-
-Effect curseEffect{
+Effect CurseEffect{
     Outgoing damage is 0.75x;
     Incoming damage is 1.2x;
 }
 
-Effect poisonEffect{
+Effect PoisonEffect{
     Deal 3 damage end of turn;
 }
 
-Effect basicAttack{
-    Deal baseDamage * 2 damage instantly;
+Effect BasicAttack{
+    Deal baseDamage damage instantly;
 }
 
-Effect weakness{
+Effect Weakness{
     Outgoing damage is 0.75x;
 }
 
-int baseDamage = 5;
-
-Card superCard{
-    Cost: 3;
-    Rarity: rare;
-    ValidTargets: [enemy];
-    Apply: [10x basicAttack, 5x weakness, 2x poisonEffect];
+Effect HealEffect{
+    Deal -1 * baseDamage damage instantly;
 }
 
-Card strike{
-    Cost: 1;
-    Rarity: common;
-    ValidTargets: [enemy];
-    Apply: [basicAttack];
-}
-Card heal{
-    Cost: 1;
-    Rarity: rare;
-    ValidTargets: [player];
-    Apply: [smallHeal];
-}
-
-Card poison{
-    Cost: 2;
-    Rarity: common;
-    ValidTargets: [player, enemy];
-    Apply: [2x poisonEffect, weakness];
-}
 `;
 
 export function Editor({ api }: { api: GameApi }) {
