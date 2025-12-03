@@ -8,9 +8,9 @@ using CDL.Lang.GameModel;
 
 namespace CDL.Lang.Parsing;
 
-public class VisGlobalVars(EnvManager em, CDLExceptionHandler exceptionHandler, ObjectsHelper oHelper) : CDLBaseVisitor<object>
+public class VisNames(EnvManager em, CDLExceptionHandler exceptionHandler, ObjectsHelper oHelper) : CDLBaseVisitor<object>
 {
-    private readonly ILogger<VisGlobalVars> _logger = LoggerFactory.Create(builder => builder.AddNLog().SetMinimumLevel(LogLevel.Trace)).CreateLogger<VisGlobalVars>();
+    private readonly ILogger<VisNames> _logger = LoggerFactory.Create(builder => builder.AddNLog().SetMinimumLevel(LogLevel.Trace)).CreateLogger<VisNames>();
     private CDLExceptionHandler ExceptionHandler { get; set; } = exceptionHandler;
     private bool AddSymbolToTable(string typeName, ParserRuleContext varNameContext)
     {

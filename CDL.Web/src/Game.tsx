@@ -116,7 +116,8 @@ export function Game({ api }: { api: GameApi }) {
                     return <div> Loading... </div>
                 }
                 else {
-                    return <div className="grid grid-cols-2 p-4  text-[24px] font-bold bg-[url(./assets/tempBg.png)] bg-center bg-no-repeat bg-cover grow text-black" >
+                    // bg-[url(./assets/tempBg.png)]
+                    return <div className="grid grid-cols-2 p-4  text-[24px] font-bold  bg-center bg-no-repeat bg-cover grow text-white" >
                         <div className="rows-2">
                             <div className="h-140 overflow-auto p-8">
                                 {showStatus()}
@@ -135,7 +136,7 @@ export function Game({ api }: { api: GameApi }) {
                         <div className="rows-2">
                             <div className="h-140">
                                 <label>Target:</label>
-                                <select value={selected} onChange={e => setSelected(e.target.value)}>
+                                <select defaultChecked={false} value={selected} onChange={e => setSelected(e.target.value)}>
                                     <option value={status?.playerId}>Player</option>
                                     {combat?.enemies.map(e => <option value={e.id}>
                                         {`${e.name} - ${e.id.substring(0, 4)}`}

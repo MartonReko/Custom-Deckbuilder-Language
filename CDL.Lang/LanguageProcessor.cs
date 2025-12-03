@@ -24,7 +24,7 @@ public class LanguageProcessor
         }
         EnvManager envM = new(exceptionHandler);
         ObjectsHelper oh = new(envM, exceptionHandler);
-        VisGlobalVars visitorVars = new(envM, exceptionHandler, oh);
+        VisNames visitorVars = new(envM, exceptionHandler, oh);
         visitorVars.Visit(ast);
         if (!exceptionHandler.IsValid())
         {
