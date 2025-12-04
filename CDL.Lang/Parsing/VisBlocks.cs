@@ -670,7 +670,7 @@ public class VisBlocks(EnvManager envManager, CDLExceptionHandler exceptionHandl
 
     public override object VisitDamageDealEffect([NotNull] CDLParser.DamageDealEffectContext context)
     {
-        // TODO
+        // TODO:
         // make this value transformation universal
         var result = base.VisitDamageDealEffect(context);
         var popped = localExpressions.Pop().value;

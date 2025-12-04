@@ -35,8 +35,6 @@ public class VisNames(EnvManager em, CDLExceptionHandler exceptionHandler, Objec
     }
     public override object VisitVariableDeclaration([NotNull] CDLParser.VariableDeclarationContext context)
     {
-        var varName = context.varName().GetText();
-
         var type = em.Ts[context.typeName().GetText()];
         if (type == null)
         {
@@ -53,7 +51,11 @@ public class VisNames(EnvManager em, CDLExceptionHandler exceptionHandler, Objec
                 var expressionType = em.GetType(context.literalExpression());
                 if (expressionType != null && !expressionType.InheritsFrom(type))
                 {
+
                     _logger.LogError("Error at {pos}, type {type} of expression is not compatible with the type {typeName} of the variable", EnvManager.GetPos(context.literalExpression()), expressionType.Name, type.Name);
+
+                    (int, int) pos = EnvManager.GetPosLineCol(context);
+                    ExceptionHandler.AddException(new CDLException(pos.Item1, pos.Item2, $"Variable {context.varName().GetText()} must be {type.Name}, but {expressionType.Name} was given"));
                 }
                 else
                 {

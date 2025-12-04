@@ -68,7 +68,8 @@ public class EnvManager(CDLExceptionHandler exceptionHandler)
         {
             return false;
         }
-        return symbol.Type == type;
+        return symbol.Type.InheritsFrom(type);
+        //return symbol.Type == type;
     }
     public CDLType? GetType(CDLParser.LiteralExpressionContext context)
     {
