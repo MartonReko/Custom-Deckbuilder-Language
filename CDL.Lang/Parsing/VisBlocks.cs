@@ -673,11 +673,23 @@ public class VisBlocks(EnvManager envManager, CDLExceptionHandler exceptionHandl
         // TODO:
         // make this value transformation universal
         var result = base.VisitDamageDealEffect(context);
+        if (localExpressions.Count == 0)
+        {
+            return result;
+        }
         var popped = localExpressions.Pop().value;
         if (!double.TryParse(popped, out double val))
         {
             var symbol = envManager.GetVariableFromScope(context, popped);
-            val = double.Parse(symbol!.Value!);
+            if (symbol == null)
+            {
+                exceptionHandler.AddException(context, $"Variable {popped} not found");
+                return result;
+            }
+            else
+            {
+                val = double.Parse(symbol!.Value!);
+            }
         }
         //double value = double.Parse(localExpressions.Pop().value);
         if (currentEffect != null) currentEffect.DamageDealt = val;
@@ -795,10 +807,14 @@ public class VisBlocks(EnvManager envManager, CDLExceptionHandler exceptionHandl
         var result = base.VisitOpExpression(context);
         foreach (ExpressionHelper item in localExpressions)
         {
+            if (item.type == envManager.Ts.ERROR)
+            {
+                return result;
+            }
             if (!(item.type == envManager.Ts.DOUBLE || item.type == envManager.Ts.INT))
             {
                 localExpressions.Clear();
-                exceptionHandler.AddException(context, $"Type error in evaluating expression: int or double expected, got {item.type.Name}");
+                exceptionHandler.AddException(context, $"Type error in evaluating expression: expected int or double, got {item.type} with value {item.value}");
                 return result;
             }
         }

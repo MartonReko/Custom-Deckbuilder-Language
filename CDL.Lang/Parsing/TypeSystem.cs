@@ -40,7 +40,8 @@ public class TypeSystem
         ERROR.Parents.Add(RARITY);
         ENEMYACTION.Parents.Add(ENEMYACTION);
 
-        DOUBLE.Parents.Add(INT);
+        INT.Parents.Add(DOUBLE);
+        //DOUBLE.Parents.Add(INT);
 
         types[ERROR.Name] = ERROR;
         types[INT.Name] = INT;
