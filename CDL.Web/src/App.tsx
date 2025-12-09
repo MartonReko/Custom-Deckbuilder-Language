@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router';
+import { Navigate, Route, Routes } from 'react-router';
 import { Sidebar } from './Sidebar';
 import { Editor } from './Editor';
 import { Game } from './Game';
@@ -18,7 +18,7 @@ function App() {
                 <Sidebar />
                 <main className="flex-1 flex flex-col overflow-auto">
                     <Routes>
-                        <Route path="/" element={<Welcome />} />
+                        <Route path="/" element={<Navigate to="/editor" replace />} />
                         <Route path="/editor" element={<Editor api={api} />} />
                         <Route path="/game" element={<Game api={api} />} />
                     </Routes>
@@ -27,5 +27,4 @@ function App() {
         </QueryClientProvider>
     )
 }
-//Map: {gameState.map.nodesByLevel.map(name => (<p>{name}</p>))}
 export default App
