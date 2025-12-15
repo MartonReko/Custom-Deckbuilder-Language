@@ -13,7 +13,7 @@ namespace CDL.Lang.Parsing;
 public class VisBlocks(EnvManager envManager, CDLExceptionHandler exceptionHandler, ObjectsHelper objects) : CDLBaseVisitor<object>
 {
     private readonly ILogger<VisBlocks> _logger = LoggerFactory.Create(builder => builder.AddNLog().SetMinimumLevel(LogLevel.Trace)).CreateLogger<VisBlocks>();
-
+    private record ListHelper(string Name, int Num = 1, int Chance = 100);
     private List<ListHelper> LocalListContent { get; set; } = [];
     private List<(int num, string varName, EnemyTarget target)> LocalEnemyAttackList { get; set; } = [];
     private HashSet<TargetTypes> LocalCardTargetList { get; set; } = [];
@@ -194,7 +194,7 @@ public class VisBlocks(EnvManager envManager, CDLExceptionHandler exceptionHandl
         LocalListContent.Add(new ListHelper(varName));
         return base.VisitSingleListItem(context);
     }
-    private record ListHelper(string Name, int Num = 1, int Chance = 100);
+
     public override object VisitNumberedListItem([NotNull] CDLParser.NumberedListItemContext context)
     {
         string varName = context.varRef().varName().GetText();
@@ -287,8 +287,7 @@ public class VisBlocks(EnvManager envManager, CDLExceptionHandler exceptionHandl
         if (!envManager.IsVariableOnScope(context.varName().GetText()))
         {
             // Cannot be null because it must be initialized higher in the tree
-            if (objects.Game != null)
-                objects.Game.GameName = context.varName().GetText();
+            objects.Game.GameName = context.varName().GetText();
         }
         else
         {
@@ -302,7 +301,7 @@ public class VisBlocks(EnvManager envManager, CDLExceptionHandler exceptionHandl
         Symbol? playerName = envManager.GetVariableFromScope(context, context.varName().GetText());
         if (playerName == null)
         {
-            exceptionHandler.AddException($"No character found by name {context.varName().GetText()}");
+            exceptionHandler.AddException(context, $"No character found by name {context.varName().GetText()}");
         }
         else
         {

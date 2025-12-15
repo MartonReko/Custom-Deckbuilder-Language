@@ -10,7 +10,6 @@ namespace CDL.Game
     {
         private GameService? _gameService;
         public List<CDLException> CDLExceptions { get; private set; }
-        private string storeddlCode = "";
 
         public void Initialize(string CdlCode)
         {
@@ -25,8 +24,6 @@ namespace CDL.Game
             else
             {
                 _gameService = new(lpReturnValue.Item1);
-                storeddlCode = CdlCode;
-                //_gameService.Initialize();
             }
         }
 

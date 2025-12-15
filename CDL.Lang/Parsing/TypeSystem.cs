@@ -7,15 +7,9 @@ public class TypeSystem
     Dictionary<string, CDLType> types;
     public TypeSystem()
     {
-        types = new Dictionary<string, CDLType>();
+        types = [];
 
         // initialize contraints
-
-        ERROR = new CDLType("ErrorType");
-        STRING = new CDLType("string");
-        DOUBLE = new CDLType("double");
-        INT = new CDLType("int");
-        BOOLEAN = new CDLType("bool");
 
         STAGE = new CDLType("Stage");
         NODE = new CDLType("Node");
@@ -25,6 +19,11 @@ public class TypeSystem
         CARD = new CDLType("Card");
         RARITY = new CDLType("Rarity");
         ENEMYACTION = new CDLType("EnemyAction");
+        ERROR = new CDLType("ErrorType");
+        STRING = new CDLType("string");
+        DOUBLE = new CDLType("double");
+        INT = new CDLType("int");
+        BOOLEAN = new CDLType("bool");
 
         ERROR.Parents.Add(STRING);
         ERROR.Parents.Add(DOUBLE);
@@ -41,7 +40,6 @@ public class TypeSystem
         ENEMYACTION.Parents.Add(ENEMYACTION);
 
         INT.Parents.Add(DOUBLE);
-        //DOUBLE.Parents.Add(INT);
 
         types[ERROR.Name] = ERROR;
         types[INT.Name] = INT;

@@ -33,6 +33,12 @@ public class LanguageProcessor
         }
         VisBlocks visitorBlocks = new(envM, exceptionHandler, oh);
         visitorBlocks.Visit(ast);
+        // Validity checked multiple times to avoid unnecessary errors
+        if (!exceptionHandler.IsValid())
+        {
+            Console.WriteLine("Exceptions found :(");
+            return (null, exceptionHandler);
+        }
         oh.CheckObjectsValidity();
         if (!exceptionHandler.IsValid())
         {

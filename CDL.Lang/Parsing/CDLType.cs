@@ -3,7 +3,7 @@ namespace CDL.Lang.Parsing;
 public class CDLType(string name)
 {
     public string Name { get; private set; } = name;
-    public HashSet<CDLType> Parents { get; private set; } = new HashSet<CDLType>();
+    public HashSet<CDLType> Parents { get; private set; } = [];
 
     public bool InheritsFrom(CDLType t)
     {
