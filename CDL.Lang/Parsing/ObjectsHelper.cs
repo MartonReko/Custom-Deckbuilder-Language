@@ -25,7 +25,7 @@ public class ObjectsHelper(EnvManager em, CDLExceptionHandler exceptionHandler)
         // Checks for Game
         if (Game == null)
         {
-            exceptionHandler.AddException("Game missing");
+            exceptionHandler.AddException("Game definition missing");
         }
         else
         {
@@ -94,12 +94,6 @@ public class ObjectsHelper(EnvManager em, CDLExceptionHandler exceptionHandler)
         {
             foreach (Node n in Nodes)
             {
-                // :TODO:
-                // Could be moved to VisBlocks
-                if (n.Enemies.Count < 0)
-                {
-                    exceptionHandler.AddException($"Invalid number of enemies for node {n.Name}");
-                }
             }
         }
 
@@ -110,10 +104,6 @@ public class ObjectsHelper(EnvManager em, CDLExceptionHandler exceptionHandler)
         }
         else
         {
-            if (Character.Health < 1)
-            {
-                exceptionHandler.AddException($"Invalid value for character health");
-            }
             if (Character.Deck.Count < 1)
             {
                 exceptionHandler.AddException("Deck must include at least one card");
@@ -139,6 +129,22 @@ public class ObjectsHelper(EnvManager em, CDLExceptionHandler exceptionHandler)
             }
         }
 
+        //Checks for cards
+        foreach (Card c in Cards)
+        {
+            if (c.Cost == -1)
+            {
+                exceptionHandler.AddException($"{c.Name}: Cost missing");
+            }
+            if (c.EffectsApplied.Count == 0)
+            {
+                exceptionHandler.AddException($"{c.Name}: No effects applied");
+            }
+            if (c.Rarity == "")
+            {
+                exceptionHandler.AddException($"{c.Name}: No rarity given");
+            }
+        }
 
     }
 }

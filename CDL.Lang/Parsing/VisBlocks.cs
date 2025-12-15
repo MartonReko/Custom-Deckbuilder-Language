@@ -1,5 +1,4 @@
 using System.Data;
-using System.Transactions;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using CDL.Lang.Exceptions;
@@ -15,8 +14,7 @@ public class VisBlocks(EnvManager envManager, CDLExceptionHandler exceptionHandl
     private readonly ILogger<VisBlocks> _logger = LoggerFactory.Create(builder => builder.AddNLog().SetMinimumLevel(LogLevel.Trace)).CreateLogger<VisBlocks>();
 
     private List<ListHelper> LocalListContent { get; set; } = [];
-    private List<(int num, string varName, EnemyTarget target)> LocalEnemyAttackList { get; set; } = [];
-    private HashSet<TargetTypes> LocalCardTargetList { get; set; } = [];
+    private List<(int num, string varName, EnemyTarget target)> LocalEnemyAttackList { get; set; } = []; private HashSet<TargetTypes> LocalCardTargetList { get; set; } = [];
 
     // TODO:
     // Possibly unfinished
@@ -485,6 +483,11 @@ public class VisBlocks(EnvManager envManager, CDLExceptionHandler exceptionHandl
                 currentNode?.Enemies.Add(enemy, item.Num);
             }
         }
+        if (currentNode?.Enemies.Count < 1)
+        {
+            exceptionHandler.AddException($"{currentNode.Name}: no enemies given");
+        }
+
         return result;
     }
 
@@ -509,13 +512,16 @@ public class VisBlocks(EnvManager envManager, CDLExceptionHandler exceptionHandl
 
     public override object VisitCharHealth([NotNull] CDLParser.CharHealthContext context)
     {
-        //  if (context.INT() == null)
-        //  {
-        //      exceptionHandler.AddException(context, $"{context.number().GetText()} must be int");
-        //  }
         if (int.TryParse(context.INT().GetText(), out int value))
         {
-            if (objects.Character != null) { objects.Character.Health = value; }
+            if (objects.Character != null && value > 0)
+            {
+                objects.Character.Health = value;
+            }
+            else
+            {
+                exceptionHandler.AddException($"Character health must be at least 1");
+            }
         }
         else
         {
@@ -712,9 +718,7 @@ public class VisBlocks(EnvManager envManager, CDLExceptionHandler exceptionHandl
     public override object VisitCardDefinition([NotNull] CDLParser.CardDefinitionContext context)
     {
         currentCard = objects.Cards.First(x => x.Name == context.varName().GetText());
-        var result = base.VisitCardDefinition(context);
-
-        return result;
+        return base.VisitCardDefinition(context);
     }
     public override object VisitCardRarity([NotNull] CDLParser.CardRarityContext context)
     {
