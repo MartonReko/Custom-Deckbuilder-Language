@@ -21,7 +21,7 @@
     <ProjectReference Include="..\CDL.Lang\CDL.Lang.csproj" />
   </ItemGroup>
 
-<Target Name="NpmOpenApiGen" BeforeTargets="AfterCompile">
+<Target Name="NpmOpenApiGen" AfterTargets="Build">
         <Exec Command="npm run gen" WorkingDirectory="../CDL.Web/" />
 </Target>
 
