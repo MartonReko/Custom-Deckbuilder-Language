@@ -76,6 +76,7 @@ export function Game({ api }: { api: GameApi }) {
         onSuccess: () => {
             fetch('status');
             fetch('combat');
+            setSelected('');
         }
     })
     if (statusPending) {
@@ -87,7 +88,6 @@ export function Game({ api }: { api: GameApi }) {
     if (statusErrored) {
         return <span>Error: {statusError.message}</span>
     }
-
     function showStatus() {
         return <div className="">
             {status?.currentState == "COMBAT" && <button className="text-white bg-gray-700" onClick={() => (endTurn.mutate())}> End turn </button>}
@@ -111,7 +111,7 @@ export function Game({ api }: { api: GameApi }) {
     function subScreen() {
         switch (status?.currentState) {
             case "COMBAT":
-                { fetch('status'); fetch('combat'); if (selected == '') setSelected(status.playerId) }
+                { fetch('status'); fetch('combat'); }
                 if (statusPending || combatPending) {
                     return <div> Loading... </div>
                 }
@@ -136,7 +136,8 @@ export function Game({ api }: { api: GameApi }) {
                         <div className="rows-2">
                             <div className="h-1/2">
                                 <label>Target:</label>
-                                <select defaultChecked={false} value={selected} onChange={e => setSelected(e.target.value)}>
+                                <select value={selected} onChange={e => setSelected(e.target.value)}>
+                                    <option selected hidden > Select target</option>
                                     <option value={status?.playerId}>Player</option>
                                     {combat?.enemies.map(e => <option value={e.id}>
                                         {`${e.name} - ${e.id.substring(0, 4)}`}

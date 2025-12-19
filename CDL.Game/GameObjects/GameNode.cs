@@ -41,6 +41,13 @@ namespace CDL.Game.GameObjects
                 Enemies.Remove(enemy);
             }
         }
+        public void AttackEnemies(GameCard card, Dictionary<Effect, int> playerEffects)
+        {
+            foreach (GameEnemy enemy in Enemies)
+            {
+                AttackEnemy(card, enemy, playerEffects);
+            }
+        }
         public (EnemyAction EnemyAction, EnemyTarget target, int num) EnemyTurn(int idx, GameCharacter player)
         {
             return Enemies[idx].Attack(player);

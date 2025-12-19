@@ -2,6 +2,7 @@
 using CDL.Game.GameObjects;
 using CDL.Lang.GameModel;
 using CDL.Lang.Parsing;
+using NLog.Targets;
 
 namespace CDL.Game
 {
@@ -27,6 +28,8 @@ namespace CDL.Game
         public List<GameCard> NodeRewards { get; } = [];
         public List<GameCard> Deck { get; } = [];
         public List<GameCard> Hand { get; } = [];
+        public List<GameCard> DiscardPile { get; } = [];
+        public List<GameCard> DrawPile { get; } = [];
 
         // How many cards can be used in a turn, maybe tune later
         public int Energy { get; private set; } = 3;
@@ -103,6 +106,9 @@ namespace CDL.Game
                 GenerateRewards(rarity, num);
                 // TODO: Set energy in one location with a method
                 Energy = 3;
+                DiscardPile.Clear();
+                Hand.Clear();
+                DrawPile.AddRange(Deck);
                 GetNextHand();
                 return true;
             }
@@ -115,20 +121,26 @@ namespace CDL.Game
         private int handCounter = 0;
         public void GetNextHand()
         {
+            DiscardPile.AddRange(Hand);
             Hand.Clear();
-            if (Deck.Count >= 3)
+            if (DrawPile.Count >= 3)
             {
                 for (int i = 0; i < 3; i++)
                 {
-                    Hand.Add(Deck[handCounter++ % Deck.Count]);
+                    var card = DrawPile[random.Next(0, DrawPile.Count)];
+                    Hand.Add(card);
+                    DrawPile.Remove(card);
                 }
             }
             else
             {
-                foreach (var card in Deck)
+                foreach (var card in DrawPile)
                 {
                     Hand.Add(card);
                 }
+                DrawPile.Clear();
+                DrawPile.AddRange(Deck);
+                DiscardPile.Clear();
             }
         }
         private int EnemyTurnCounter;
@@ -165,7 +177,6 @@ namespace CDL.Game
                 for (int i = 0; i < CurrentGameNode.Enemies.Count; i++)
                 {
                     var turn = NextEnemyTurn();
-                    Console.WriteLine($"{turn.target} {turn.EnemyAction.Name} {turn.num}");
                 }
             }
         }
@@ -177,7 +188,6 @@ namespace CDL.Game
             }
             else if (GameMap.IsLastOnStage())
             {
-                Console.WriteLine("Last node on stage");
                 GameMap.LoadNextStage();
                 Player.Restore();
                 PlayerState = PlayerStates.REWARD;
@@ -228,7 +238,7 @@ namespace CDL.Game
         {
             foreach ((Effect effect, int cnt) in card.ModelCard.EffectsApplied)
             {
-                PlayerApplyEffect(effect, cnt);
+                Player.ApplyCard(effect, cnt);
             }
         }
         public bool PlayCard(Guid cardId, Guid targetId)
@@ -253,27 +263,38 @@ namespace CDL.Game
             {
                 throw new InvalidOperationException("Not enough energy to play card");
             }
-            else
-            {
-                Energy -= card.ModelCard.Cost;
-                Hand.Remove(Deck.First(x => x.Id.Equals(cardId)));
-            }
 
-            if (targetId.Equals(Player.Id))
+            if (card.ModelCard.ValidTargets.Contains(TargetTypes.ENEMIES) && card.ModelCard.ValidTargets.Contains(TargetTypes.PLAYER))
+            {
+                AttackPlayer(card);
+                CurrentGameNode.AttackEnemies(card, Player.CurrentEffects);
+            }
+            else if (targetId.Equals(Player.Id) && card.ModelCard.ValidTargets.Contains(TargetTypes.PLAYER))
             {
                 // HACK: Temp "fix"
                 AttackPlayer(card);
             }
-            else
+            else if (card.ModelCard.ValidTargets.Contains(TargetTypes.ENEMIES))
+            {
+                CurrentGameNode.AttackEnemies(card, Player.CurrentEffects);
+            }
+            else if (card.ModelCard.ValidTargets.Contains(TargetTypes.ENEMY))
             {
                 GameEnemy enemy = CurrentGameNode.Enemies.First(x => x.Id.Equals(targetId));
                 CurrentGameNode.AttackEnemy(card, enemy, Player.CurrentEffects);
-                if (CurrentGameNode.Enemies.Count == 0)
-                {
-                    Cleared();
-                }
 
             }
+            else
+            {
+                throw new InvalidOperationException("Card target does not match ValidTargets");
+            }
+            if (CurrentGameNode.Enemies.Count == 0)
+            {
+                Cleared();
+            }
+            Energy -= card.ModelCard.Cost;
+            Hand.Remove(card);
+            DiscardPile.Add(card);
             return true;
         }
 
@@ -312,17 +333,6 @@ namespace CDL.Game
             return true;
         }
 
-        public void PlayCard(GameCard card)
-        {
-            if (PlayerState != PlayerStates.COMBAT)
-            {
-                foreach ((Effect effect, int cnt) in card.ModelCard.EffectsApplied)
-                {
-                    PlayerApplyEffect(effect, cnt);
-                }
-                return;
-            }
-        }
 
         // TODO
         // Code was reused from GameEnemy...

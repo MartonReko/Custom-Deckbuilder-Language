@@ -54,5 +54,25 @@ namespace CDL.Game.GameObjects
                 }
             }
         }
+
+        // Damage mods not counted when playing card on self
+        public void ApplyCard(Effect effect, int cnt)
+        {
+            if (effect.EffectType == EffectType.MOD || effect.EffectType == EffectType.TURNEND)
+            {
+                if (CurrentEffects.TryGetValue(effect, out int oldCnt))
+                {
+                    CurrentEffects[effect] = cnt + oldCnt;
+                }
+                else
+                {
+                    CurrentEffects.Add(effect, cnt);
+                }
+            }
+            if (effect.EffectType == EffectType.INSTANT)
+            {
+                Health -= (int)Math.Round(effect.DamageDealt); ;
+            }
+        }
     }
 }
