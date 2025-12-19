@@ -25,7 +25,7 @@ namespace CDL.Game.GameObjects
             if (ModelEnemy.Actions[nextAttack].target == EnemyTarget.PLAYER)
             {
                 //ApplyAction(player, ModelEnemy.Actions[nextAttack].EnemyAction);
-                player.ApplyAction(ModelEnemy.Actions[nextAttack].EnemyAction);
+                player.ApplyAction(ModelEnemy.Actions[nextAttack].EnemyAction, CurrentEffects);
                 return ModelEnemy.Actions[nextAttack];
             }
             else if (ModelEnemy.Actions[nextAttack].target == EnemyTarget.SELF)
@@ -39,36 +39,50 @@ namespace CDL.Game.GameObjects
             }
         }
 
-        private void ApplyAction(ModelCharacter player, EnemyAction ea)
+        //        private void ApplyAction(ModelCharacter player, EnemyAction ea)
+        //        {
+        //            foreach ((Effect effect, int cnt) in ea.EffectsApplied)
+        //            {
+        //                if (effect.EffectType == EffectType.MOD || effect.EffectType == EffectType.TURNEND)
+        //                {
+        //                    if (player.CurrentEffects.TryGetValue(effect, out int oldCnt))
+        //                    {
+        //                        player.CurrentEffects[effect] = cnt + oldCnt;
+        //                    }
+        //                    else
+        //                    {
+        //                        player.CurrentEffects.Add(effect, cnt);
+        //                    }
+        //                }
+        //                if (effect.EffectType == EffectType.INSTANT)
+        //                {
+        //                    player.Health += (int)Math.Round(effect.DamageDealt);
+        //                }
+        //            }
+        //        }
+        private void ApplyAction(EnemyAction ea)
         {
             foreach ((Effect effect, int cnt) in ea.EffectsApplied)
             {
                 if (effect.EffectType == EffectType.MOD || effect.EffectType == EffectType.TURNEND)
                 {
-                    if (player.CurrentEffects.TryGetValue(effect, out int oldCnt))
+                    if (CurrentEffects.TryGetValue(effect, out int oldCnt))
                     {
-                        player.CurrentEffects[effect] = cnt + oldCnt;
+                        CurrentEffects[effect] = cnt + oldCnt;
                     }
                     else
                     {
-                        player.CurrentEffects.Add(effect, cnt);
+                        CurrentEffects.Add(effect, cnt);
                     }
                 }
                 if (effect.EffectType == EffectType.INSTANT)
                 {
-                    player.Health += (int)Math.Round(effect.DamageDealt);
+                    Health += (int)effect.DamageDealt;
                 }
             }
         }
-        private void ApplyAction(EnemyAction ea)
-        {
-            foreach ((Effect effect, int cnt) in ea.EffectsApplied)
-            {
-                ApplyEffect(effect, cnt);
-            }
-        }
 
-        public void ApplyEffect(Effect effect, int cnt)
+        public void ApplyEffect(Effect effect, int cnt, Dictionary<Effect, int> playerEffects)
         {
             if (effect.EffectType == EffectType.MOD || effect.EffectType == EffectType.TURNEND)
             {
@@ -83,7 +97,16 @@ namespace CDL.Game.GameObjects
             }
             if (effect.EffectType == EffectType.INSTANT)
             {
-                Health -= (int)Math.Round(effect.DamageDealt);
+                double damage = effect.DamageDealt;
+                foreach ((Effect e, int num) in playerEffects)
+                {
+                    damage *= e.OutDmgMod;
+                }
+                foreach ((Effect e, int num) in CurrentEffects)
+                {
+                    damage *= e.InDmgMod;
+                }
+                Health -= (int)Math.Round(damage); ;
             }
         }
 
@@ -95,7 +118,8 @@ namespace CDL.Game.GameObjects
             {
                 if (item.Key.EffectType == EffectType.TURNEND)
                 {
-                    Health += (int)Math.Round(item.Key.DamageDealt);
+                    Health -= (int)Math.Round(item.Key.DamageDealt);
+                    Console.WriteLine($"TURNEND : {item.Key.DamageDealt} was dealt");
                     CurrentEffects[item.Key] = item.Value - 1;
                     if (CurrentEffects[item.Key] == 0)
                     {

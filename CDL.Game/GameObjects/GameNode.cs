@@ -28,11 +28,11 @@ namespace CDL.Game.GameObjects
             // return !Enemies.Exists(x => x.Health > 0);
             return !(Enemies.Count > 0);
         }
-        public void AttackEnemy(GameCard card, GameEnemy enemy)
+        public void AttackEnemy(GameCard card, GameEnemy enemy, Dictionary<Effect, int> playerEffects)
         {
             foreach ((Effect effect, int cnt) in card.ModelCard.EffectsApplied)
             {
-                enemy.ApplyEffect(effect, cnt);
+                enemy.ApplyEffect(effect, cnt, playerEffects);
             }
             if (enemy.Health <= 0)
             {

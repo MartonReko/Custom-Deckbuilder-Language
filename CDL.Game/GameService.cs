@@ -267,7 +267,7 @@ namespace CDL.Game
             else
             {
                 GameEnemy enemy = CurrentGameNode.Enemies.First(x => x.Id.Equals(targetId));
-                CurrentGameNode.AttackEnemy(card, enemy);
+                CurrentGameNode.AttackEnemy(card, enemy, Player.CurrentEffects);
                 if (CurrentGameNode.Enemies.Count == 0)
                 {
                     Cleared();

@@ -375,12 +375,19 @@ public interface ICDLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitEffectType([NotNull] CDLParser.EffectTypeContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>damageModEffect</c>
+	/// Visit a parse tree produced by the <c>damageInModEffect</c>
 	/// labeled alternative in <see cref="CDLParser.passiveEffect"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitDamageModEffect([NotNull] CDLParser.DamageModEffectContext context);
+	Result VisitDamageInModEffect([NotNull] CDLParser.DamageInModEffectContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>damageOutModEffect</c>
+	/// labeled alternative in <see cref="CDLParser.passiveEffect"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDamageOutModEffect([NotNull] CDLParser.DamageOutModEffectContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>damageDealEffect</c>
 	/// labeled alternative in <see cref="CDLParser.activeEffect"/>.

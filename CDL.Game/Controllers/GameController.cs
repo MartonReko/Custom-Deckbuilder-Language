@@ -10,15 +10,11 @@ namespace CDL.Game.Controllers
     [Route("[controller]")]
     public class GameController(GameServiceManager gameServiceManager) : ControllerBase
     {
-        private static int statusCounter = 0;
-        private static int mapCounter = 0;
-        private static int combatCounter = 0;
         private readonly GameServiceManager _gameServiceManager = gameServiceManager;
 
         [HttpGet(template: "status", Name = "GetGameState")]
         public ActionResult<StatusDto> GetStatus()
         {
-            statusCounter++;
             try
             {
                 GameService gs = _gameServiceManager.GetService();
@@ -43,7 +39,6 @@ namespace CDL.Game.Controllers
         [HttpGet(template: "map", Name = "Map")]
         public ActionResult<MapDto> GetMap()
         {
-            mapCounter++;
             try
             {
                 GameService gs = _gameServiceManager.GetService();
@@ -78,7 +73,6 @@ namespace CDL.Game.Controllers
         [HttpGet(template: "combat", Name = "Combat")]
         public ActionResult<CombatDto> GetCombat()
         {
-            combatCounter++;
             try
             {
                 GameService gs = _gameServiceManager.GetService();

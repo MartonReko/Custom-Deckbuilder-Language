@@ -590,7 +590,7 @@ public partial class CDLBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// <return>The visitor result.</return>
 	public virtual Result VisitEffectType([NotNull] CDLParser.EffectTypeContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by the <c>damageModEffect</c>
+	/// Visit a parse tree produced by the <c>damageInModEffect</c>
 	/// labeled alternative in <see cref="CDLParser.passiveEffect"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
@@ -599,7 +599,18 @@ public partial class CDLBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitDamageModEffect([NotNull] CDLParser.DamageModEffectContext context) { return VisitChildren(context); }
+	public virtual Result VisitDamageInModEffect([NotNull] CDLParser.DamageInModEffectContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>damageOutModEffect</c>
+	/// labeled alternative in <see cref="CDLParser.passiveEffect"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitDamageOutModEffect([NotNull] CDLParser.DamageOutModEffectContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by the <c>damageDealEffect</c>
 	/// labeled alternative in <see cref="CDLParser.activeEffect"/>.

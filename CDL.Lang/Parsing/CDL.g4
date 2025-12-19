@@ -91,7 +91,8 @@ effectDefinition:
 	EFFECT varName paramsDef? LCURLY effectType+ RCURLY;
 effectType: passiveEffect | activeEffect;
 passiveEffect:
-	direction = (OUTGOING | INCOMING) DAMAGE IS expressionContainer X EOS # damageModEffect;
+	INCOMING DAMAGE IS expressionContainer X EOS # damageInModEffect
+	| OUTGOING DAMAGE IS expressionContainer X EOS # damageOutModEffect;
 activeEffect:
 	(DEAL) expressionContainer DAMAGE effectActivationOpt EOS	# damageDealEffect;
 effectActivationOpt: INSTANTLY | ENDOFTURN;

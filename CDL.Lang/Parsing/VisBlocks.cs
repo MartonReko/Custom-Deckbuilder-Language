@@ -79,7 +79,7 @@ public class VisBlocks(EnvManager envManager, CDLExceptionHandler exceptionHandl
         string effects = "";
         foreach (var item in objects.Effects)
         {
-            _logger.LogDebug("Effect \"{c}\" properties:\n\tInDmgMod: {t}\n\tOutDmgMod: {a}\n\tDamageDealt: {dmg}", item.Name, item.InDmgMod, item.OutDmgMod, item.DamageDealt);
+            _logger.LogDebug("Effect \"{c}\" properties:\n\tInDmgMod: {t}\n\tOutDmgMod: {a}\n\tDamageDealt: {dmg}\n\tType: {type}", item.Name, item.InDmgMod, item.OutDmgMod, item.DamageDealt, item.EffectType);
         }
     }
     private void LogNodes()
@@ -654,21 +654,23 @@ public class VisBlocks(EnvManager envManager, CDLExceptionHandler exceptionHandl
         return result;
     }
 
-    public override object VisitDamageModEffect([NotNull] CDLParser.DamageModEffectContext context)
+    public override object VisitDamageInModEffect([NotNull] CDLParser.DamageInModEffectContext context)
     {
-        var result = base.VisitDamageModEffect(context);
+        var result = base.VisitDamageInModEffect(context);
         if (currentEffect != null)
         {
-            if (context.INCOMING != null)
-            {
-                double.TryParse(localExpressions.Pop().value, out double value);
-                currentEffect.InDmgMod = value;
-            }
-            else
-            {
-                double.TryParse(localExpressions.Pop().value, out double value);
-                currentEffect.OutDmgMod = value;
-            }
+            double.TryParse(localExpressions.Pop().value, out double value);
+            currentEffect.InDmgMod = value;
+        }
+        return result;
+    }
+    public override object VisitDamageOutModEffect([NotNull] CDLParser.DamageOutModEffectContext context)
+    {
+        var result = base.VisitDamageOutModEffect(context);
+        if (currentEffect != null)
+        {
+            double.TryParse(localExpressions.Pop().value, out double value);
+            currentEffect.OutDmgMod = value;
         }
         return result;
     }
@@ -698,11 +700,11 @@ public class VisBlocks(EnvManager envManager, CDLExceptionHandler exceptionHandl
         }
         //double value = double.Parse(localExpressions.Pop().value);
         if (currentEffect != null) currentEffect.DamageDealt = val;
-        if (context.effectActivationOpt().INSTANTLY != null)
+        if (context.effectActivationOpt().INSTANTLY() != null)
         {
             currentEffect!.EffectType = EffectType.INSTANT;
         }
-        else if (context.effectActivationOpt().ENDOFTURN != null)
+        else if (context.effectActivationOpt().ENDOFTURN() != null)
         {
             currentEffect!.EffectType = EffectType.TURNEND;
         }

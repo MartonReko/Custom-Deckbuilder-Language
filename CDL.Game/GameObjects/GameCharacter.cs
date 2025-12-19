@@ -21,11 +21,12 @@ namespace CDL.Game.GameObjects
             double damage = value;
             foreach ((Effect effect, int num) in CurrentEffects)
             {
+                Console.WriteLine($"Damage modded {damage} * {effect.InDmgMod}");
                 damage *= effect.InDmgMod;
             }
             Health -= (int)damage;
         }
-        public void ApplyAction(EnemyAction ea)
+        public void ApplyAction(EnemyAction ea, Dictionary<Effect, int> enemyEffects)
         {
             foreach ((Effect effect, int cnt) in ea.EffectsApplied)
             {
@@ -42,7 +43,14 @@ namespace CDL.Game.GameObjects
                 }
                 if (effect.EffectType == EffectType.INSTANT)
                 {
-                    Damage(effect.DamageDealt);
+                    double moddedDamage = effect.DamageDealt;
+                    foreach ((Effect e, int num) in enemyEffects)
+                    {
+
+                        moddedDamage *= e.OutDmgMod;
+                        Console.WriteLine($"Player incoming damage: {moddedDamage} * {e.OutDmgMod}, {e.Name}, {e.EffectType}");
+                    }
+                    Damage(moddedDamage);
                 }
             }
         }
