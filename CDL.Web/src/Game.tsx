@@ -95,7 +95,7 @@ export function Game({ api }: { api: GameApi }) {
             <label>Currently in {status?.currentState}</label>
             <br />
             {status?.currentState == "COMBAT" && combat?.hand.map((card) =>
-                <span className="m-2">{`[${card.name}, ${card.cost}]`}
+                <span className="m-2" >{`[${card.name}, ${card.cost}]`}
                     <button className="text-white bg-gray-700" onClick={() => playCard.mutate({ cardId: card.id, targetId: selected })}>Use</button>
                 </span>
             )}
@@ -117,14 +117,14 @@ export function Game({ api }: { api: GameApi }) {
                 }
                 else {
                     // bg-[url(./assets/tempBg.png)]
-                    return <div className="grid grid-cols-2 p-4  text-[24px] font-bold  bg-center bg-no-repeat bg-cover grow text-white" >
+                    return <div className=" overflow-scroll flex grid grid-cols-2  text-[18px] font-bold  bg-center bg-no-repeat bg-cover grow text-white" >
                         <div className="rows-2">
-                            <div className="h-140 overflow-auto p-8">
+                            <div className="h-1/2 overflow-auto">
                                 {showStatus()}
                                 <label>{`Energy: ${combat?.energy}`}</label>
                             </div>
                             <div>
-                                <img src={playerImg} className="h-60" />
+                                <img src={playerImg} className="size-0.4" />
                                 <br />
                                 <label>{status?.name}</label>
                                 <br />
@@ -134,7 +134,7 @@ export function Game({ api }: { api: GameApi }) {
                             </div>
                         </div>
                         <div className="rows-2">
-                            <div className="h-140">
+                            <div className="h-1/2">
                                 <label>Target:</label>
                                 <select defaultChecked={false} value={selected} onChange={e => setSelected(e.target.value)}>
                                     <option value={status?.playerId}>Player</option>
@@ -146,16 +146,18 @@ export function Game({ api }: { api: GameApi }) {
                                 <br />
                                 <br />
                             </div>
-                            <div className="flex flex-row">
+                            <div className="flex flex-row h-1/2">
                                 {combat?.enemies.map((enemy) => <div key={enemy.id}>
-                                    <img src={enemyImg} className="h-60" />
-                                    <label>{`Id: ${enemy.id.substring(0, 4)}`}</label>
-                                    <br />
-                                    <label>{`Name: ${enemy.name}`}</label>
-                                    <br />
-                                    <label>{`Health: ${enemy.health}`}</label>
-                                    <br />
-                                    <label>{`Effects:`}</label>
+                                    <img src={enemyImg} className="size-0.4" />
+                                    <div className="overflow-scroll ">
+                                        <label>{`Id: ${enemy.id.substring(0, 4)}`}</label>
+                                        <br />
+                                        <label>{`Name: ${enemy.name}`}</label>
+                                        <br />
+                                        <label>{`Health: ${enemy.health}`}</label>
+                                        <br />
+                                        <label>{`Effects:`}</label>
+                                    </div>
                                     {enemy.effects.map((effect) => <span key={effect.name}>{`${effect.name}-${effect.stack}`}</span>)}
                                 </div>)
                                 }
@@ -211,7 +213,7 @@ export function Game({ api }: { api: GameApi }) {
                 </div>;
         }
     }
-    return <div className="grow flex">
+    return <div className="grow flex pt-8 pr-8 pb-8">
         {subScreen()}
     </div>
 }

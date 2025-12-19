@@ -240,7 +240,7 @@ export function Editor({ api }: { api: GameApi }) {
     }
 
     return (
-        <div className=" h-full w-full flex flex-col  p-16">
+        <div className=" h-full w-full flex flex-col pt-16 pr-16 pb-16">
             <div>
                 <h1 className="text-6xl font-bold basis-1/10">
                     CDL Editor
