@@ -95,9 +95,9 @@ export function Game({ api }: { api: GameApi }) {
             <label>Currently in {status?.currentState}</label>
             <br />
             {status?.currentState == "COMBAT" && combat?.hand.map((card) =>
-                <span className="m-2" >{`[${card.name}, ${card.cost}]`}
+                <div className="m-2" >{`[${card.name}, ${card.cost}]`}
                     <button className="text-white bg-gray-700" onClick={() => playCard.mutate({ cardId: card.id, targetId: selected })}>Use</button>
-                </span>
+                </div>
             )}
             <br />
             <br />
@@ -148,7 +148,7 @@ export function Game({ api }: { api: GameApi }) {
                                 <br />
                             </div>
                             <div className="flex flex-row h-1/2">
-                                {combat?.enemies.map((enemy) => <div key={enemy.id}>
+                                {combat?.enemies.map((enemy) => <div key={enemy.id} className="ml-4">
                                     <img src={enemyImg} className="size-0.4" />
                                     <div className="overflow-scroll ">
                                         <label>{`Id: ${enemy.id.substring(0, 4)}`}</label>

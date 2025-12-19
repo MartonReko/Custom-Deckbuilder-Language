@@ -132,7 +132,7 @@ namespace CDL.Game
                     DrawPile.Remove(card);
                 }
             }
-            else
+            else if (DrawPile.Count > 0)
             {
                 foreach (var card in DrawPile)
                 {
@@ -141,6 +141,12 @@ namespace CDL.Game
                 DrawPile.Clear();
                 DrawPile.AddRange(Deck);
                 DiscardPile.Clear();
+            }
+            else
+            {
+                Hand.AddRange(Deck);
+                DiscardPile.Clear();
+                DrawPile.Clear();
             }
         }
         private int EnemyTurnCounter;
